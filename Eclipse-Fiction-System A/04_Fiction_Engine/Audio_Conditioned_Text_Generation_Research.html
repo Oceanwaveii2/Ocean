@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio-Conditioned Text Generation Research</title>
+<style>
+:root{--bg:#111214;--panel:#1a1c21;--panel2:#22252c;--text:#ececf0;--muted:#aaadb6;--accent:#c58cff;--cyan:#7dd3fc;--line:#353842}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1080px;margin:auto;padding:48px 28px 80px}header{border-bottom:1px solid var(--line);padding-bottom:30px}
+.eyebrow{color:var(--accent);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+h1{font-size:clamp(36px,5vw,60px);line-height:1.05;margin:12px 0}h2{margin-top:48px;font-size:28px}
+h3{margin-top:26px}p,li{color:#d7d8de}.lead{color:var(--muted);font-size:18px;max-width:850px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card,.note{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 9px;margin:4px;color:var(--cyan);font-size:12px}
+.step{background:var(--panel2);border-left:3px solid var(--accent);padding:14px 18px;margin:10px 0;border-radius:7px}
+.step b{display:block;color:white}pre{background:#0c0d10;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:auto;color:#ddd}
+code{background:#0c0d10;padding:2px 6px;border-radius:4px;color:#d9b9ff}
+blockquote{border-left:3px solid var(--cyan);background:var(--panel);padding:16px 20px;margin:20px 0}
+table{width:100%;border-collapse:collapse;margin:20px 0}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body><main>
+<header>
+<div class="eyebrow">Research Notes · Multimodal AI</div>
+<h1>Audio-Conditioned Text Generation</h1>
+<p class="lead">Research documentation from the discussion about using music and audio as an active conditioning signal for AI-generated text rather than treating audio merely as speech to be transcribed.</p>
+<span class="tag">Audio → Text</span><span class="tag">Music Analysis</span><span class="tag">Multimodal AI</span><span class="tag">Narrative Generation</span><span class="tag">Latent Conditioning</span>
+</header>
+
+<h2>1. Core Research Question</h2>
+<p>Traditional audio-to-text systems primarily answer: <strong>“What words were spoken?”</strong></p>
+<p>This research direction asks: <strong>“How does the audio itself influence what the AI writes?”</strong></p>
+<p>For music, useful information may include tempo, rhythm, harmony, instrumentation, timbre, dynamics, spectral characteristics, intensity, and changes over time. These properties could influence narrative mood, pacing, sentence structure, imagery, vocabulary, tension, and other properties of generated prose.</p>
+<div class="note"><strong>Key distinction:</strong> This is not simply music-to-caption generation. The desired system uses music as a conditioning signal that changes the generation process.</div>
+
+<h2>2. Conceptual Pipeline</h2>
+<div class="step"><b>Audio Input</b> Music, soundtrack, ambience, speech, or other recorded audio.</div>
+<div class="step"><b>Audio Representation</b> Convert the signal into measurable features or a learned embedding.</div>
+<div class="step"><b>Cross-Modal Interpretation</b> Relate acoustic information to semantic, emotional, stylistic, or narrative concepts.</div>
+<div class="step"><b>Language Conditioning</b> Use the resulting representation to influence an LLM.</div>
+<div class="step"><b>Generated Text</b> The same story seed can produce different prose under different audio conditions.</div>
+
+<h2>3. Major Technical Approaches</h2>
+<div class="grid">
+<div class="card"><h3>Feature Extraction + Prompt Conditioning</h3><p>Use tools such as <code>librosa</code> or <code>essentia</code> to extract BPM, spectral centroid, RMS energy, key, spectral variance and related features. Map them into writing controls such as cadence, intensity, imagery and vocabulary density.</p></div>
+<div class="card"><h3>Audio Embedding / Latent Steering</h3><p>Encode audio into a learned vector representation. CLAP-style audio-text representations can be compared with textual concepts or prose-style descriptors, potentially avoiding a small hand-written set of mood labels.</p></div>
+<div class="card"><h3>Native Audio-Conditioned LLMs</h3><p>Use a multimodal language model that accepts audio directly, then instruct it to treat musical properties as an influence on narrative generation rather than simply producing a transcript.</p></div>
+</div>
+
+<h2>4. Audio Properties That Could Influence Writing</h2>
+<ul>
+<li><strong>Tempo / BPM:</strong> narrative speed and sentence cadence.</li>
+<li><strong>Rhythm:</strong> repetition, phrasing and prose rhythm.</li>
+<li><strong>Energy / loudness:</strong> intensity and escalation.</li>
+<li><strong>Spectral brightness:</strong> atmosphere and imagery.</li>
+<li><strong>Harmony / key:</strong> tonal or emotional direction.</li>
+<li><strong>Timbre:</strong> sonic character and texture.</li>
+<li><strong>Instrumentation:</strong> contextual or stylistic evidence.</li>
+<li><strong>Dynamic changes:</strong> transitions, tension, release and climax.</li>
+<li><strong>Temporal structure:</strong> lets text respond to changes in a soundtrack.</li>
+</ul>
+
+<h2>5. Dynamic Music-to-Narrative Conditioning</h2>
+<p>Instead of reducing a whole track to one mood label, the system can analyze the soundtrack over time.</p>
+<div class="step"><b>Low-energy / sparse section</b> Establish atmosphere.</div>
+<div class="step"><b>Increasing rhythm / density</b> Build anticipation.</div>
+<div class="step"><b>Crescendo</b> Increase narrative tension or action.</div>
+<div class="step"><b>Sudden reduction</b> Release, reflection or tonal reversal.</div>
+<p>The important idea is that musical structure becomes a temporal control signal. The model does not have to describe the music. The music can influence how the story unfolds and how the prose behaves.</p>
+
+<h2>6. CLAP-Style Cross-Modal Experiment</h2>
+<p>A shared audio-text embedding can be used to compare an audio representation against textual descriptions of narrative qualities.</p>
+<pre>Audio
+  ↓
+Audio Encoder
+  ↓
+Audio Embedding
+  ↓
+Compare against textual style / narrative embeddings
+  ↓
+Weighted influence profile
+  ↓
+LLM conditioning
+  ↓
+Narrative text</pre>
+<p>Possible textual reference dimensions include <code>melancholic</code>, <code>surreal</code>, <code>comic</code>, <code>ominous</code>, <code>dreamlike</code>, <code>urgent</code>, <code>peaceful</code>, <code>chaotic</code>, <code>rhythmic</code>, and <code>minimalist</code>.</p>
+<div class="note">The experimental question is whether learned cross-modal representations can produce useful steering richer than a small manually designed list of mood labels.</div>
+
+<h2>7. Native Audio Models</h2>
+<p>Potential experimentation can involve audio-capable multimodal language models such as Qwen Audio-family models, as well as audio representation systems. Model capabilities, current releases, APIs, licensing and hardware requirements should be verified before implementation.</p>
+
+<h2>8. Prototype Architecture</h2>
+<pre>┌─────────────────────┐
+│ Audio File          │
+│ WAV / MP3 / etc.    │
+└──────────┬──────────┘
+           ▼
+┌─────────────────────┐
+│ Audio Analysis      │
+│ librosa / essentia  │
+└──────────┬──────────┘
+           ├── BPM
+           ├── Energy
+           ├── Spectral features
+           ├── Rhythm
+           ├── Harmonic features
+           └── Temporal segments
+           ▼
+┌─────────────────────┐
+│ Conditioning Layer  │
+│ Rules / Embedding / │
+│ Multimodal Model    │
+└──────────┬──────────┘
+           ▼
+┌─────────────────────┐
+│ Story / Scene Prompt│
+└──────────┬──────────┘
+           ▼
+┌─────────────────────┐
+│ LLM Narrative       │
+│ Generator           │
+└──────────┬──────────┘
+           ▼
+     Generated Prose</pre>
+
+<h2>9. Simplest Proof of Concept</h2>
+<p>A first experiment does not require training a new model. Analyze the audio, convert the measurements into a dynamic conditioning prompt, and compare the output with a no-audio baseline.</p>
+<pre>audio = load_audio("scene_music.wav")
+features = analyze_audio(audio)
+conditioning = map_features_to_writing_controls(features)
+
+prompt = f"""
+Write the scene using the supplied story premise.
+
+Musical conditioning:
+{conditioning}
+
+Allow the music to influence:
+- pacing
+- sentence cadence
+- emotional intensity
+- imagery
+- vocabulary density
+- scene tension
+
+Do not describe the music unless the story requires it.
+Use the music as an invisible influence on the writing.
+"""
+
+generate_story(prompt)</pre>
+
+<h2>10. Controlled Experiment</h2>
+<table>
+<tr><th>Condition</th><th>Potential influence</th></tr>
+<tr><td>No audio</td><td>Baseline generation</td></tr>
+<tr><td>Slow orchestral music</td><td>Slower pacing, reflective atmosphere, longer phrasing</td></tr>
+<tr><td>Fast electronic music</td><td>Faster cadence, energetic verbs, heightened activity</td></tr>
+<tr><td>Chaotic experimental music</td><td>Potentially fragmented, surreal or unstable narrative texture</td></tr>
+</table>
+<p>Hold the story prompt constant and change only the audio condition. Compare sentence length, lexical diversity, emotional language, pacing, event density and human-rated alignment with the soundtrack.</p>
+
+<h2>11. Research Questions</h2>
+<ol>
+<li>Can music influence generated prose without the model explicitly describing the music?</li>
+<li>Are learned audio embeddings more effective than manually extracted musical features?</li>
+<li>Can changes in a soundtrack control changes in narrative tension over time?</li>
+<li>Can audio influence sentence cadence as well as semantic content?</li>
+<li>Can the same fictional character behave differently under different musical conditions?</li>
+<li>Can music become one evidence stream inside a larger fictional behavior engine?</li>
+<li>Can audio interact with transcript, image, character, relationship and world-state evidence?</li>
+</ol>
+
+<h2>12. Integration With a Multimodal Fiction / Behavior Engine</h2>
+<pre>CHARACTER DATA
+      │
+TRANSCRIPT ──────┐
+                 │
+IMAGE ───────────┤
+                 ▼
+              AUDIO
+                 │
+                 ▼
+        ┌────────────────┐
+        │ Evidence       │
+        │ Integration    │
+        └───────┬────────┘
+                ▼
+        ┌────────────────┐
+        │ Behavior /     │
+        │ Narrative      │
+        │ Interpretation │
+        └───────┬────────┘
+                ▼
+           Scene / Story</pre>
+<p>In this architecture, a transcript can provide explicit content while the soundtrack provides additional information about perceived tension, atmosphere, rhythm or tonal direction. Audio therefore becomes another evidence stream rather than merely another transcription source.</p>
+
+<h2>13. Central Research Insight</h2>
+<blockquote><strong>Audio → representation → influence → language</strong><br><br>rather than:<br><br><strong>Audio → transcript → language</strong></blockquote>
+<p>The broader implication is a multimodal generation system in which music, sound design, images, dialogue and other signals can each influence generation through different computational channels.</p>
+
+<footer>Compiled from the supplied research discussion. This document records the proposed concepts and experimental architecture. Specific model capabilities and current research claims should be independently verified before implementation.</footer>
+</main></body></html>

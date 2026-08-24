@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eclipse Visual Authoring - Graph Mockup</title>
+<style>
+:root{
+  --bg:#242424; --panel:#1d1d1d; --panel2:#292929; --line:#3a3a3a;
+  --text:#f2eee6; --muted:#aaa49a; --pink:#c9a06a; --purple:#a88b72;
+  --cyan:#8f9b9a; --gold:#c6a06a; --blue:#9a9a9a; --green:#9a9a86;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#202020;color:var(--text);font:13px Inter,system-ui,Segoe UI,sans-serif;overflow:hidden}
+.app{height:100vh;display:grid;grid-template-columns:226px 1fr 236px;grid-template-rows:58px 1fr}
+.top{grid-column:1/4;border-bottom:1px solid #383838;background:linear-gradient(#151515,#101010);display:flex;align-items:center;gap:28px;padding:0 18px}
+.logo{font-size:20px;letter-spacing:5px}.logo small{display:block;font-size:8px;letter-spacing:1px;color:#8d877d;margin-left:38px}
+.nav{display:flex;align-items:stretch;height:100%;gap:4px}.nav span{padding:21px 17px 0;color:#bcb7ae}.nav .active{color:#f4f0e8;background:#252525;border-bottom:2px solid var(--pink);border-radius:9px 9px 0 0}
+.project{margin-left:auto;background:#202020;border:1px solid #414141;color:#e7e1d7;border-radius:6px;padding:9px 13px}
+.icon{font-size:22px;color:#c1bbb1;padding:0 8px}
+.left,.right{background:linear-gradient(180deg,#1d1d1d,#181818);overflow:hidden}
+.left{border-right:1px solid #3a3a3a}.right{border-left:1px solid #3a3a3a}
+.section{padding:16px 16px 10px;border-bottom:1px solid #363636}
+.section h4{font-size:11px;letter-spacing:.8px;margin:0 0 10px;color:var(--pink)}
+.btn{border:1px solid #45413b;background:#262626;color:#e9e4dc;border-radius:5px;padding:8px 10px;width:100%;text-align:left}.btn.add{background:#30271f;border-color:#6b5840;color:#dfbd91}
+.item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:5px;color:#c9ced6}.item.selected{background:#2a2724}.dot{width:7px;height:7px;border-radius:50%;background:var(--pink);margin-left:auto}.thumb{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#55514a,#292929);border:1px solid #686158}
+.toolrow{display:flex;gap:6px;padding:11px 15px}.tool{flex:1;text-align:center;padding:8px;border:1px solid #414141;border-radius:5px;color:#aaa49b}
+
+.canvas{position:relative;overflow:hidden;background-color:#292929;background-image:linear-gradient(#3a3a3a 1px,transparent 1px),linear-gradient(90deg,#3a3a3a 1px,transparent 1px);background-size:28px 28px}
+.canvas:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 55% 42%,rgba(198,160,106,.045),transparent 48%);pointer-events:none}
+.graph-title{position:absolute;top:16px;left:20px;letter-spacing:1px;color:#bdb7ad;font-size:11px}
+.toolbar{position:absolute;right:18px;top:13px;z-index:8;display:flex;gap:6px}.toolbar button{background:#202020;border:1px solid #4a4742;color:#d8d2c8;border-radius:5px;padding:7px 10px}.toolbar .compute{background:#69543b;border-color:#b28d5e;color:#fff}
+
+.layer{position:absolute;left:0;right:0;height:46%;border-bottom:1px solid #44413c}
+.layer.world{top:54%;border-top:1px solid #44413c;border-bottom:0}
+.layer-label{position:absolute;left:50%;transform:translateX(-50%);bottom:-9px;background:#242424;padding:0 14px;color:var(--pink);font-size:11px;letter-spacing:.6px;z-index:5}
+.world .layer-label{top:-9px;bottom:auto;color:#b69a74}
+
+.node{position:absolute;width:198px;min-height:126px;background:linear-gradient(145deg,#2c2c2b,#202020);border:1px solid #5a5751;border-radius:11px;box-shadow:0 12px 35px #0009;padding:13px;z-index:3}
+.node:before{content:"";position:absolute;width:7px;height:7px;border-radius:50%;top:16px;left:-4px;background:var(--node,#999);box-shadow:0 0 0 2px #202020}
+.node .type{float:right;font-size:8px;color:#99938a;letter-spacing:.7px}.node h3{font-size:14px;margin:0 0 5px}.node p{margin:3px 0;color:#b1aba2;font-size:10px;line-height:1.4}.node .stats{margin-top:10px;color:#908a81;font-size:9px}
+.node.character{--node:var(--pink);border-color:#6e5b4a}.node.support{--node:var(--purple);border-color:#65584d}.node.world{--node:var(--cyan);border-color:#596565}.node.engine{--node:var(--gold);border-color:#806849}.node.evidence{--node:#aaa;border-color:#55534f}
+.node.r{left:7%;top:18%}.node.n{left:34%;top:16%}.node.y{left:26%;top:52%}.node.engine{left:58%;top:28%;width:210px}.node.t{left:81%;top:16%;width:165px}.node.i{left:81%;top:50%;width:165px}
+.world .w1{left:7%;top:25%}.world .w2{left:32%;top:25%}.world .w3{left:57%;top:25%}.world .w4{left:78%;top:48%;width:165px}.world .w5{left:15%;top:61%}.world .w6{left:39%;top:61%}
+.port{position:absolute;width:8px;height:8px;border:1px solid #b9c2ce;background:#121821;border-radius:50%;right:-5px;top:50%}
+svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}.edge{fill:none;stroke-width:1.6}.edge.p{stroke:#b28d68}.edge.v{stroke:#9a8470}.edge.c{stroke:#8f9b9a}.edge.g{stroke:#c6a06a}.edge.w{stroke:#8a8780}.dash{stroke-dasharray:7 6}
+.elabel{position:absolute;background:#0e141c;color:#cdd2d9;padding:2px 5px;font-size:10px;z-index:4}
+
+.right h3{font-size:12px;margin:0 0 14px}.inspector-head{padding:17px;border-bottom:1px solid #3b3935}.engine-icon{width:38px;height:38px;border:1px solid #846d3d;border-radius:50%;display:inline-grid;place-items:center;color:#c6a06a;font-size:21px;float:left;margin-right:10px}.sub{font-size:9px;color:#808998}.inspect{padding:15px 17px;border-bottom:1px solid #3b3935}.inspect h5{font-size:10px;color:#aab2bf;letter-spacing:.7px;margin:0 0 10px}.row{display:flex;justify-content:space-between;padding:6px 0;color:#bfc5cf}.row b{font-weight:500;color:#c6a06a}.tag{display:inline-block;background:#1b222d;border:1px solid #303948;border-radius:4px;padding:5px 7px;font-size:9px;color:#bfc6d0;margin:3px}
+
+.bottom{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#202020;border:1px solid #47443f;border-radius:7px;padding:8px 14px;color:#9ca5b3;z-index:8}
+.zoom{position:absolute;bottom:14px;right:18px;background:#202020;border:1px solid #47443f;border-radius:7px;padding:7px 10px;z-index:8}
+
+/* Eclipse reference tuning: charcoal board, warm neutral chrome, restrained gold accents */
+.top{box-shadow:0 1px 0 rgba(255,255,255,.025)}
+.canvas{box-shadow:inset 0 0 80px rgba(0,0,0,.16)}
+.node h3{color:#eee9df}
+.right .inspect p{color:#aaa49b!important}
+small{color:#8f8980}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="logo">◐ ECLIPSE<small>FICTION COMPOSITION ENGINE</small></div>
+  <nav class="nav"><span class="active">VISUAL AUTHORING</span><span>FICTION ENGINE</span><span>PROJECTS</span><span>LIBRARY</span><span>SETTINGS</span></nav>
+  <select class="project"><option>Project: Spirited Away Crossover</option><option>Project: Rainee & Noir</option></select>
+  <span class="icon">▣</span><span class="icon">▷</span><span class="icon">⚙</span>
+</header>
+
+<aside class="left">
+  <div class="section"><h4>CHARACTER LAYER</h4><button class="btn add">＋ Add Character</button>
+    <div class="item selected"><span class="thumb"></span><div>Rainee<br><small>Main Character</small></div><i class="dot"></i></div>
+    <div class="item"><span class="thumb"></span><div>Noir<br><small>Supporting</small></div><i class="dot" style="background:#9a8470"></i></div>
+    <div class="item"><span class="thumb"></span><div>Yae<br><small>Supporting</small></div><i class="dot" style="background:var(--cyan)"></i></div>
+  </div>
+  <div class="section"><h4>EVIDENCE (CHARACTERS)</h4>
+    <div class="item">▣ <div>Transcripts<br><small>18 items</small></div></div>
+    <div class="item">▧ <div>Images<br><small>42 items</small></div></div>
+    <div class="item">◖ <div>Audio<br><small>7 items</small></div></div>
+  </div>
+  <div class="toolrow"><div class="tool">↖</div><div class="tool">✋</div><div class="tool">▣</div><div class="tool">□</div></div>
+  <div class="section"><h4 style="color:#b69a74">WORLD LAYER</h4><button class="btn" style="border-color:#5b5145;color:#c3a77d">＋ Add World Element</button>
+    <div class="item">◉ <div>Spirited Away<br><small>World</small></div></div>
+    <div class="item">◉ <div>Bathhouse<br><small>Location</small></div></div>
+    <div class="item">◉ <div>Witch<br><small>World Character</small></div></div>
+    <div class="item">◉ <div>Baby<br><small>World Character</small></div></div>
+    <div class="item">More…</div>
+  </div>
+</aside>
+
+<main class="canvas">
+  <div class="graph-title">CHARACTER GRAPH</div>
+  <div class="toolbar"><button>Undo</button><button>Redo</button><button>Fit Board</button><button class="compute">Compute Scene</button></div>
+
+  <section class="layer">
+    <div class="node character r"><span class="type">CHARACTER</span><h3>Rainee</h3><p>Main Character</p><p>Evidence <b style="color:#c9a06a">67</b> &nbsp; States <b>3</b></p><span class="port"></span></div>
+    <div class="node support n"><span class="type">CHARACTER</span><h3>Noir</h3><p>Supporting</p><p>Evidence <b style="color:#9a8470">51</b> &nbsp; States <b>2</b></p><span class="port"></span></div>
+    <div class="node support y"><span class="type">CHARACTER</span><h3>Yae</h3><p>Supporting</p><p>Evidence <b>33</b> &nbsp; States <b>2</b></p><span class="port"></span></div>
+    <div class="node engine"><span class="type">BEHAVIOR ENGINE</span><h3>⚙ Fiction<br>Behavior Engine</h3><p>Behavior Interpretation</p><p>Inputs <b style="color:#c6a06a">3</b> &nbsp; Outputs <b style="color:#c6a06a">7</b></p><span class="port"></span></div>
+    <div class="node evidence t"><span class="type">EVIDENCE</span><h3>▣ Transcript Evidence</h3><p>18 items</p></div>
+    <div class="node evidence i"><span class="type">EVIDENCE</span><h3>▧ Image Evidence</h3><p>42 items</p></div>
+    <div class="layer-label">CHARACTER LAYER</div>
+    <span class="elabel" style="left:25%;top:22%">sister</span><span class="elabel" style="left:40%;top:31%">rivalry</span><span class="elabel" style="left:20%;top:58%">friend</span>
+  </section>
+
+  <section class="layer world">
+    <div class="node world w1"><span class="type">WORLD</span><h3>Spirited Away</h3><p>World</p><p>Evidence <b>87</b> &nbsp; Rules <b>12</b></p></div>
+    <div class="node world w2"><span class="type">LOCATION</span><h3>Bathhouse</h3><p>Location</p><p>Evidence <b>45</b> &nbsp; Rules <b>8</b></p></div>
+    <div class="node support w3"><span class="type">WORLD CHARACTER</span><h3>Witch</h3><p>World Character</p><p>Evidence <b>36</b> &nbsp; Influence <b>High</b></p></div>
+    <div class="node evidence w4"><span class="type">WORLD EVENTS</span><h3>☀ Witch Intervenes</h3><p>Event</p><h3>◷ Worker Shift Change</h3><p>Event</p></div>
+    <div class="node world w5"><span class="type">LOCATION</span><h3>Shop</h3><p>Location</p><p>Evidence <b>22</b> &nbsp; Rules <b>4</b></p></div>
+    <div class="node support w6"><span class="type">NPC GROUP</span><h3>Bath Workers</h3><p>NPC Group</p><p>Evidence <b>28</b> &nbsp; Count <b>14</b></p></div>
+    <div class="layer-label">WORLD LAYER</div>
+  </section>
+
+  <svg viewBox="0 0 1000 900" preserveAspectRatio="none">
+    <path class="edge p" d="M180 235 C300 170 300 175 420 225"/>
+    <path class="edge p dash" d="M190 300 C300 400 360 290 430 380"/>
+    <path class="edge v" d="M430 240 C510 250 550 270 600 340"/>
+    <path class="edge c" d="M405 430 C500 420 540 410 600 370"/>
+    <path class="edge g" d="M715 340 C790 280 810 230 850 210"/>
+    <path class="edge g" d="M715 390 C790 400 820 430 850 450"/>
+    <path class="edge w" d="M180 690 C300 650 350 650 430 690"/>
+    <path class="edge c" d="M430 690 C520 640 560 650 650 690"/>
+    <path class="edge v dash" d="M650 690 C720 670 760 620 820 600"/>
+    <path class="edge w" d="M430 760 C500 730 550 730 610 760"/>
+  </svg>
+  <div class="bottom">6 active nodes · 14 relationships · 67 evidence items · last compute: just now</div>
+  <div class="zoom">− &nbsp; 100% &nbsp; ＋ &nbsp; ⛶ &nbsp; ▦</div>
+</main>
+
+<aside class="right">
+  <div class="inspector-head"><div class="engine-icon">⚙</div><h3>Fiction Behavior Engine</h3><div class="sub">Node Type: Behavior Engine<br>ID: FBE_01</div></div>
+  <div class="inspect"><h5>INPUTS</h5>
+    <div class="row">● Rainee (Character)<b>›</b></div><div class="row">● Noir (Character)<b>›</b></div><div class="row">● Yae (Character)<b>›</b></div>
+    <div class="row">▣ Transcript Evidence <span>18</span></div><div class="row">▧ Image Evidence <span>42</span></div><div class="row">◖ Audio Evidence <span>7</span></div>
+  </div>
+  <div class="inspect"><h5>OUTPUTS</h5>
+    <div class="row">● Character State Updates <b>3</b></div><div class="row">● Relationship Updates <b>2</b></div><div class="row">● Interaction Tendencies <b>4</b></div><div class="row">● Reaction Branches <b>5</b></div><div class="row">● Behavior Patterns <b>6</b></div><div class="row">● Memory Updates <b>3</b></div><div class="row">● New Evidence Links <b>7</b></div>
+  </div>
+  <div class="inspect"><h5>DESCRIPTION</h5><p style="color:#a9b1bd;line-height:1.6">Analyzes multimodal evidence to extract behavior, relationships, tendencies, and reaction patterns. Feeds results into the Fiction Engine.</p></div>
+  <div class="inspect"><h5>TAGS</h5><span class="tag">behavior</span><span class="tag">analysis</span><span class="tag">multimodal</span><span class="tag">character</span><span class="tag">interpretation</span></div>
+</aside>
+</div>
+</body>
+</html>

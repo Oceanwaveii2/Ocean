@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiction Engine Architecture Map</title>
+<style>
+:root {
+  --bg:#0b0d0f; --panel:#121519; --panel2:#171b20; --line:#2c3239;
+  --text:#eeeae2; --muted:#969da6; --gold:#c8b184; --blue:#8eabbf;
+  --violet:#aa98c7; --green:#8eaf98; --orange:#bd917b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#101215ee;backdrop-filter:blur(12px);
+border-bottom:1px solid var(--line);padding:22px 30px;display:flex;align-items:center;gap:18px}
+h1{font:32px Georgia,serif;margin:0} .subtitle{color:var(--muted);font-size:12px}
+main{max-width:1500px;margin:auto;padding:28px}
+.toolbar{margin-left:auto;display:flex;gap:8px}
+button{background:#171b20;color:#ddd;border:1px solid var(--line);padding:8px 12px;border-radius:7px;cursor:pointer}
+button:hover{background:#22272d}
+.primary{background:#e4dccd;color:#171717;border:0;font-weight:700}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.65fr);gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:18px}
+.card h2{font:22px Georgia,serif;margin:0 0 5px} .eyebrow{color:var(--gold);font-size:9px;letter-spacing:.16em;text-transform:uppercase}
+pre{margin:15px 0 0;background:#080a0c;border:1px solid #24292f;border-radius:8px;padding:20px;
+overflow:auto;color:#d7d2c8;font:12px/1.42 "Cascadia Code","Consolas",monospace;white-space:pre}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:11px}
+.item b{display:block;margin-bottom:3px} .item span{color:var(--muted);font-size:12px}
+.gold{border-left:3px solid var(--gold)} .blue{border-left:3px solid var(--blue)}
+.violet{border-left:3px solid var(--violet)} .green{border-left:3px solid var(--green)}
+.orange{border-left:3px solid var(--orange)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:15px}
+.step{background:#171b20;border:1px solid var(--line);padding:10px 13px;border-radius:7px}
+.arrow{color:#6f7780}
+.note{color:var(--muted);font-size:12px}
+.inspector{position:sticky;top:100px;height:max-content}
+ul{color:#b8bdc4} li{margin:7px 0}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.inspector{position:static}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Fiction System Architecture</h1>
+    <div class="subtitle">Character / World / Writing → priority rules → evidence → behavior → live narrative → fiction</div>
+  </div>
+  <div class="toolbar">
+    <button onclick="window.print()">Print</button>
+    <button class="primary" onclick="document.getElementById('ascii').scrollIntoView({behavior:'smooth'})">Architecture Map</button>
+  </div>
+</header>
+
+<main>
+<div class="grid">
+<section>
+<div class="card" id="ascii">
+  <div class="eyebrow">Master Architecture</div>
+  <h2>System Map</h2>
+  <div class="note">The visible system stays simple. Priority rules are applied before evidence is interpreted, while most downstream complexity is computed rather than manually edited.</div>
+  <pre>┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                      FICTION SYSTEM / PROJECT                                                │
+│                                                                                                             │
+│  ┌───────────────────────────────┐        ┌──────────────────────────────┐        ┌───────────────────────┐ │
+│  │ FICTION STYLE / WRITING      │        │ CHARACTER PRIORITY / RULES   │        │ WORLD PRIORITY / RULES│ │
+│  │                               │        │                              │        │                       │ │
+│  │ • Fiction style               │        │ • OC override rules         │        │ • World rules         │ │
+│  │ • Prose conventions           │        │ • Identity constraints      │        │ • World continuity    │ │
+│  │ • Dialogue conventions        │        │ • Memory inheritance rules  │        │ • Event constraints   │ │
+│  │ • General writing transcripts │        │ • Knowledge inheritance     │        │                       │ │
+│  │ • Output instructions         │        │ • Behavioral-source rules   │        │                       │ │
+│  └───────────────┬───────────────┘        └──────────────┬───────────────┘        └───────────┬───────────┘ │
+│                  │                                       │                                    │             │
+│                  │                                       ▼                                    │             │
+│                  │                         ┌────────────────────────────┐                     │             │
+│                  │                         │ OVERRIDE / PRIORITY LAYER  │                     │             │
+│                  │                         │                            │                     │             │
+│                  │                         │ "What is this data allowed│                     │             │
+│                  │                         │  to do to the character?" │                     │             │
+│                  │                         └──────────────┬─────────────┘                     │             │
+│                  │                                        │                                   │             │
+│                  │                                        ▼                                   │             │
+│                  │  ┌───────────────────────────────────────────────────────────────────────┐ │             │
+│                  │  │                         CHARACTER AUTHORING                             │ │             │
+│                  │  │                                                                         │ │             │
+│                  │  │   ┌──────────────┐        ┌──────────────────┐        ┌──────────────┐ │ │             │
+│                  │  │   │   RAINEE     │◄──────►│  RELATIONSHIP    │◄──────►│    NOIR      │ │ │             │
+│                  │  │   │              │        │                  │        │              │ │ │             │
+│                  │  │   │ character    │        │ Sister           │        │ character    │ │ │             │
+│                  │  │   │ state        │        │ Lover            │        │ state        │ │ │             │
+│                  │  │   │ transforms   │        │ Rival / etc.      │        │ transforms   │ │ │             │
+│                  │  │   └──────┬───────┘        │ OWN DATA OBJECT   │        └──────┬───────┘ │ │             │
+│                  │  │          │                └────────┬─────────┘               │         │ │             │
+│                  │  │          │                         │                         │         │ │             │
+│                  │  │          ▼                         ▼                         ▼         │ │             │
+│                  │  │   ┌──────────────┐         ┌──────────────┐          ┌──────────────┐ │ │             │
+│                  │  │   │ IMAGE        │         │ IMAGE        │          │ IMAGE        │ │ │             │
+│                  │  │   │ AUDIO        │         │ AUDIO        │          │ AUDIO        │ │ │             │
+│                  │  │   │ TRANSCRIPT   │         │ TRANSCRIPT   │          │ TRANSCRIPT   │ │ │             │
+│                  │  │   └──────┬───────┘         └──────┬───────┘          └──────┬───────┘ │ │             │
+│                  │  │          │                         │                         │         │ │             │
+│                  │  │          └─────────────────────────┼─────────────────────────┘         │ │             │
+│                  │  │                                    ▼                                   │ │             │
+│                  │  │                         ┌────────────────────────┐                      │ │             │
+│                  │  │                         │ EVIDENCE PROCESSING    │                      │ │             │
+│                  │  │                         │                        │                      │ │             │
+│                  │  │                         │ transcript analysis    │                      │ │             │
+│                  │  │                         │ image analysis         │                      │ │             │
+│                  │  │                         │ audio recognition      │                      │ │             │
+│                  │  │                         │ interaction extraction │                      │ │             │
+│                  │  │                         └───────────┬────────────┘                      │ │             │
+│                  │  │                                     │                                   │ │             │
+│                  │  │                                     ▼                                   │ │             │
+│                  │  │                         ┌────────────────────────┐                      │ │             │
+│                  │  │                         │ BEHAVIORAL REFERENCES  │                      │ │             │
+│                  │  │                         │                        │                      │ │             │
+│                  │  │                         │ speech patterns        │                      │ │             │
+│                  │  │                         │ habits                 │                      │ │             │
+│                  │  │                         │ reactions              │                      │ │             │
+│                  │  │                         │ decision patterns      │                      │ │             │
+│                  │  │                         │ interaction patterns   │                      │ │             │
+│                  │  │                         └───────────┬────────────┘                      │ │             │
+│                  │  │                                     │                                   │ │             │
+│                  │  │   ┌─────────────────────────────────┼───────────────────────────────┐   │ │             │
+│                  │  │   │       TRANSFORMATION / COMPOSITE CHARACTER STATE                 │   │ │             │
+│                  │  │   │                                                                 │   │ │             │
+│                  │  │   │   BASE IDENTITY: MORTY                                          │   │ │             │
+│                  │  │   │        │                                                        │   │ │             │
+│                  │  │   │        ├── Female Morty A  ──► behavioral influence             │   │ │             │
+│                  │  │   │        ├── Female Morty B  ──► behavioral influence             │   │ │             │
+│                  │  │   │        ├── Female Morty C  ──► behavioral influence             │   │ │             │
+│                  │  │   │        ├── Summer-Twin     ──► behavioral influence             │   │ │             │
+│                  │  │   │        └── Beth-derived    ──► behavioral influence             │   │ │             │
+│                  │  │   │                                                                 │   │ │             │
+│                  │  │   │   OVERRIDE: Morty memories retained                             │   │ │             │
+│                  │  │   │   BLOCK: source memories / source knowledge unless allowed     │   │ │             │
+│                  │  │   └─────────────────────────────────────────────────────────────────┘   │ │             │
+│                  │  │                                                                         │ │             │
+│                  │  └─────────────────────────────────────────────────────────────────────────┘ │             │
+│                  │                                                                            │             │
+│                  │                                                                            ▼             │
+│                  │                       ┌───────────────────────────────────────────────────────────────┐ │
+│                  │                       │                         WORLD AUTHORING                         │ │
+│                  │                       │                                                               │ │
+│                  │                       │  ┌────────────┐  ┌────────────┐  ┌────────────┐               │ │
+│                  │                       │  │ LOCATIONS  │  │ ENTITIES   │  │ WORLD RULES│               │ │
+│                  │                       │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘               │ │
+│                  │                       │        │               │               │                      │ │
+│                  │                       │        └───────────────┼───────────────┘                      │ │
+│                  │                       │                        ▼                                      │ │
+│                  │                       │               ┌────────────────┐                              │ │
+│                  │                       │               │ WORLD EVIDENCE │                              │ │
+│                  │                       │               │ transcript     │                              │ │
+│                  │                       │               │ image / audio  │                              │ │
+│                  │                       │               │ episode data   │                              │ │
+│                  │                       │               └───────┬────────┘                              │ │
+│                  │                       │                       ▼                                       │ │
+│                  │                       │               ┌────────────────┐                              │ │
+│                  │                       │               │ WORLD BEHAVIOR │                              │ │
+│                  │                       │               │ rules / events │                              │ │
+│                  │                       │               │ hazards / NPCs │                              │ │
+│                  │                       │               └───────┬────────┘                              │ │
+│                  │                       │                       ▼                                       │ │
+│                  │                       │               ┌────────────────┐                              │ │
+│                  │                       │               │ WORLD RELATION │                              │ │
+│                  │                       │               │ Witch ↔ Rainee │                              │ │
+│                  │                       │               │ Spirit ↔ visitor│                             │ │
+│                  │                       │               └───────┬────────┘                              │ │
+│                  │                       │                       │                                       │ │
+│                  │                       │                       ▼                                       │ │
+│                  │                       │               ┌────────────────┐                              │ │
+│                  │                       │               │ RANDOM / PLOT  │                              │ │
+│                  │                       │               │ EVENTS         │                              │ │
+│                  │                       │               └───────┬────────┘                              │ │
+│                  │                       └───────────────────────┼───────────────────────────────────────┘ │
+│                  │                                               │                                         │
+│                  └───────────────────────────────────────────────┼─────────────────────────────────────────┘
+│                                                                  │
+│                                                                  ▼
+│                                  ┌──────────────────────────────────────────────────┐
+│                                  │              FICTION BEHAVIOR ENGINE             │
+│                                  │                                                  │
+│                                  │  CHARACTER STATE                                 │
+│                                  │       +                                          │
+│                                  │  RELATIONSHIP STATE                              │
+│                                  │       +                                          │
+│                                  │  WORLD STATE                                     │
+│                                  │       +                                          │
+│                                  │  RELEVANT MEMORY / KNOWLEDGE                     │
+│                                  │       +                                          │
+│                                  │  BEHAVIORAL REFERENCES                           │
+│                                  │       +                                          │
+│                                  │  CURRENT SCENE                                   │
+│                                  │       ↓                                          │
+│                                  │       COMPUTE WHO DOES WHAT                      │
+│                                  └─────────────────────────┬────────────────────────┘
+│                                                            │
+│                                                            ▼
+│                                  ┌──────────────────────────────────────────────────┐
+│                                  │                 SCENE SIMULATION                  │
+│                                  │                                                  │
+│                                  │  who acts → who reacts → world responds          │
+│                                  │  → relationship changes → state changes           │
+│                                  └─────────────────────────┬────────────────────────┘
+│                                                            │
+│                                                            ▼
+│                                  ┌──────────────────────────────────────────────────┐
+│                                  │                    WRITING                        │
+│                                  │                                                  │
+│                                  │  Fiction style + computed behavior + scene state  │
+│                                  │       ↓                                          │
+│                                  │  prose / dialogue / scene structure               │
+│                                  └─────────────────────────┬────────────────────────┘
+│                                                            │
+│                                                            ▼
+│                                  ┌──────────────────────────────────────────────────┐
+│                                  │                    NEW EVENT                      │
+│                                  │                                                  │
+│                                  │  event becomes current narrative state           │
+│                                  │  relevant facts may enter character memory       │
+│                                  │  relationships may change                       │
+│                                  │  world state may change                          │
+│                                  └─────────────────────────┬────────────────────────┘
+│                                                            │
+│                                                            └──────────► NEXT SCENE
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+DATASET / LONG-TERM MEMORY PIPELINE
+
+  SOURCE MATERIAL
+       │
+       ├──────── Transcript ─────────┐
+       ├──────── Images ─────────────┤
+       ├──────── Audio ──────────────┤
+       └──────── Existing JSON ──────┘
+                                      │
+                                      ▼
+                             EVIDENCE RECORDS
+                                      │
+                                      ▼
+                         PROCESS / CLASSIFY / INDEX
+                                      │
+                  ┌───────────────────┼───────────────────┐
+                  ▼                   ▼                   ▼
+             CHARACTER            RELATIONSHIP          WORLD
+              DATA                   DATA                DATA
+                  │                   │                   │
+                  └───────────────────┼───────────────────┘
+                                      ▼
+                              REUSABLE DATASETS
+                                      │
+                                      ▼
+                              RETRIEVAL SYSTEM
+                                      │
+                                      ▼
+                         ONLY RELEVANT CONTEXT
+                              enters live run
+
+
+MEMORY / KNOWLEDGE / BEHAVIOR INHERITANCE
+
+                    SOURCE PERSONA
+                         │
+             ┌───────────┼───────────┐
+             │           │           │
+             ▼           ▼           ▼
+          BEHAVIOR     MEMORY     KNOWLEDGE
+             │           │           │
+             │           X           X
+             │       blocked      blocked
+             │       unless       unless
+             │       explicitly   explicitly
+             │       allowed      allowed
+             ▼
+       ALLOWED INFLUENCE
+             │
+             ▼
+       CURRENT CHARACTER
+
+RULE:
+A source can influence HOW the character behaves without giving the
+character the source's memories, knowledge, history, or relationships.
+
+
+RELATIONSHIP ARCHITECTURE
+
+     CHARACTER A
+          │
+          ▼
+   ┌─────────────────┐
+   │ RELATIONSHIP    │
+   │                 │
+   │ type / history  │
+   │ interaction     │
+   │ expectations    │
+   │ shared evidence │
+   │ current state   │
+   └────────┬────────┘
+            │
+            ▼
+     CHARACTER B
+
+Relationship data is not merely a field inside Character A.
+It is a reusable data object that can itself contain evidence.
+
+
+LIVE NARRATIVE COMPUTATION LOOP
+
+       ┌─────────────── CURRENT SCENE ────────────────┐
+       │                                               │
+       ▼                                               │
+  WORLD STATE                                           │
+       │                                                │
+       ▼                                                │
+  CHARACTER STATES                                      │
+       │                                                │
+       ▼                                                │
+  RELATIONSHIPS                                         │
+       │                                                │
+       ▼                                                │
+  RELEVANT MEMORY / KNOWLEDGE                           │
+       │                                                │
+       ▼                                                │
+  OVERRIDE / PRIORITY CHECK                             │
+       │                                                │
+       ▼                                                │
+  BEHAVIOR ENGINE                                       │
+       │                                                │
+       ▼                                                │
+  ACTION / REACTION                                     │
+       │                                                │
+       ▼                                                │
+  WORLD RESPONSE                                        │
+       │                                                │
+       ▼                                                │
+  NEW EVENT ────────────────────────────────────────────┘
+       │
+       ▼
+  WRITING ENGINE
+       │
+       ▼
+  FINAL PROSE
+
+
+VISIBLE PRODUCT ARCHITECTURE
+
+                    ┌─────────────────────┐
+                    │      CHARACTER      │
+                    │ visual authoring    │
+                    │ relationships       │
+                    │ transformations     │
+                    │ evidence            │
+                    └──────────┬──────────┘
+                               │
+                               │ connection
+                               ▼
+                    ┌─────────────────────┐
+                    │        WORLD        │
+                    │ visual authoring    │
+                    │ places / entities   │
+                    │ rules / events      │
+                    └──────────┬──────────┘
+                               │
+                               │ computed downstream
+                               ▼
+                    ┌─────────────────────┐
+                    │      WRITING        │
+                    │ scene / prose       │
+                    │ dialogue / style    │
+                    └─────────────────────┘
+
+BACKEND COMPLEXITY:
+evidence processing, indexing, retrieval, memory management, state
+calculation, behavior computation, event resolution, API calls and
+context assembly remain behind these three visible systems.</pre>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Core Design Principle</div>
+  <h2>Priority rules govern what evidence is allowed to become</h2>
+  <div class="flow">
+    <div class="step">Transcript / Image / Audio</div><div class="arrow">→</div>
+    <div class="step">Evidence</div><div class="arrow">→</div>
+    <div class="step">Behavioral Reference</div><div class="arrow">→</div>
+    <div class="step">Live Interaction</div><div class="arrow">→</div>
+    <div class="step">Fiction</div>
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="eyebrow">Execution Priority</div>
+  <h2>Rules first, evidence second</h2>
+  <div class="flow">
+    <div class="step">Override / Priority Rules</div><div class="arrow">→</div>
+    <div class="step">Identity / Continuity</div><div class="arrow">→</div>
+    <div class="step">Memory / Knowledge</div><div class="arrow">→</div>
+    <div class="step">Relationship State</div><div class="arrow">→</div>
+    <div class="step">Evidence</div><div class="arrow">→</div>
+    <div class="step">Behavior</div><div class="arrow">→</div>
+    <div class="step">Live Scene</div>
+  </div>
+  <p class="note">Override rules are not another personality description. They are constraints that determine what incoming source data is permitted to influence.</p>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Composite Character Logic</div>
+  <h2>Morticia / Super Female Morty</h2>
+  <pre>BASE IDENTITY
+    Morty
+       |
+       +---- Canon memories ............... RETAIN
+       +---- Canon knowledge .............. RETAIN
+       +---- Canon relationships .......... RETAIN
+       |
+       +---- Female Morty A ............... BEHAVIORAL INFLUENCE
+       +---- Female Morty B ............... BEHAVIORAL INFLUENCE
+       +---- Female Morty C ............... BEHAVIORAL INFLUENCE
+       +---- Summer-Twin .................. BEHAVIORAL INFLUENCE
+       +---- Beth-derived ................. BEHAVIORAL INFLUENCE
+       |
+       +---- Source memories .............. DO NOT INHERIT
+       +---- Source knowledge ............. DO NOT INHERIT
+       +---- Source history ............... DO NOT INHERIT
+       |
+       v
+    OVERRIDE RULES
+       |
+       v
+    CURRENT MORTICIA STATE
+       |
+       v
+    LIVE RELATIONSHIPS + WORLD
+       |
+       v
+    BEHAVIOR</pre>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Memory / Knowledge Separation</div>
+  <h2>Inheritance permissions</h2>
+  <div class="legend">
+    <div class="item gold"><b>Memory</b><span>What this character personally experienced and can remember.</span></div>
+    <div class="item blue"><b>Knowledge</b><span>What this character actually knows, rather than what a source persona knows.</span></div>
+    <div class="item violet"><b>Behavior</b><span>Patterns from source characters may influence reactions without importing their history.</span></div>
+    <div class="item green"><b>Relationship</b><span>Relationships are independent reference objects with their own evidence and interaction patterns.</span></div>
+  </div>
+</div>
+</section>
+
+<aside class="inspector">
+<div class="card">
+  <div class="eyebrow">Three Visible Systems</div>
+  <h2>The user-facing architecture</h2>
+  <div class="item gold"><b>1. Character</b><span>Characters, transformations, evidence, relationships and behavioral references.</span></div><br>
+  <div class="item blue"><b>2. World</b><span>Locations, entities, rules, events, hazards, NPCs and world-side relationships.</span></div><br>
+  <div class="item green"><b>3. Writing</b><span>Scene construction, prose, dialogue, style and final fiction generation.</span></div>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Downstream Computation</div>
+  <h2>What the user does not need to manually author</h2>
+  <ul>
+    <li>Behavior extraction</li>
+    <li>Interaction patterns</li>
+    <li>State activation</li>
+    <li>Relevant-memory retrieval</li>
+    <li>World-event consequences</li>
+    <li>Character reactions</li>
+    <li>Scene simulation</li>
+    <li>Context assembly for the writing model</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Long-Term Dataset Strategy</div>
+  <h2>Large shows stay out of the live prompt</h2>
+  <div class="flow">
+    <div class="step">6 seasons</div><div class="arrow">→</div>
+    <div class="step">Offline processing</div><div class="arrow">→</div>
+    <div class="step">Indexed evidence</div><div class="arrow">→</div>
+    <div class="step">Relevant retrieval</div>
+  </div>
+  <p class="note">The Fiction Engine should retrieve only the evidence, memories, relationships and world facts relevant to the current scene.</p>
+</div>
+
+<div class="card">
+  <div class="eyebrow">Final Loop</div>
+  <h2>Live narrative</h2>
+  <pre>SCENE
+  ↓
+WORLD STATE
+  ↓
+CHARACTER STATES
+  ↓
+RELATIONSHIPS
+  ↓
+RELEVANT MEMORY
+  ↓
+BEHAVIOR ENGINE
+  ↓
+ACTION / REACTION
+  ↓
+FICTION
+  ↓
+NEW EVENT
+  ↓
+STATE + MEMORY UPDATE</pre>
+</div>
+</aside>
+</div>
+</main>
+</body>
+</html>

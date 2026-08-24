@@ -1,0 +1,1166 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiction Behavior Engine v3.5.1 · Triple Debug</title>
+<style>
+body{margin:0;background:#0f1218;color:#eee;font:14px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:18px 24px;border-bottom:1px solid #303746;background:#11151c;position:sticky;top:0;z-index:3}
+main{display:grid;grid-template-columns:330px minmax(480px,1fr) 360px;gap:12px;padding:12px;max-width:1800px;margin:auto}
+section{background:#181d27;border:1px solid #303746;border-radius:9px;padding:13px;margin-bottom:12px}
+h1{margin:0;font-size:21px}h2{font-size:15px;margin-top:0}.muted{color:#aab4c5}.small{font-size:11px}
+label{display:block;color:#aab4c5;margin:9px 0 4px}
+input,select,textarea{width:100%;box-sizing:border-box;background:#0d1016;color:#eee;border:1px solid #303746;border-radius:6px;padding:8px}
+textarea{resize:vertical}button{background:#202838;color:#eee;border:1px solid #3b465a;border-radius:6px;padding:8px 11px;margin:4px 3px 4px 0;cursor:pointer}
+button:hover{border-color:#8ab4ff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.card{background:#10141c;border:1px solid #303746;border-radius:6px;padding:9px;margin:7px 0}
+.beat{border-left:3px solid #8ab4ff;padding:8px;margin:7px 0;background:#121722}.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tabs button.active{color:#8ab4ff;border-color:#8ab4ff}.hidden{display:none}pre{white-space:pre-wrap;max-height:600px;overflow:auto;background:#0b0e13;padding:10px;border-radius:6px}
+.ok{color:#7ee2a8}.bad{color:#ff8e8e}.warn{color:#ffd27e}.pill{display:inline-block;border:1px solid #3b465a;border-radius:999px;padding:2px 7px;margin:2px;font-size:10px;color:#b9c7dd}
+.score{font-weight:700}.evidence{border-left:3px solid #6f7cff}.rule{border-left:3px solid #8ab4ff}.branch{border-left:3px solid #d68cff}
+details{background:#10141c;border:1px solid #303746;border-radius:6px;padding:8px;margin:7px 0}summary{cursor:pointer;color:#dbe5f5}
+@media(max-width:1150px){main{grid-template-columns:1fr}} 
+</style></head>
+<body>
+<header><h1>Fiction Behavior Engine <span class="muted">v3.1 · Data Library + Debug</span></h1>
+<div class="muted">Evidence → behavior schema → state → branching → interaction simulation → scene expansion → prose → audit</div></header>
+
+<main>
+<aside>
+<section><h2>Engine</h2>
+<div class="card small">🆓 <b>Free test:</b> OpenRouter Free. JSON mode + response healing are enabled for pipeline stages; availability and limits can change.</div>
+<label>Provider</label><select id="provider">
+<option selected value="OpenRouter Free">OpenRouter Free</option>
+<option value="Qwen Cloud">Qwen Cloud</option>
+<option value="OpenAI API">OpenAI API</option>
+<option value="DeepSeek">DeepSeek</option>
+</select>
+<label>Model</label><input id="model" value="openrouter/free" placeholder="openrouter/free · qwen3.7-plus · gpt-5.6">
+<label>API key</label><input id="key" type="password" placeholder="sk-or-v1-...">
+<div class="small muted">Paste your key locally. It is never embedded into the HTML.</div>
+<label><input id="rememberKey" type="checkbox" style="width:auto"> Remember key in this browser only</label>
+<button id="run">Run AI Pipeline</button><button id="testApi">Test API</button><button id="demo">Offline Demo</button><button id="clearAll">Clear Run</button>
+<div id="stageHint" class="small muted">Pipeline stages: decomposition → mapping → state → branches → interaction → expansion → prose → audit</div><div id="providerHelp" class="card small muted">Provider endpoints: OpenRouter, Qwen Cloud (DashScope-compatible), OpenAI API, or DeepSeek. Keys stay in this browser and are not embedded in exported projects. Note: ChatGPT Plus does not include OpenAI API credits.</div>
+<div id="status" class="card muted">Ready.</div></section>
+
+<section><h2>Cast & Transformation States</h2>
+<div class="small muted">Use as many character slots as the scene needs. A character can be paired with a transformation state, so one person can behave differently without becoming a different character.</div>
+<div id="castSlots"></div>
+<button id="addCastSlot">+ Add character slot</button>
+<button id="addChar">+ Add character profile</button>
+<div id="chars"></div>
+</section>
+
+<section><h2>Data Library</h2>
+<div class="small muted">Import JSON packets containing episode anchors, transcript chunks, behavior schemas, character profiles, transformation states, or writing-style examples. Imported packets can be enabled/disabled for the next run. One JSON file can contain one entry, an <b>entries</b> array, or a dataset object.</div>
+<div id="librarySummary" class="card small"></div>
+<button id="importDataset">Import JSON data</button>
+<input id="datasetFile" type="file" accept=".json,application/json" multiple hidden>
+<button id="pasteDataset">Paste JSON entry</button>
+<button id="exportDataset">Export Data Library</button>
+<button id="templateDataset">Download JSON Template</button>
+<details><summary>Supported JSON packet shapes</summary><pre class="small">{
+  "kind": "transformation_state",
+  "id": "rainee_state_03",
+  "characterId": "Rainee_PostDump",
+  "name": "Rainee · State 3 · Custom",
+  "stage": "custom transformation state",
+  "voice": "...",
+  "cognition": "...",
+  "priorities": ["..."],
+  "retainedTraits": ["..."],
+  "newConstraints": ["..."],
+  "escalationRules": ["..."]
+}
+
+You can also import:
+• {"entries":[...], "kind":"media_transcript"}
+• {"episodeAnchors":[...]}
+• {"episodes":[...]}
+• {"transcripts":[...]}
+• {"behaviorSchemas":[...]}
+• {"characters":{...}}
+• {"transformationStates":[...]}
+• {"writingStyles":[...]}</pre></details>
+<div id="libraryEntries"></div>
+</section>
+
+<section><h2>Add Episode Transcript</h2>
+<div class="small muted">ChatGPT does the conversion. Give it the transcript, have ChatGPT return the Episode JSON, then upload that JSON here. Choose the character or transformation state that should receive the evidence. Existing episode data is extended, not erased.</div>
+<label>Add Episode Transcript to Character<select id="episodeTargetCharacter"><option value="">Select a character...</option></select></label>
+<label>Optional Transformation State<select id="episodeTargetState"><option value="">No specific state</option></select></label>
+<div class="card small"><b>Episode JSON</b><br>Upload the JSON produced by ChatGPT. It can contain one episode, an <code>episodes</code> array, an <code>episodeAnchors</code> array, or an episode with <code>transcriptChunks</code>.</div>
+<input id="episodeJsonFile" type="file" accept=".json,application/json" hidden>
+<button id="uploadEpisodeJson">＋ Add Episode JSON</button>
+<button id="episodeJsonTemplate">JSON Template</button>
+<div id="episodeImportStatus" class="card small muted">No episode JSON imported yet.</div>
+<div id="episodeSummary" class="card small"></div>
+<div id="episodeEntries"></div>
+</section>
+
+<section><h2>Behavior Operators</h2><select id="op"></select><div id="opInfo" class="card"></div>
+<button id="addOp">+ Add operator</button>
+</section>
+
+<section><h2>Scene Expansion</h2>
+<label><input id="inner" type="checkbox" checked style="width:auto"> Permit internal monologue</label>
+<label><input id="physical" type="checkbox" checked style="width:auto"> Permit physical transformation / cartoon-physics beats</label>
+<label><input id="service" type="checkbox" checked style="width:auto"> Permit merchant/service-seeking continuation</label>
+<label><input id="newNpc" type="checkbox" checked style="width:auto"> Permit invented minor characters</label>
+<label>Expansion mode</label><select id="expandMode"><option>Branch after source ending</option><option>Extend each major beat</option><option>Generate 3 continuation options</option></select>
+</section>
+
+<section><h2>Mode</h2>
+<select id="mode"><option>Adapt source scene</option><option>Rewrite source scene</option><option>Original scenario</option></select>
+<label>Length</label><select id="length"><option>Short</option><option selected>Medium</option><option>Long</option></select>
+</section>
+
+<section><h2>Project</h2><button id="export">Export Project</button><input id="file" type="file" accept=".json" hidden><button id="import">Import Project</button></section>
+</aside>
+
+<div>
+<section><h2>Source Scene</h2>
+<textarea id="source" rows="15" placeholder="Paste a short scene, transcript excerpt, or detailed summary. The engine extracts behavior and comedic functions rather than copying wording."></textarea>
+<label>Adaptation instruction</label>
+<textarea id="instruction" rows="7">Adapt this Family Guy-style beat architecture to Rainee and Noir. Character 1 is Pre-Glamor Rainee / Rangiku scheme at the beginning. Character 2 is Post-Dump Rainee after the diaper incident and mental simplification. Preserve the source comedic functions, but invent new dialogue, actions, and consequences. Never mention Stewie, Brian, Rangiku, Family Guy, or any inspiration name inside the story. Noir should be the outsider teaser who reacts to Rainee's behavior rather than narrating the reference.</textarea>
+</section>
+
+<section><h2>Evidence & Behavioral Memory</h2>
+<div class="tabs"><button class="active" data-t="evidence">Evidence</button><button data-t="profiles">Profiles</button><button data-t="beats">Beats</button><button data-t="state">State</button><button data-t="branches">Branches</button><button data-t="sim">Interaction</button><button data-t="expansion">Expansion</button><button data-t="prompt">Prompt</button><button data-t="debug">Debug</button></div>
+<div id="evidence"></div><div id="profiles" class="hidden"></div><div id="beats" class="hidden"></div><div id="state" class="hidden"></div>
+<div id="branches" class="hidden"></div><div id="sim" class="hidden"></div><div id="expansion" class="hidden"></div><div id="prompt" class="hidden"></div><div id="debug" class="hidden"><button id="clearDebug">Clear Debug Log</button><div id="debugLog"></div></div>
+</section>
+
+<section><h2>Generated Fiction</h2><textarea id="fiction" rows="28"></textarea><button id="copy">Copy</button><button id="save">Save TXT</button></section>
+</div>
+
+<aside>
+<section><h2>Log</h2><div id="log"></div></section>
+<section><h2>Audit</h2><div id="audit" class="muted">Run the pipeline.</div></section>
+<section><h2>Project JSON</h2><pre id="json">{}</pre></section>
+</aside>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
+const P={
+  evidence:{
+    sourcePriority:["Canon/source scene supplied by user","Research-derived behavioral facts","User-defined character schema","Generated adaptation hypotheses"],
+    stewie:{
+      label:"Stewie / Family Guy behavioral evidence",
+      facts:[
+        "Sophisticated, highly literate toddler who behaves with adult-like vocabulary and attitude while remaining vulnerable to infant limitations.",
+        "The character combines grandiose adult reasoning with childish misunderstandings and physical helplessness.",
+        "Early characterization emphasized megalomania and schemes; later characterization became more eccentric, friendly, flamboyant and relationship-driven.",
+        "Toddler problems can be treated as major strategic problems, producing a scale mismatch between the seriousness of the response and the triviality of the trigger.",
+        "Diaper/toilet situations can become social-status jokes: the same object means different things depending on who is wearing it.",
+        "The Brian relationship provides a useful foil: one character presses, protests or observes while the other rationalizes, escalates and sometimes turns the situation into a test of the relationship.",
+        "The 'Brian & Stewie' bank-vault sequence demonstrates a useful long-form structure: confinement → bodily problem → failed solution search → increasingly absurd proposal → disgust/anger → deeper relationship conflict.",
+        "Stewie's head is canonically associated with an American-football/rugby-ball shape, making exaggerated head geometry a usable visual transformation beat in this adaptation.",
+        "Cartoon physics allow the physical consequence to become an additional joke rather than merely a realistic symptom.",
+        "The character can alternate between extreme confidence and genuine infant vulnerability, creating a status-collapse / status-recovery rhythm."
+      ],
+      episodes:[
+        {title:"Brian & Stewie",function:"extended relationship pressure; diaper problem becomes a catalyst for escalation and emotional conflict",source:"Family Guy S8E17"},
+        {title:"Bill & Peter's Bogus Journey",function:"diaper status inversion: infant diaper is normalized while an adult/dog wearing one becomes socially absurd",source:"Family Guy S6-era episode"},
+        {title:"Stuck Together, Torn Apart",function:"forced proximity; practical diaper-care problem becomes a recurring obstacle",source:"Family Guy S3E19"},
+        {title:"Emission Impossible",function:"infant bodily limitation used as comedy against the character's adult-like self-image",source:"Family Guy S3E11"},
+        {title:"A Very Special Family Guy Freakin' Christmas",function:"Stewie's formal speech and service-demanding behavior can collide with ordinary family routines",source:"Family Guy S3E16"},
+        {title:"The King Is Dead / early Stewie material",function:"grandiosity and adult diction contrasted with infant body and household dependence",source:"early-series characterization"}
+      ]
+    },
+    rangiku:{
+      label:"Rangiku Matsumoto / Pre-Glamor Rainee behavioral evidence",
+      facts:[
+        "Easygoing, free-spirited and socially confident.",
+        "Often avoids tedious responsibility and paperwork, preferring leisure and immediate pleasures.",
+        "Playful, teasing and comfortable creating friction with a more serious counterpart.",
+        "Perceptive and empathetic beneath a relaxed or unserious exterior.",
+        "Can become serious, loyal and protective when stakes rise.",
+        "Uses charm, confidence and social intelligence as tools rather than merely as decoration.",
+        "A strong contrast dynamic exists between Rangiku's relaxed behavior and a stricter, more serious partner or superior.",
+        "Her apparent laziness should not erase competence: she can read situations and act decisively when necessary.",
+        "The character works best when surface frivolity and deeper emotional intelligence coexist."
+      ],
+      relationships:[
+        "Hitsugaya contrast: playful/slacker lieutenant vs serious, duty-focused captain.",
+        "Gin history: humor and ease can coexist with deeper loyalty, attachment and emotional pain."
+      ]
+    }
+  },
+  characters:{
+    Rainee_PreGlamor:{
+      name:"Pre-Glamor Rainee",
+      role:"Character 1 / original adult state",
+      style:"merchant-kitsune; socially confident; easygoing; playful; flirtatious; clever; comfortable teasing; dislikes tedious bureaucracy; emotionally perceptive; can become serious when stakes matter",
+      goal:"get what she wants while preserving dignity and control",
+      hiddenGoal:"avoid admitting vulnerability or inconvenience",
+      relationship:"can needle others while remaining socially warm",
+      voice:"relaxed, confident, witty; uses playful exaggeration rather than constant formal diction",
+      knowledge:"adult merchant knowledge, social experience, Jade City commerce",
+      tactics:["charm","tease","bargain","deflect","rationalize","read the room"],
+      weaknesses:["avoids tedious tasks","can underestimate consequences","uses confidence to hide discomfort"],
+      invariants:["merchant identity","social intelligence","lesbian attraction pattern","emotional perceptiveness","core adult self beneath later transformations"]
+    },
+    Rainee_PostDump:{
+      name:"Post-Dump Rainee",
+      role:"Character 2 / simplified toddler-state after diaper incident",
+      style:"same underlying Rainee filtered through infant body, simplified cognition and cartoon escalation; grandiose dignity; immediate comfort; merchant logic applied to absurd childcare problems",
+      goal:"restore comfort, dignity and control",
+      hiddenGoal:"find someone competent enough to solve the problem without making her feel like a baby",
+      relationship:"can be needy, imperious and unintentionally ridiculous while still retaining attachment to Noir",
+      voice:"precocious, clipped, grandiose when defending dignity; occasional childish slips; never says the inspiration name",
+      knowledge:"retains practical merchant instincts and familiar people, but reasoning can become simpler, more literal, impulsive and sensation-driven",
+      tactics:["deny","bargain","reframe","demand service","seek expert","over-explain","pivot to a new problem"],
+      weaknesses:["limited body control","reduced planning horizon","easily embarrassed","comfort needs interrupt grand plans"],
+      invariants:["Rainee's merchant identity","core relationships","lesbian attraction pattern","desire for autonomy","memory of being an adult even when cognition is simplified"],
+      transformationState:"post-diaper incident; body and cognition have shifted; head geometry may exaggerate into a football-like shape as a cartoon physical consequence"
+    },
+    Noir:{
+      name:"Noir",
+      role:"outsider teaser / relationship foil",
+      style:"dry, concise, observant, playful; notices contradictions; does not over-explain jokes; lets Rainee create her own embarrassment",
+      goal:"understand what Rainee will do next",
+      hiddenGoal:"protect Rainee while enjoying the absurdity",
+      relationship:"close enough to tease; emotionally perceptive; not a copy of Brian",
+      voice:"short lines, deadpan questions, selective reactions",
+      tactics:["observe","ask one pointed question","wait","tease","offer practical solution after the joke lands"],
+      weaknesses:["can push the joke too long","may underestimate how sincerely Rainee feels the problem"],
+      invariants:["Noir remains Noir","does not become narrator","does not reference source media"]
+    },
+    AUTO_MINOR:{
+      name:"Invented Minor Character",
+      role:"scene-local service/customer/bystander",
+      style:"created only when a function requires an external witness, service provider, customer or obstacle",
+      goal:"serve the immediate scene function",
+      relationship:"temporary and scene-defined",
+      voice:"distinct from the leads; economical",
+      rule:"Never hijack the scene. Exists to create a reaction, service option, obstacle or social mirror."
+    }
+  },
+  operators:{
+    STATUS_SCALE_MISMATCH:{name:"Status-Scale Mismatch",trigger:"tiny bodily/childish problem",mechanism:"target treats a trivial infant problem as a major adult crisis",speech:"serious vocabulary applied to absurdly small stakes",escalation:"minor inconvenience → dignity threat → strategic response"},
+    TODDLER_DIGNITY:{name:"Toddler Dignity",trigger:"someone notices childish dependence",mechanism:"defends adult identity while physically unable to support it",speech:"formal/grandiose mixed with childish slips",escalation:"deny → justify → demand respect → overreact"},
+    DIAPER_EMBARRASSMENT:{name:"Diaper Social Inversion",trigger:"diaper becomes socially visible",mechanism:"controls who gets to define what the diaper means",speech:"reframe, compare, bargain",escalation:"hide → rationalize → recruit service → seek replacement"},
+    BODY_CARTOON_ESCALATION:{name:"Body Cartoon Escalation",trigger:"bodily event has an impossible physical consequence",mechanism:"cartoon physics externalize the character's internal state",speech:"treats the new physical fact as a practical problem",escalation:"symptom → visible transformation → new practical problem → service demand"},
+    FOOTBALL_HEAD_BUTTON:{name:"Football-Head Transformation",trigger:"mental/body overload reaches absurd threshold",mechanism:"head geometry visibly changes as a visual punchline",speech:"no exposition; reaction is practical or indignant",escalation:"pressure → visible change → character continues as if this is merely inconvenient"},
+    MERCHANT_SERVICE_SEEK:{name:"Merchant Service Instinct",trigger:"problem cannot be solved alone",mechanism:"Rainee turns survival/comfort into a purchasing or customer-service problem",speech:"asks for options, quality tiers, guarantees, upgrades",escalation:"ask → negotiate → reject inadequate service → discover new service niche"},
+    BEAUTIFUL_WOMAN_CUSTOMER_BEAT:{name:"Beauty/Customer Contrast",trigger:"Rainee encounters an attractive competent woman while in toddler form",mechanism:"adult attraction/social confidence survives inside childish body, creating a status mismatch",speech:"Rainee tries to regain composure and charm; physical limitations sabotage presentation",escalation:"notice → attempt composure → awkward competence display → Noir notices"},
+    PRE_GLAMOR_TO_POST_DUMP_FILTER:{name:"Pre-to-Post Transformation Filter",trigger:"scene crosses the diaper incident",mechanism:"retain core Rainee traits but lower planning horizon, increase literalness, bodily priorities and immediate emotional reactions",speech:"same personality vocabulary compressed into simpler, more impulsive expressions",escalation:"adult strategy → simplified strategy → toddler workaround"},
+    RANGIKU_SOCIAL_ENGINE:{name:"Rangiku Social Engine",trigger:"social friction or boring obligation",mechanism:"use charm, teasing, avoidance and perceptiveness before brute force",speech:"relaxed, playful, lightly provocative",escalation:"joke → dodge → manipulate situation socially → reveal competence if needed"},
+    OUTSIDER_TEASER:{name:"Outsider Teaser",trigger:"contradiction becomes visible",mechanism:"Noir asks one small question and lets Rainee over-explain",speech:"short, dry, precise",escalation:"notice → poke → wait → button"},
+    RELATIONSHIP_FRICTION:{name:"Relationship Friction",trigger:"one character's coping tactic annoys the other",mechanism:"reaction changes the next state instead of resetting the scene",speech:"shorter and sharper as pressure rises",escalation:"tease → defend → counter → reveal feeling → temporary repair"},
+    INTERNAL_MONOLOGUE_SPLIT:{name:"Internal Monologue Split",trigger:"public behavior conflicts with private thought",mechanism:"inner thought exposes the gap without explaining the joke to the reader",speech:"outer dialogue may remain confident while inner thought becomes frantic",escalation:"public control → private panic → accidental leak → recovery"},
+    NEW_MINOR_SERVICE:{name:"Minor Service Character",trigger:"story needs an external service, witness or obstacle",mechanism:"invent a temporary NPC with one clear function",speech:"economical and scene-specific",escalation:"service offered → Rainee evaluates → service complicates or solves problem"}
+  }
+};
+
+const SYS=`You are the reasoning layer of a fictional character-behavior engine.
+SOURCE MATERIAL HAS A HIERARCHY:
+1. user-supplied source scene and explicit character canon;
+2. research-derived behavioral evidence;
+3. user-defined adaptation rules;
+4. generated hypotheses.
+Never silently replace higher-priority evidence with generic tropes.
+
+IMPORTANT:
+- Media examples are BEHAVIORAL DATA, not names to copy.
+- Extract functions, triggers, tactics, escalation patterns, relationship roles, and physical-comedy mechanisms.
+- Never write inspiration names inside the fictional scene.
+- Never say "X is acting like Y" in story prose.
+- A target character must retain their own motives, history, vocabulary, relationship and knowledge.
+- Every reaction should have a causal chain: OBSERVATION → INTERPRETATION → INTERNAL PRESSURE → TACTIC → ACTION → OTHER CHARACTER REACTION → NEW STATE.
+- Do not reset character state after each joke.
+- Do not make every character react at the same intensity.
+- Use asymmetry: one character can be panicked while the other is amused; one can seek control while the other seeks information.
+- A joke is stronger when the character's tactic makes the next problem.
+- Expand beyond the source only when the expansion follows the established character engine.
+- Internal monologue should reveal information the public dialogue does not.
+- Physical/cartoon escalation should create a practical consequence, not merely a visual gag.
+- Minor characters exist to perform a function and then get out of the way.
+- Do not explain the comedy in prose.
+`;
+
+function log(x,c=""){let d=document.createElement("div");d.className="card small "+c;d.textContent=x;$("log").prepend(d)}
+function status(x,c=""){ $("status").textContent=x;$("status").className="card "+c}
+
+function ensureLibrary(){
+  if(!P.library)P.library={mediaTranscripts:[],behaviorSchemas:[],characterDatasets:[],transformationStates:[],writingStyles:[],episodeAnchors:[],activeIds:[]};
+  for(const k of ["mediaTranscripts","behaviorSchemas","characterDatasets","transformationStates","writingStyles","episodeAnchors"]){ if(!Array.isArray(P.library[k]))P.library[k]=[]; }
+  if(!Array.isArray(P.library.activeIds))P.library.activeIds=[];
+  const builtIns=[
+    {id:"RAINEE_GLAMOR_GIRL",kind:"transformation_state",characterId:"Rainee_PreGlamor",name:"Rainee · State 1 · Glamor Girl",stage:"Glamor Girl",voice:"confident, playful, socially polished",cognition:"adult cognition",priorities:["control","presentation","merchant competence"],retainedTraits:["merchant identity","social intelligence","emotional perceptiveness"],newConstraints:[],escalationRules:["use charm before force"]},
+    {id:"RAINEE_STEWIE_ULTRA_LUXURY",kind:"transformation_state",characterId:"Rainee_PostDump",name:"Rainee · State 2 · Ultra-Luxury Diaper Girl",stage:"post-dump toddler state",voice:"precocious, clipped, grandiose under pressure",cognition:"simplified planning horizon; literal and sensation-driven while retaining familiar knowledge",priorities:["comfort","dignity","immediate control","premium service"],retainedTraits:["merchant identity","core relationships","desire for autonomy","adult memories as accessible fragments"],newConstraints:["toddler body","limited physical autonomy","childcare dependency","cartoon physical escalation"],escalationRules:["deny → rationalize → demand service → seek expert → create a new problem"]}
+  ];
+  for(const b of builtIns){ if(!P.library.transformationStates.some(x=>x.id===b.id))P.library.transformationStates.push(b); if(!P.library.activeIds.includes(b.id))P.library.activeIds.push(b.id); }
+}
+
+function allLibraryEntries(){
+  ensureLibrary();
+  return [
+    ...P.library.episodeAnchors.map(x=>({...x,kind:x.kind||"episode_anchor"})),
+    ...P.library.mediaTranscripts.map(x=>({...x,kind:x.kind||"media_transcript"})),
+    ...P.library.behaviorSchemas.map(x=>({...x,kind:x.kind||"behavior_schema"})),
+    ...P.library.characterDatasets.map(x=>({...x,kind:x.kind||"character_dataset"})),
+    ...P.library.transformationStates.map(x=>({...x,kind:x.kind||"transformation_state"})),
+    ...P.library.writingStyles.map(x=>({...x,kind:x.kind||"writing_style"}))
+  ];
+}
+function renderLibrary(){
+  ensureLibrary();
+  const all=allLibraryEntries();
+  $("librarySummary").innerHTML=`<b>${all.length}</b> data entries · <b>${P.library.activeIds.length}</b> enabled for AI runs`;
+  $("libraryEntries").innerHTML=all.map(x=>{
+    const id=x.id||("entry_"+Math.random().toString(36).slice(2));
+    if(!x.id)x.id=id;
+    const label=x.name||x.title||id;
+    const checked=P.library.activeIds.includes(id)?"checked":"";
+    return `<label class="card small" style="display:block"><input class="libCheck" data-id="${esc(id)}" type="checkbox" ${checked} style="width:auto;margin-right:6px"><b>${esc(label)}</b> <span class="pill">${esc(x.kind||"data")}</span><div class="muted">${esc(x.description||x.purpose||x.stage||"")}</div></label>`;
+  }).join("")||`<div class="small muted">No imported data yet. Built-in transformation states and writing style are available.</div>`;
+  document.querySelectorAll(".libCheck").forEach(c=>c.onchange=()=>{
+    const id=c.dataset.id;
+    if(c.checked&&!P.library.activeIds.includes(id))P.library.activeIds.push(id);
+    if(!c.checked)P.library.activeIds=P.library.activeIds.filter(x=>x!==id);
+    view();
+    renderLibrary();
+  });
+}
+function activeLibraryEntries(){
+  ensureLibrary();
+  const all=allLibraryEntries();
+  const active=new Set(P.library.activeIds);
+  return all.filter(x=>active.has(x.id));
+}
+function getCharacterStates(characterId){
+  ensureLibrary();
+  return P.library.transformationStates.filter(s=>s.characterId===characterId);
+}
+function getCast(){
+  const slots=P.castSlots||[];
+  return slots.map((slot,i)=>{
+    const c=P.characters[slot.characterId];
+    if(!c)return null;
+    const state=slot.stateId ? getCharacterStates(slot.characterId).find(s=>s.id===slot.stateId) : null;
+    return {slot:i+1,characterId:slot.characterId,stateId:slot.stateId||null,character:c,state:state||null};
+  }).filter(Boolean);
+}
+function renderCastSlots(){
+  if(!$("castSlots"))return;
+  if(!Array.isArray(P.castSlots)||P.castSlots.length<2){
+    P.castSlots=[
+      {characterId:"Rainee_PreGlamor",stateId:"RAINEE_GLAMOR_GIRL"},
+      {characterId:"Rainee_PostDump",stateId:"RAINEE_STEWIE_ULTRA_LUXURY"},
+      {characterId:"Noir",stateId:null},
+      {characterId:"AUTO_MINOR",stateId:null}
+    ];
+  }
+  $("castSlots").innerHTML=P.castSlots.map((slot,i)=>{
+    const cid=`castChar_${i}`, sid=`castState_${i}`;
+    const states=getCharacterStates(slot.characterId);
+    const opts=Object.keys(P.characters).map(k=>`<option value="${esc(k)}" ${k===slot.characterId?"selected":""}>${esc(P.characters[k].name)}</option>`).join("");
+    const sopts=`<option value="">Base character state</option>`+states.map(s=>`<option value="${esc(s.id)}" ${s.id===slot.stateId?"selected":""}>${esc(s.name)}</option>`).join("");
+    return `<div class="card"><div class="small muted">Character Slot ${i+1}</div><select id="${cid}">${opts}</select><select id="${sid}">${sopts}</select><button data-remove-slot="${i}">Remove</button></div>`;
+  }).join("");
+  P.castSlots.forEach((slot,i)=>{
+    const cid=$(`castChar_${i}`),sid=$(`castState_${i}`);
+    cid.onchange=()=>{P.castSlots[i].characterId=cid.value;P.castSlots[i].stateId="";renderCastSlots();view()};
+    sid.onchange=()=>{P.castSlots[i].stateId=sid.value||null;view()};
+  });
+  document.querySelectorAll("[data-remove-slot]").forEach(b=>b.onclick=()=>{
+    if(P.castSlots.length<=2)return alert("Keep at least two character slots.");
+    P.castSlots.splice(Number(b.dataset.removeSlot),1);renderCastSlots();view();
+  });
+}
+function normalizeDataset(raw,sourceName){
+  const out=[];
+  const push=(entry,kind)=>{
+    if(!entry||typeof entry!=="object")return;
+    const x={...entry};
+    x.kind=x.kind||kind||"behavior_schema";
+    x.id=x.id||(`${x.kind}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`);
+    x.name=x.name||x.title||x.id;
+    x.sourceFile=sourceName;
+    out.push(x);
+  };
+  if(Array.isArray(raw))raw.forEach(x=>push(x,x.kind));
+  else if(raw.entries&&Array.isArray(raw.entries))raw.entries.forEach(x=>push(x,raw.kind));
+  else if(raw.dataset&&raw.dataset.entries)raw.dataset.entries.forEach(x=>push(x,raw.dataset.kind));
+  else if(raw.datasets&&Array.isArray(raw.datasets))raw.datasets.forEach(ds=>(ds.entries||[]).forEach(x=>push(x,ds.kind)));
+  else if(raw.episodeAnchors&&Array.isArray(raw.episodeAnchors))raw.episodeAnchors.forEach(x=>push({...x,kind:"episode_anchor"},"episode_anchor"));
+  else if(raw.episodes&&Array.isArray(raw.episodes))raw.episodes.forEach(x=>push({...x,kind:"episode_anchor"},"episode_anchor"));
+  else if(raw.transcripts&&Array.isArray(raw.transcripts))raw.transcripts.forEach(x=>push({...x,kind:"media_transcript"},"media_transcript"));
+  else if(raw.behaviorSchemas&&Array.isArray(raw.behaviorSchemas))raw.behaviorSchemas.forEach(x=>push({...x,kind:"behavior_schema"},"behavior_schema"));
+  else if(raw.transformationStates&&Array.isArray(raw.transformationStates))raw.transformationStates.forEach(x=>push({...x,kind:"transformation_state"},"transformation_state"));
+  else if(raw.writingStyles&&Array.isArray(raw.writingStyles))raw.writingStyles.forEach(x=>push({...x,kind:"writing_style"},"writing_style"));
+  else if(raw.characters&&typeof raw.characters==="object")Object.entries(raw.characters).forEach(([id,x])=>push({...x,id,characterId:id,kind:"character_dataset"},"character_dataset"));
+  else if(raw.character)push({...raw.character,kind:"character_dataset"},"character_dataset");
+  else if(raw.transformationState)push({...raw.transformationState,kind:"transformation_state"},"transformation_state");
+  else if(raw.writingStyle)push({...raw.writingStyle,kind:"writing_style"},"writing_style");
+  else push(raw,raw.kind);
+  return out;
+}
+function mergeValues(existing,incoming){
+  if(incoming===undefined)return existing;
+  if(existing===undefined)return incoming;
+  if(Array.isArray(existing)&&Array.isArray(incoming)){
+    const out=[...existing];
+    for(const item of incoming){
+      if(item&&typeof item==="object"){
+        const key=item.id??item.sceneId??item.sequence;
+        const ix=key!=null?out.findIndex(x=>x&&typeof x==="object"&&(x.id===key||x.sceneId===key||x.sequence===key)):-1;
+        if(ix>=0)out[ix]=mergeValues(out[ix],item); else out.push(item);
+      }else if(!out.some(x=>x===item))out.push(item);
+    }
+    return out;
+  }
+  if(existing&&incoming&&typeof existing==="object"&&typeof incoming==="object"&&!Array.isArray(existing)&&!Array.isArray(incoming)){
+    const out={...existing};
+    for(const [k,v] of Object.entries(incoming))out[k]=mergeValues(out[k],v);
+    return out;
+  }
+  return incoming;
+}
+function mergeEntry(existing,incoming){
+  if(incoming.mergeMode==="replace"){const x={...incoming};delete x.mergeMode;return x;}
+  const x={...incoming};delete x.mergeMode;
+  return mergeValues(existing,x);
+}
+function mergeDatasetEntries(entries){
+  ensureLibrary();
+  for(const incoming of entries){
+    const x={...incoming};
+    const kind=x.kind||"behavior_schema";
+    let bucket;
+    if(["episode_anchor","episode","episode_evidence"].includes(kind))bucket="episodeAnchors";
+    else if(["media_transcript","transcript","transcript_chunk"].includes(kind))bucket="mediaTranscripts";
+    else if(["character_dataset","character_profile"].includes(kind))bucket="characterDatasets";
+    else if(["transformation_state","state"].includes(kind))bucket="transformationStates";
+    else if(["writing_style","writing_transcript"].includes(kind))bucket="writingStyles";
+    else bucket="behaviorSchemas";
+    const arr=P.library[bucket];
+    const targetId=x.extendsId||x.parentId||x.id;
+    const ix=arr.findIndex(y=>y.id===targetId);
+
+    if(x.extendsId||x.parentId){
+      const supplementId=x.id||(`${kind}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`);
+      const supplement={...x,id:supplementId,extendsId:targetId};
+      const six=arr.findIndex(y=>y.id===supplementId);
+      if(six>=0)arr[six]=mergeEntry(arr[six],supplement); else arr.push(supplement);
+      if(!P.library.activeIds.includes(supplementId))P.library.activeIds.push(supplementId);
+    }else if(ix>=0){
+      arr[ix]=mergeEntry(arr[ix],x);
+      if(!P.library.activeIds.includes(x.id))P.library.activeIds.push(x.id);
+    }else{
+      arr.push(x);
+      if(!P.library.activeIds.includes(x.id))P.library.activeIds.push(x.id);
+    }
+
+    if(bucket==="characterDatasets"&&x.characterId){
+      const profile={...(P.characters[x.characterId]||{}),...(x.profile||{})};
+      P.characters[x.characterId]={...profile,name:x.name||profile.name||x.characterId};
+    }
+  }
+}
+function resolveEpisodeAnchors(){
+  ensureLibrary();
+  const all=P.library.episodeAnchors;
+  const children=new Map();
+  for(const x of all){
+    if(x.extendsId){if(!children.has(x.extendsId))children.set(x.extendsId,[]);children.get(x.extendsId).push(x);}
+  }
+  const collect=(root,seen=new Set())=>{
+    if(seen.has(root.id))return {...root};
+    seen.add(root.id);
+    const merged={...root},supplements=[];
+    for(const child of (children.get(root.id)||[])){
+      const resolved=collect(child,seen);
+      supplements.push(resolved);
+      const clean={...resolved};
+      delete clean.supplements; delete clean.id; delete clean.extendsId; delete clean.parentId;
+      delete clean.kind; delete clean.title; delete clean.name; delete clean.mergeMode;
+      Object.assign(merged,mergeValues(merged,clean));
+    }
+    merged.supplements=supplements;
+    return merged;
+  };
+  return all.filter(x=>!x.extendsId).map(x=>collect(x));
+}
+function populateEpisodeTargetSelectors(){
+  const c=$('episodeTargetCharacter'), s=$('episodeTargetState');
+  if(c){
+    const current=c.value;
+    c.innerHTML='<option value="">Select a character...</option>'+Object.entries(P.characters||{}).map(([id,x])=>`<option value="${esc(id)}">${esc(x.name||id)}</option>`).join('');
+    if(current&&P.characters[current])c.value=current;
+  }
+  if(s){
+    const current=s.value;
+    s.innerHTML='<option value="">No specific state</option>'+((P.library&&P.library.transformationStates)||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name||x.title||x.id)}</option>`).join('');
+    if(current&&P.library.transformationStates.some(x=>x.id===current))s.value=current;
+  }
+}
+function renderEpisodeManager(){
+  ensureLibrary(); populateEpisodeTargetSelectors();
+  const eps=resolveEpisodeAnchors();
+  $('episodeSummary').innerHTML=`<b>${eps.length}</b> episode anchors · <b>${P.library.mediaTranscripts.length}</b> transcript packets`;
+  $('episodeEntries').innerHTML=eps.map(x=>{
+    const chunks=P.library.mediaTranscripts.filter(t=>t.episodeId===x.id||t.parentEpisodeId===x.id);
+    const target=x.targetCharacterId?(P.characters[x.targetCharacterId]?.name||x.targetCharacterId):'';
+    const state=x.targetStateId?((P.library.transformationStates||[]).find(s=>s.id===x.targetStateId)?.name||x.targetStateId):'';
+    return `<details class="card small"><summary><b>${esc(x.title||x.name||x.id)}</b> <span class="pill">${esc(x.id)}</span></summary><div class="muted">${esc(x.source||'')} ${target?'· Character: '+esc(target):''} ${state?'· State: '+esc(state):''}</div><div>${esc(x.function||x.description||'')}</div><div class="muted">Observations: ${(x.observations||[]).length} · Beats: ${(x.beats||[]).length} · Supplements: ${(x.supplements||[]).length} · Transcript chunks: ${chunks.length}</div></details>`;
+  }).join('')||`<div class="small muted">No episode anchors yet. Upload an Episode JSON to begin.</div>`;
+}
+function importEpisodeJSON(raw,fileName){
+  ensureLibrary();
+  const targetCharacter=$('episodeTargetCharacter')?.value||'';
+  const targetState=$('episodeTargetState')?.value||'';
+  let episodes=[];
+  let chunks=[];
+  if(raw&&raw.episode){ episodes=[raw.episode]; chunks=Array.isArray(raw.transcriptChunks)?raw.transcriptChunks.slice():[]; }
+  else if(raw&&Array.isArray(raw.episodes)){ episodes=raw.episodes.slice(); }
+  else if(raw&&Array.isArray(raw.episodeAnchors)){ episodes=raw.episodeAnchors.slice(); }
+  else if(raw&&raw.kind==='episode_anchor'){ episodes=[raw]; chunks=Array.isArray(raw.transcriptChunks)?raw.transcriptChunks.slice():[]; }
+  else if(Array.isArray(raw)){ episodes=raw.filter(x=>['episode_anchor','episode','episode_evidence'].includes(x?.kind)); chunks=raw.filter(x=>['media_transcript','transcript','transcript_chunk'].includes(x?.kind)); }
+  else throw Error('This is not an Episode JSON packet. Ask ChatGPT to return an episode_anchor JSON object.');
+  if(!episodes.length)throw Error('No episode anchor found in this JSON.');
+  const entries=[];
+  for(const e0 of episodes){
+    const e={...e0,kind:'episode_anchor'};
+    e.id=e.id||`episode_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+    e.name=e.name||e.title||e.id;
+    e.sourceFile=fileName;
+    if(targetCharacter)e.targetCharacterId=targetCharacter;
+    if(targetState)e.targetStateId=targetState;
+    const embedded=Array.isArray(e.transcriptChunks)?e.transcriptChunks:[];
+    delete e.transcriptChunks;
+    entries.push(e);
+    for(const t0 of [...embedded,...chunks.filter(t=>!t.episodeId||t.episodeId===e.id)]){
+      const t={...t0,kind:'media_transcript'};
+      t.id=t.id||`${e.id}__chunk_${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+      t.name=t.name||`${e.title||e.id} · ${t.sceneId||t.sequence||'chunk'}`;
+      t.episodeId=e.id; t.sourceFile=fileName;
+      if(targetCharacter)t.targetCharacterId=targetCharacter;
+      if(targetState)t.targetStateId=targetState;
+      entries.push(t);
+    }
+  }
+  mergeDatasetEntries(entries);
+  return {episodes:episodes.length,chunks:entries.filter(x=>x.kind==='media_transcript').length};
+}
+
+function dataLibraryForPrompt(){
+  const mode="full";
+  const episodes=resolveEpisodeAnchors().filter(x=>P.library.activeIds.includes(x.id)||(x.supplements||[]).some(s=>P.library.activeIds.includes(s.id))).map(x=>{
+    const activeSupplements=(x.supplements||[]).filter(s=>P.library.activeIds.includes(s.id));
+    const out={id:x.id,name:x.name||x.title,kind:"episode_anchor",source:x.source,targetCharacterId:x.targetCharacterId||null,targetStateId:x.targetStateId||null,function:x.function,observations:x.observations,beats:x.beats,tags:x.tags,
+      supplements:activeSupplements.map(s=>({id:s.id,name:s.name||s.title,observations:s.observations,beats:s.beats,content:s.content,text:s.text,entries:s.entries,tags:s.tags}))};
+    if(mode!=="anchor"){
+      out.transcriptChunks=P.library.mediaTranscripts.filter(t=>(t.episodeId===x.id||t.parentEpisodeId===x.id)&&P.library.activeIds.includes(t.id)).sort((a,b)=>(a.sequence||0)-(b.sequence||0)).map(t=>({id:t.id,sceneId:t.sceneId,sequence:t.sequence,speakers:t.speakers,targetCharacterId:t.targetCharacterId||x.targetCharacterId||null,targetStateId:t.targetStateId||x.targetStateId||null,content:t.content||t.text}));
+    }
+    out.includeFullTranscript=mode==="full";
+    return out;
+  });
+  const ordinary=activeLibraryEntries().filter(x=>x.kind!=="episode_anchor").map(x=>({
+    id:x.id,name:x.name,kind:x.kind,purpose:x.purpose,description:x.description,
+    behavior:x.behavior,voice:x.voice,traits:x.traits,entries:x.entries,
+    content:x.content,text:x.text,rules:x.rules,examples:x.examples,stage:x.stage,
+    body:x.body,cognition:x.cognition,priorities:x.priorities,
+    retainedTraits:x.retainedTraits,newConstraints:x.newConstraints,escalationRules:x.escalationRules
+  }));
+  return [...episodes,...ordinary];
+}
+
+function renderEvidence(){
+  let e=P.evidence;
+  $("evidence").innerHTML=`
+  <div class="card evidence"><b>Evidence hierarchy</b><div class="small">${e.sourcePriority.map((x,i)=>`${i+1}. ${esc(x)}`).join("<br>")}</div></div>
+  <details open><summary>Stewie / Family Guy behavioral evidence</summary>${e.stewie.facts.map(x=>`<div class="card small">${esc(x)}</div>`).join("")}
+  <div class="small muted">Episode/function anchors</div>${e.stewie.episodes.map(x=>`<div class="card small"><b>${esc(x.title)}</b> · ${esc(x.source)}<br>${esc(x.function)}</div>`).join("")}</details>
+  <details><summary>Rangiku / Pre-Glamor Rainee evidence</summary>${e.rangiku.facts.map(x=>`<div class="card small">${esc(x)}</div>`).join("")}
+  <div class="small muted">Relationship anchors</div>${e.rangiku.relationships.map(x=>`<div class="card small">${esc(x)}</div>`).join("")}</details>
+  <div class="card"><b>Episode anchor library</b><div class="small">${resolveEpisodeAnchors().map(x=>`<span class="pill">${esc(x.title||x.id)}</span>`).join(" ")||"No imported episode anchors yet."}</div></div>
+  <div class="card warn small">The engine can store user-supplied or licensed transcript text as dataset entries. Imported transcripts are treated as evidence for behavior, voice, pacing and interaction patterns. The renderer is instructed not to reproduce source wording or mention inspiration names.</div>`;
+}
+
+function updateProviderHint(){
+ const p=$("provider").value;
+ const hints={
+  "OpenRouter Free":"OpenRouter router. Default model: openrouter/free. Free-model availability and limits can change.",
+  "Qwen Cloud":"Qwen Cloud international OpenAI-compatible API. Default model: qwen3.7-plus. Use a QwenCloud/DashScope API key.",
+  "OpenAI API":"OpenAI API. Default model: gpt-5.6. ChatGPT Plus and API billing are separate.",
+  "DeepSeek":"DeepSeek API. Default model: deepseek-chat."
+ };
+ const models={
+  "OpenRouter Free":"openrouter/free",
+  "Qwen Cloud":"qwen3.7-plus",
+  "OpenAI API":"gpt-5.6",
+  "DeepSeek":"deepseek-chat"
+ };
+ if($("providerHelp"))$("providerHelp").textContent=hints[p]||"";
+ const m=$("model");
+ if(m && !m.value.trim())m.value=models[p]||"";
+}
+
+function refresh(){
+  ensureLibrary();
+  renderCastSlots();
+  $("chars").innerHTML=Object.values(P.characters).map(c=>`<div class="card"><b>${esc(c.name)}</b><div class="small muted">${esc(c.role||"")}</div><div class="small">${esc(c.style||"")}</div></div>`).join("");
+  let s=$("op"),old=s.value;s.innerHTML="";
+  Object.keys(P.operators).forEach(k=>{let o=document.createElement("option");o.value=k;o.textContent=P.operators[k].name;s.appendChild(o)});
+  if(P.operators[old])s.value=old;
+  showOp();renderEvidence();renderLibrary();renderEpisodeManager();view()
+}
+function showOp(){let o=P.operators[$("op").value];$("opInfo").innerHTML=`<b>${esc(o.name)}</b><div class="small">Trigger: ${esc(o.trigger)}</div><div class="small">Mechanism: ${esc(o.mechanism)}</div><div class="small">Escalation: ${esc(o.escalation)}</div>`}
+function view(x={}){$("json").textContent=JSON.stringify({...P,...x},null,2)}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+ ["evidence","profiles","beats","state","branches","sim","expansion","prompt","debug"].forEach(x=>$(x).classList.toggle("hidden",x!==b.dataset.t))
+});
+$("provider").onchange=updateProviderHint;updateProviderHint();
+$("op").onchange=showOp;
+
+async function llm(system,user,options={}){
+ const key=$("key").value.trim();
+ if(!key)throw Error("No API key. Use Offline Demo or enter an API key.");
+ const provider=$("provider").value;
+ let url,model=$("model").value.trim(),body;
+ const headers={"Content-Type":"application/json","Authorization":"Bearer "+key};
+
+ if(provider==="OpenRouter Free"){
+  url="https://openrouter.ai/api/v1/chat/completions";
+  model=model||"openrouter/free";
+  headers["HTTP-Referer"]="https://openrouter.ai/";
+  headers["X-Title"]="Fiction Behavior Engine";
+  body={model,messages:[{role:"system",content:system},{role:"user",content:user}],
+        temperature:options.temperature??.82,max_tokens:options.max_tokens??6000};
+  if(options.json){
+   body.response_format={type:"json_object"};
+   body.plugins=[{id:"response-healing"}];
+  }
+ }else if(provider==="Qwen Cloud"){
+  // QwenCloud's international OpenAI-compatible endpoint.
+  url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions";
+  model=model||"qwen3.7-plus";
+  body={model,messages:[{role:"system",content:system},{role:"user",content:user}],
+        temperature:options.temperature??.82,max_tokens:options.max_tokens??6000};
+  if(options.json){
+   // json_object is broadly compatible. The Qwen endpoint also supports
+   // json_schema on models that advertise structured-output support.
+   body.response_format={type:"json_object"};
+  }
+ }else if(provider==="OpenAI API"){
+  // OpenAI API is separate from ChatGPT Plus billing.
+  url="https://api.openai.com/v1/responses";
+  model=model||"gpt-5.6";
+  body={model,input:[
+    {role:"system",content:[{type:"input_text",text:system}]},
+    {role:"user",content:[{type:"input_text",text:user}]}
+  ],max_output_tokens:options.max_tokens??6000};
+ }else if(provider==="DeepSeek"){
+  url="https://api.deepseek.com/chat/completions";
+  model=model||"deepseek-chat";
+  body={model,messages:[{role:"system",content:system},{role:"user",content:user}],
+        temperature:options.temperature??.82,max_tokens:options.max_tokens??6000};
+  if(options.json)body.response_format={type:"json_object"};
+ }else{
+  throw Error("Unknown provider: "+provider);
+ }
+
+ for(let attempt=1;attempt<=3;attempt++){
+  try{
+   const started=performance.now();
+   const res=await fetch(url,{method:"POST",headers,body:JSON.stringify(body)});
+   const raw=await res.text();
+   let d;try{d=JSON.parse(raw)}catch{d={raw}};
+   if(!res.ok){
+    const msg=d.error?.message||d.message||d.raw||("HTTP "+res.status);
+    const retryable=[408,409,425,429,500,502,503,504].includes(res.status);
+    debugStage("API",`${provider} ${model} · HTTP ${res.status} · attempt ${attempt}`,msg);
+    if(retryable&&attempt<3){
+     const ra=Number(res.headers.get("Retry-After"));
+     await new Promise(r=>setTimeout(r,Number.isFinite(ra)&&ra>0?Math.min(ra*1000,15000):1000*attempt));
+     continue;
+    }
+    throw Error(`${msg} (HTTP ${res.status})`);
+   }
+
+   let content="";
+   if(provider==="OpenRouter Free"||provider==="Qwen Cloud"||provider==="DeepSeek"){
+    content=d.choices?.[0]?.message?.content||"";
+   }else if(provider==="OpenAI API"){
+    content=d.output_text||d.output?.flatMap(x=>x.content||[]).map(x=>x.text||"").join("")||"";
+   }
+   if(!content)throw Error("API returned HTTP 200 but no assistant text.");
+
+   debugStage("API",`${provider} model used: ${d.model||model} · ${Math.round(performance.now()-started)}ms`);
+   return content;
+  }catch(e){
+   if(attempt>=3)throw e;
+   await new Promise(r=>setTimeout(r,700*attempt));
+  }
+ }
+ throw Error("API request failed after retries.");
+}
+function parseJSON(x){
+ let t=String(x).trim().replace(/^```(?:json)?/i,"").replace(/```$/,"").trim();
+ try{return JSON.parse(t)}catch{}
+ const a=t.indexOf("{"),b=t.lastIndexOf("}"),c=t.indexOf("["),d=t.lastIndexOf("]");
+ if(a>=0&&b>a){try{return JSON.parse(t.slice(a,b+1))}catch{}}
+ if(c>=0&&d>c){try{return JSON.parse(t.slice(c,d+1))}catch{}}
+ throw Error("Model returned invalid JSON.");
+}
+function debugStage(stage,message,raw=""){
+  const box=$("debugLog");
+  if(!box)return;
+  const d=document.createElement("details");
+  d.open=true;
+  d.innerHTML=`<summary><b>${esc(stage)}</b> · ${esc(message)}</summary>
+    ${raw?`<pre class="small">${esc(raw)}</pre>`:""}`;
+  box.prepend(d);
+}
+
+async function askJSON(instruction,repairHint="",stage="JSON stage"){
+ try{
+  const raw=await llm(SYS,instruction,{json:true,max_tokens:4200,temperature:.65});
+  debugStage(stage,"JSON response received",raw);
+  return parseJSON(raw);
+ }catch(e){
+  debugStage(stage,"JSON response failed: "+e.message);
+  const raw=await llm(
+   "You are a strict JSON repair utility. Output ONLY valid JSON.",
+   `Return ONLY valid JSON. No markdown. No commentary.
+${repairHint}
+ORIGINAL TASK:
+${instruction}`,
+   {json:true,max_tokens:4200,temperature:.2}
+  );
+  debugStage(stage,"JSON repair response",raw);
+  return parseJSON(raw);
+ }
+}
+async function run(){
+ let source="", cast=[], A=null, B=null, support=[], ops=[], library=[], expansionRules={};
+ $("debugLog").innerHTML="";
+ try{
+  source=$("source").value.trim();if(!source)return alert("Paste a source scene first.");
+  cast=getCast();
+  if(cast.length<2)return alert("Select at least two characters.");
+  A=cast[0];B=cast[1];
+  support=cast.slice(2);
+  ops=Object.values(P.operators);
+  library=dataLibraryForPrompt();
+  expansionRules={
+    internalMonologue:$("inner").checked,
+    physicalTransformation:$("physical").checked,
+    merchantService:$("service").checked,
+    inventedMinor:$("newNpc").checked,
+    mode:$("expandMode").value,
+    episodeEvidenceMode:"full"
+  };
+
+  status("1/8 Extracting source functions...");log("1 Source decomposition");
+  let r=await askJSON(`Analyze the source scene as a behavioral blueprint.
+Return {"beats":[...],"roles":[...],"comicMechanisms":[...],"relationshipMoves":[...],"physicalMechanisms":[...]}.
+Each beat needs: id,function,trigger,actor,action,otherReaction,consequence,pressure.
+Do NOT copy dialogue. Identify what the joke DOES.
+SOURCE:
+${source}`);
+
+  const beats=r.beats||[];
+  $("beats").innerHTML=beats.map(b=>`<div class="beat"><b>BEAT ${esc(b.id)} · ${esc(b.function)}</b><div>${esc(b.action||"")}</div><div class="small muted">trigger: ${esc(b.trigger)} · other reaction: ${esc(b.otherReaction)} · consequence: ${esc(b.consequence)} · pressure: ${esc(b.pressure)}</div></div>`).join("");
+
+  status("2/8 Mapping media behavior into target character filters...");log("2 Character/profile mapping");
+  r=await askJSON(`Create a target-character adaptation map.
+Use source evidence only as functions. Map each source role to the target cast.
+CAST:
+${JSON.stringify(cast)}
+ACTIVE DATA LIBRARY:
+${JSON.stringify(library)}
+EVIDENCE:
+${JSON.stringify(P.evidence)}
+OPERATORS:
+${JSON.stringify(ops)}
+SOURCE BEATS:
+${JSON.stringify(beats)}
+Return ONLY this JSON object shape: {"mapping":[{"sourceFunction":"","targetCharacter":"","preservedFunction":"","changedBecauseOfTargetPersonality":"","forbiddenImitation":""}],"profileDeltas":{"A":[],"B":[]}}`);
+  const mapping=r;
+  $("profiles").innerHTML=`<pre>${esc(JSON.stringify(mapping,null,2))}</pre>`;
+
+  status("3/8 Building state machine...");log("3 Character state");
+  r=await askJSON(`Build a state machine at the START of the adapted scene and after each major beat.
+Return ONLY this JSON object shape: {"initial":{"A":{},"B":{}},"states":[{"afterBeat":1,"A":{},"B":{}}]}.
+Each character state must include goal,hiddenGoal,emotion,belief,knowledge,physicalConstraint,socialPosition,tactic,relationshipPressure,nextLikelyMove.
+Do not make A and B share the same emotional state.
+CAST:${JSON.stringify(cast)}
+BEATS:${JSON.stringify(beats)}
+MAPPING:${JSON.stringify(mapping)}
+OPERATORS:${JSON.stringify(ops)}
+ACTIVE DATA LIBRARY:${JSON.stringify(library)}`);
+  const state=r;$("state").innerHTML="<pre>"+esc(JSON.stringify(state,null,2))+"</pre>";
+
+  status("4/8 Branching reactions...");log("4 Reaction branching");
+  r=await askJSON(`Generate 3 possible reactions for each major beat.
+Each reaction must be causally different, not three synonyms.
+Return {"branches":[{"beat":1,"character":"","observation":"","interpretation":"","pressure":"","tactic":"","action":"","otherReaction":"","newState":"","scores":{"character":1,"function":1,"novelty":1,"escalation":1,"relationship":1}}]}.
+The strongest branch should make the next beat inevitable or at least strongly motivated.
+CHARACTERS:${JSON.stringify({A,B})}
+STATE:${JSON.stringify(state)}
+ACTIVE DATA LIBRARY:${JSON.stringify(library)}
+BEATS:${JSON.stringify(beats)}
+OPERATORS:${JSON.stringify(ops)}`);
+  const branches=r.branches||[];
+  $("branches").innerHTML=branches.map(b=>`<div class="card branch"><b>Beat ${esc(b.beat)} · ${esc(b.character)}</b><div>${esc(b.observation)} → ${esc(b.interpretation)} → ${esc(b.pressure)}</div><div><b>${esc(b.tactic)}</b>: ${esc(b.action)}</div><div class="small muted">other: ${esc(b.otherReaction)} · next: ${esc(b.newState)}</div><div>${Object.entries(b.scores||{}).map(([k,v])=>`<span class="pill">${esc(k)} ${esc(v)}/10</span>`).join("")}</div></div>`).join("");
+
+  status("5/8 Simulating character-to-character interaction...");log("5 Interaction simulation");
+  r=await askJSON(`Simulate the interaction for 2-4 turns after each selected beat.
+Return ONLY this JSON object shape: {"turns":[{"turn":1,"actor":"","intent":"","visibleAction":"","otherCharacterReadsItAs":"","response":"","stateChange":""}],"selectedBranches":[],"emergentBehaviors":[]}.
+Rules: Noir is an observer/teaser, not Brian. Pre-Glamor Rainee is socially confident and adult. Post-Dump Rainee is the same underlying person filtered through toddler cognition/body. If a transition occurs, show state change rather than magically replacing personality.
+CHARACTERS:${JSON.stringify({A,B})}
+STATE:${JSON.stringify(state)}
+ACTIVE DATA LIBRARY:${JSON.stringify(library)}
+BEATS:${JSON.stringify(beats)}
+BRANCHES:${JSON.stringify(branches)}
+USER INSTRUCTION:${$("instruction").value}`);
+  const sim=r;
+  $("sim").innerHTML="<pre>"+esc(JSON.stringify(sim,null,2))+"</pre>";
+
+  status("6/8 Expanding beyond the source...");log("6 Scenario expansion");
+  r=await askJSON(`Extend the adapted scenario beyond the source ending without simply repeating its jokes.
+Return ONLY this JSON object shape: {"continuations":[{"title":"","premise":"","beats":[],"whyItFits":""}],"chosen":{"title":"","beats":[]}}.
+Use these allowed expansion mechanisms:
+${JSON.stringify(expansionRules)}
+Possible mechanisms:
+- internal monologue that reveals the gap between dignity and panic
+- cartoon physical transformation with practical consequences
+- merchant/service-seeking escalation
+- encounter with an attractive competent woman if it fits naturally
+- invented minor service/customer character if needed
+- new problem caused by the attempted solution
+- Noir noticing the contradiction and teasing once, then allowing the scene to move
+Do not force every mechanism into the scene. Select only those that causally follow.
+Target continuity: ${JSON.stringify({A,B})}
+SOURCE BEATS:${JSON.stringify(beats)}
+INTERACTION:${JSON.stringify(sim)}
+OPERATORS:${JSON.stringify(ops)}`);
+  const expansion=r;
+  $("expansion").innerHTML="<pre>"+esc(JSON.stringify(expansion,null,2))+"</pre>";
+
+  status("7/8 Rendering prose...");log("7 Prose rendering");
+  const prompt=`WRITE THE FINAL FICTION SCENE.
+
+SOURCE SCENE:
+${source}
+
+USER INSTRUCTION:
+${$("instruction").value}
+
+TARGET CHARACTERS:
+${JSON.stringify({A,B})}
+
+FULL CAST:
+${JSON.stringify(cast)}
+
+SUPPORTING CAST:
+${JSON.stringify(support)}
+
+ACTIVE DATA LIBRARY:
+${JSON.stringify(library)}
+
+WRITING-STYLE PACKETS:
+${JSON.stringify(library.filter(x=>x.kind==="writing_style"||x.kind==="writing_transcript"))}
+
+BEHAVIORAL EVIDENCE:
+${JSON.stringify(P.evidence)}
+
+OPERATORS:
+${JSON.stringify(ops)}
+
+SOURCE BEATS:
+${JSON.stringify(beats)}
+
+CHARACTER STATES:
+${JSON.stringify(state)}
+
+INTERACTION SIMULATION:
+${JSON.stringify(sim)}
+
+SCENE EXPANSION:
+${JSON.stringify(expansion)}
+
+HARD RULES:
+1. Never mention Stewie, Brian, Rangiku, Family Guy, or any inspiration/reference name in the story.
+2. Never use labels like "Stewie Rainee", "Glamor Rainee", "Rangiku Rainee", "Stewie-like", or "Brian-like" in narration or dialogue.
+3. Stage direction can describe a physical state directly, but must not explain its inspiration.
+4. Preserve Rainee's own merchant identity and Noir's own personality.
+5. Character 1 and Character 2 are states of the SAME Rainee across the transformation. Do not write them as unrelated people.
+6. Every dialogue turn should respond to something that happened immediately before it.
+7. Do not make Noir explain why a joke is funny.
+8. Internal monologue is allowed only if it adds a private reaction that differs from public behavior.
+9. Physical comedy must produce a new practical problem or decision.
+10. If a beautiful woman/service worker appears, she must be a real scene participant with her own immediate goal, not a prop.
+11. Use show-don't-tell for the fiction. Do not summarize the character schema.
+12. The source supplies comedic architecture. The target supplies identity, voice, motives and relationships.
+13. Imported transcript packets are evidence for observable behavior, not text to copy.
+14. Imported character datasets may fill missing profile fields, but must not erase explicit target-character invariants.
+15. Imported transformation states modify expression, body constraints, priorities and tactics while preserving the underlying character identity unless the state explicitly says otherwise.
+16. Imported writing-style packets control formatting, rhythm, dialogue density and narrative presentation. They are not characters.
+17. If the cast contains more than two characters, let minor characters enter and exit according to scene function rather than forcing every character into every exchange.
+18. End on a new button or unresolved service problem rather than a generic moral.
+LENGTH: ${$("length").value}
+OUTPUT ONLY THE FICTION.`;
+  $("prompt").innerHTML="<pre>"+esc(prompt)+"</pre>";
+  const fiction=await llm("You are the final prose renderer. Follow the causal simulation and write vivid fiction. Do not explain your reasoning.",prompt);
+  debugStage("PROSE","Final fiction response received",fiction);
+  $("fiction").value=fiction;
+
+  status("8/8 Auditing...");log("8 Character and continuity audit");
+  r=await askJSON(`Audit the scene.
+Return {"score":0,"characterConsistency":0,"reactionCausality":0,"sourceLeakage":0,"voiceDistinctness":0,"expansionFit":0,"problems":[],"leakage":[],"missingOpportunities":[],"fixes":[]}.
+Check especially:
+- Pre-Glamor Rainee versus Post-Dump Rainee continuity
+- whether the post-dump state is simplified without becoming a generic baby
+- whether the inner monologue differs from public speech
+- whether physical changes create consequences
+- whether merchant behavior generates new services/problems
+- whether Noir behaves as an independent teaser/relationship foil
+- whether the scene branches rather than merely paraphrases the source
+SCENE:${fiction}
+CHARACTERS:${JSON.stringify(cast)}
+ACTIVE DATA LIBRARY:${JSON.stringify(library)}
+EXPANSION:${JSON.stringify(expansion)}
+SOURCE:${source}`);
+  const audit=r;
+  debugStage("AUDIT","Audit response received",JSON.stringify(audit,null,2));
+  $("audit").innerHTML=`<div class="card"><b>Overall ${audit.score}/10</b><br>
+  Character ${audit.characterConsistency}/10 · Causality ${audit.reactionCausality}/10 · Leakage ${audit.sourceLeakage}/10 · Voice ${audit.voiceDistinctness}/10 · Expansion ${audit.expansionFit}/10</div>`
+  +(audit.problems||[]).map(x=>`<div class="card bad">${esc(x)}</div>`).join("")
+  +(audit.leakage||[]).map(x=>`<div class="card warn">${esc(x)}</div>`).join("")
+  +(audit.missingOpportunities||[]).map(x=>`<div class="card warn">${esc(x)}</div>`).join("")
+  +(audit.fixes||[]).map(x=>`<div class="card ok">${esc(x)}</div>`).join("");
+
+  view({source, instruction:$("instruction").value, beats, mapping, state, branches, interaction:sim, expansion, prompt,fiction,audit});
+  status("Complete","ok");log("Pipeline complete","ok");
+ }catch(e){
+  status("Structured pipeline stopped: "+e.message,"bad");
+  log("PIPELINE ERROR: "+e.message,"bad");
+  debugStage("PIPELINE",`Failure occurred after fiction was ${$("fiction").value.trim()?"already generated":"not yet generated"}.`);
+  if($("fiction").value.trim()){
+    status("Fiction was generated, but a later stage failed. Existing fiction preserved. Check Debug for the failing stage.","warn");
+    return;
+  }
+  debugStage("PIPELINE","Attempting emergency prose render from available data.");
+  try{
+    source=$("source").value.trim();
+    cast=getCast(); A=cast[0]; B=cast[1]; support=cast.slice(2); library=dataLibraryForPrompt();
+    const emergency=`Write the final fictional scene now.
+
+SOURCE:
+${source}
+
+USER INSTRUCTION:
+${$("instruction").value}
+
+ACTIVE DATA LIBRARY:
+${JSON.stringify(library)}
+
+TARGET CAST:
+${JSON.stringify({A,B})}
+
+AVAILABLE BEATS:
+${$("beats").innerText}
+
+AVAILABLE PROFILES:
+${$("profiles").innerText}
+
+AVAILABLE STATE:
+${$("state").innerText}
+
+AVAILABLE BRANCHES:
+${$("branches").innerText}
+
+AVAILABLE INTERACTION:
+${$("sim").innerText}
+
+AVAILABLE EXPANSION:
+${$("expansion").innerText}
+
+RULES:
+- Output ONLY the fiction.
+- Never mention source/inspiration character names.
+- Preserve the target characters' identities.
+- Treat transformation states as state filters, not new unrelated people.
+- Treat imported transcript/behavior packets as evidence and examples, not as dialogue to copy.
+- Treat writing-style packets as prose-format constraints.
+- Use the available beats as architecture, not as a summary.
+- Expand the beats into actual scenes, dialogue, internal reaction and consequences.
+- Let each character's action cause the next response.
+- Use show-don't-tell.
+- Do not explain the schema.
+- Apply active writing-style packets as formatting/prose rules, not as characters.
+- Use transformation states as state filters on the same underlying character.
+- If a transformation state changes, preserve the character's identity while changing expression, constraints, priorities and tactics.
+- Generate the actual fictional scene, not a beat sheet, outline, analysis, or screenplay plan.`;
+    $("prompt").innerHTML="<pre>"+esc(emergency)+"</pre>";
+    const fiction=await llm(
+      "You are the emergency prose renderer. Write the actual fictional scene, not an outline or beat sheet.",
+      emergency
+    );
+    debugStage("EMERGENCY PROSE","Fallback fiction response received",fiction);
+    $("fiction").value=fiction;
+    status("Prose generated with emergency fallback. Check Debug for the failed structured stage.","warn");
+    log("Emergency prose render succeeded.","ok");
+  }catch(f){
+    status("Pipeline and emergency prose render failed: "+f.message,"bad");
+    log("EMERGENCY RENDER FAILED: "+f.message,"bad");
+  }
+}
+}
+
+function demo(){
+ status("Offline architecture demo");
+ const demoCast=getCast(); const A=demoCast[0]?.characterId||"Rainee_PreGlamor",B=demoCast[1]?.characterId||"Rainee_PostDump";
+ const beats=[
+  {id:1,function:"setup",trigger:"ordinary service problem",action:`${A} attempts to control a small problem`,otherReaction:`${B} observes`,consequence:"the attempt exposes a contradiction",pressure:"low"},
+  {id:2,function:"dignity threat",trigger:"childish dependence becomes visible",action:`${A} reframes the problem as a matter of professional dignity`,otherReaction:`${B} asks one dry question`,consequence:"A over-explains",pressure:"medium"},
+  {id:3,function:"solution creates problem",trigger:"A chooses an overcomplicated fix",action:"the fix creates a second practical problem",otherReaction:"B waits",consequence:"A needs outside service",pressure:"high"},
+  {id:4,function:"service escalation",trigger:"outside help becomes necessary",action:"A starts negotiating for a premium solution",otherReaction:"B notices the absurdity",consequence:"new service complication",pressure:"high"},
+  {id:5,function:"button",trigger:"absurdity peaks",action:"A insists everything is under control",otherReaction:"B gives one dry line",consequence:"new problem remains",pressure:"medium"}
+ ];
+ $("beats").innerHTML=beats.map(b=>`<div class="beat"><b>BEAT ${b.id}: ${esc(b.function)}</b><div>${esc(b.action)}</div><div class="small muted">${esc(b.trigger)} · ${esc(b.otherReaction)} · ${esc(b.consequence)}</div></div>`).join("");
+ $("profiles").innerHTML="<pre>"+esc(JSON.stringify({A:demoCast[0],B:demoCast[1],supporting:demoCast.slice(2)},null,2))+"</pre>";
+ $("state").innerHTML="<pre>"+esc(JSON.stringify({initial:{A:{goal:"preserve dignity",emotion:"uneasy",tactic:"reframe"},B:{goal:"observe",emotion:"amused",tactic:"wait"}},states:beats.map((b,i)=>({afterBeat:i+1,A:{pressure:i+2,tactic:"escalate"},B:{pressure:i+1,tactic:"tease"}}))},null,2))+"</pre>";
+ $("branches").innerHTML=beats.map(b=>`<div class="card branch"><b>Beat ${b.id}</b><div>Branch A: rationalize</div><div>Branch B: ask one pointed question</div><span class="pill">causal 9/10</span><span class="pill">escalation 8/10</span></div>`).join("");
+ $("sim").innerHTML="<pre>Offline demo: A acts → B interprets → B responds → A changes tactic → scene state changes.</pre>";
+ $("expansion").innerHTML="<pre>Offline demo expansion: inner monologue → physical consequence → service request → new problem → Noir button.</pre>";
+ $("prompt").innerHTML="<pre>AI mode uses the full evidence and branching pipeline.</pre>";
+ $("fiction").value=`${demoCast[0].character.name} stared at the problem as if it were a hostile invoice.\n\n${demoCast[1].character.name} watched.\n\n"This is manageable."\n\nNoir waited exactly long enough.\n\n"Is it?"\n\nThe explanation that followed somehow made the problem larger.\n\nA new problem appeared.\n\nRainee blinked.\n\n"...I require a specialist."`;
+ $("audit").innerHTML='<div class="card ok">Architecture validated. Offline mode does not simulate an LLM.</div>';
+ view({beats});log("Offline demo complete","ok");
+}
+
+function safeStorageGet(k){try{return window.localStorage?.getItem(k)||""}catch{return""}}
+function safeStorageSet(k,v){try{window.localStorage?.setItem(k,v)}catch{}}
+function safeStorageRemove(k){try{window.localStorage?.removeItem(k)}catch{}}
+const savedKey=safeStorageGet("fbe_openrouter_key");
+if(savedKey){$("key").value=savedKey;$("rememberKey").checked=true}
+$("rememberKey").onchange=()=>{$("rememberKey").checked?($("key").value.trim()&&safeStorageSet("fbe_openrouter_key",$("key").value.trim())):safeStorageRemove("fbe_openrouter_key")};
+$("key").oninput=()=>{if($("rememberKey").checked){if($("key").value.trim())safeStorageSet("fbe_openrouter_key",$("key").value.trim());else safeStorageRemove("fbe_openrouter_key")}};
+$("testApi").onclick=async()=>{try{if(!$("key").value.trim())throw Error("Paste the API key first.");const p=$("provider").value;status(`Testing ${p}...`);let a=await llm("Connection test. Reply exactly CONNECTION_OK.","Reply exactly CONNECTION_OK.",{max_tokens:80,temperature:0});status(`${p} connection works.`,"ok");log(`API connection successful (${p}): `+a.trim(),"ok")}catch(e){status("API test failed: "+e.message,"bad");log("API test failed: "+e.message,"bad")}};
+$("clearDebug").onclick=()=>$("debugLog").innerHTML="";
+$("clearAll").onclick=()=>{
+ ["beats","profiles","state","branches","sim","expansion","prompt","debugLog"].forEach(id=>{if($(id))$(id).innerHTML=""});
+ $("fiction").value="";$("audit").innerHTML="Run the pipeline.";status("Cleared.");
+};
+$("run").onclick=run;$("demo").onclick=demo;
+$("addCastSlot").onclick=()=>{
+  P.castSlots.push({characterId:Object.keys(P.characters)[0],stateId:null});
+  renderCastSlots();view();
+};
+$("addChar").onclick=()=>{
+  let n=prompt("Character name");if(!n)return;
+  let k=n.replace(/[^A-Za-z0-9]+/g,"_"); if(P.characters[k])k+="_"+Date.now();
+  P.characters[k]={
+    name:n,role:"supporting character",
+    style:prompt("Behavior/style","scene-appropriate")||"scene-appropriate",
+    goal:prompt("Primary goal","pursue immediate scene objective")||"pursue immediate scene objective",
+    hiddenGoal:"",relationship:"scene-defined",voice:"distinct and consistent",
+    tactics:["observe","respond to immediate pressure"],
+    weaknesses:[],invariants:[`Remain ${n}`]
+  };
+  P.castSlots.push({characterId:k,stateId:null});
+  refresh();
+};
+$("addOp").onclick=()=>{let n=prompt("Operator name");if(!n)return;let k=n.toUpperCase().replace(/[^A-Z0-9]+/g,"_");P.operators[k]={name:n,trigger:prompt("Trigger",""),mechanism:prompt("Mechanism",""),escalation:prompt("Escalation","")};refresh();$("op").value=k;showOp()};
+$("copy").onclick=async()=>{await navigator.clipboard.writeText($("fiction").value);$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy",900)};
+$("save").onclick=()=>{let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([$("fiction").value],{type:"text/plain"}));a.download="adapted_scene.txt";a.click()};
+
+$("importDataset").onclick=()=>$("datasetFile").click();
+$("datasetFile").onchange=e=>{
+  const files=[...e.target.files];
+  let remaining=files.length;
+  if(!remaining)return;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const raw=JSON.parse(reader.result);
+        const entries=normalizeDataset(raw,file.name);
+        mergeDatasetEntries(entries);
+        log(`Imported ${entries.length} data entr${entries.length===1?"y":"ies"} from ${file.name}`,"ok");
+      }catch(err){log(`Dataset import failed for ${file.name}: ${err.message}`,"bad")}
+      if(--remaining===0){refresh();status("Data library updated","ok")}
+    };
+    reader.readAsText(file);
+  });
+  e.target.value="";
+};
+$("pasteDataset").onclick=()=>{
+  const raw=prompt("Paste a JSON object or JSON array for a transcript, behavior schema, character profile, transformation state, or writing style:");
+  if(!raw)return;
+  try{
+    const entries=normalizeDataset(JSON.parse(raw),"pasted");
+    mergeDatasetEntries(entries);
+    refresh();
+    status(`Imported ${entries.length} JSON entr${entries.length===1?"y":"ies"} from pasted data`,"ok");
+    log(`Pasted ${entries.length} data entr${entries.length===1?"y":"ies"}`,"ok");
+  }catch(err){status("JSON entry failed: "+err.message,"bad");log("JSON paste failed: "+err.message,"bad")}
+};
+$("uploadEpisodeJson").onclick=()=>$("episodeJsonFile").click();
+$("episodeJsonFile").onchange=async e=>{
+ const file=e.target.files?.[0]; if(!file)return;
+ try{
+  const raw=JSON.parse(await file.text());
+  const r=importEpisodeJSON(raw,file.name);
+  $("episodeImportStatus").innerHTML=`<b>Imported.</b> ${r.episodes} episode${r.episodes===1?'':'s'} and ${r.chunks} transcript chunk${r.chunks===1?'':'s'}.`;
+  refresh(); status(`Episode JSON added: ${file.name}`,'ok'); log(`Episode JSON imported: ${file.name} · ${r.episodes} episode(s) · ${r.chunks} transcript chunk(s)`,'ok');
+ }catch(err){$("episodeImportStatus").textContent='Import failed: '+err.message;status('Episode JSON import failed','bad');log('Episode JSON import failed: '+err.message,'bad')}
+ e.target.value='';
+};
+$("episodeJsonTemplate").onclick=()=>{
+ const d={format:"fiction-behavior-episode-v3",kind:"episode_anchor",id:"family_guy_s08e17",title:"Episode title",source:"Series S00E00",targetCharacterId:"rainee",targetStateId:"rainee_stewie_ultra_luxury_diaper",function:"Reusable comedic / behavioral function.",tags:["tag"],observations:["observable behavior"],beats:["setup → pressure → tactic → reaction → consequence"],transcriptChunks:[{id:"scene_001",sequence:1,speakers:["Character A","Character B"],content:"USER-OWNED OR LICENSED TRANSCRIPT TEXT"}]};
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='episode_transcript_template.json';a.click();
+};
+$("exportDataset").onclick=()=>{
+  const d={engine:"Fiction Behavior Engine",format:"data-library-v1",library:P.library,characters:P.characters};
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));
+  a.download="fiction_behavior_data_library.json";a.click();
+};
+$("templateDataset").onclick=()=>{
+  const d={
+    format:"fiction-behavior-data-v1",
+    kind:"media_transcript",
+    id:"example_dataset_id",
+    name:"Example Dataset",
+    description:"Describe what this packet contains and why it matters.",
+    entries:[
+      {id:"entry_001",name:"Example transcript/scene",content:"Paste user-owned or licensed transcript text here.",behavior:["observable behavior","reaction pattern"],tags:["character","comedy"]}
+    ]
+  };
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));
+  a.download="fiction_behavior_dataset_template.json";a.click();
+};
+$("export").onclick=()=>{let d={engine:"Fiction Behavior Engine",version:"3.4",state:P,source:$("source").value,instruction:$("instruction").value,fiction:$("fiction").value};let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="fiction_behavior_engine_v3_4_project.json";a.click()};
+$("import").onclick=()=>$("file").click();
+$("file").onchange=e=>{
+  let f=e.target.files[0],r=new FileReader();
+  r.onload=()=>{
+    try{
+      let d=JSON.parse(r.result);
+      if(d.state){
+        P.characters=d.state.characters||P.characters;
+        P.operators=d.state.operators||P.operators;
+        P.library=d.state.library||P.library;
+        P.castSlots=d.state.castSlots||P.castSlots;
+      }else if(d.library){
+        P.library=d.library;
+        if(d.characters)P.characters=d.characters;
+      }
+      $("source").value=d.source||"";
+      $("instruction").value=d.instruction||$("instruction").value;
+      $("fiction").value=d.fiction||"";
+      ensureLibrary();refresh();status("Project imported","ok");
+    }catch(err){status("Import failed: "+err.message,"bad")}
+  };
+  r.readAsText(f)
+};
+ensureLibrary();
+if(!P.castSlots)P.castSlots=[];
+refresh();
+</script></body></html>

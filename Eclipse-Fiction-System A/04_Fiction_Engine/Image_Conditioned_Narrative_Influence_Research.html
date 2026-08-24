@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image-Conditioned Narrative Influence Research</title>
+<style>
+  :root{
+    --bg:#111316; --panel:#191c20; --panel2:#20242a; --text:#e9e7e1;
+    --muted:#9da3ab; --line:#353a42; --accent:#d9a441; --cyan:#65c6d8;
+    --purple:#a88be8; --green:#7fc99b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
+  header{padding:56px 7vw 42px;border-bottom:1px solid var(--line);background:#15171a}
+  .eyebrow{font-size:12px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
+  h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(38px,5vw,68px);line-height:1.02;margin:14px 0}
+  .subtitle{max-width:900px;color:#b9bdc4;font-size:18px}
+  main{max-width:1250px;margin:auto;padding:42px 6vw 80px}
+  section{margin:0 0 54px}
+  h2{font-size:28px;font-weight:500;margin:0 0 18px}
+  h3{font-size:18px;margin:28px 0 10px;color:#f0eee8}
+  p{max-width:950px;color:#c6c9ce}
+  .note{background:#1d2024;border:1px solid var(--line);border-left:3px solid var(--accent);padding:18px 22px;margin:22px 0;max-width:1000px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  .card strong{display:block;color:#fff;margin-bottom:7px}
+  .diagram{background:#0d0f11;border:1px solid var(--line);border-radius:12px;padding:28px;overflow:auto}
+  pre{margin:0;color:#d5d8dc;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}
+  code{color:#f0c56c}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line)}
+  th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:#fff;background:var(--panel2);font-weight:600}
+  td{color:#c4c8ce}
+  .tag{display:inline-block;padding:4px 9px;border:1px solid #454b54;border-radius:999px;font-size:11px;color:#bfc4cb;margin:3px}
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:center;margin:25px 0}
+  .flow div{background:var(--panel);border:1px solid var(--line);padding:16px 10px;text-align:center;border-radius:8px}
+  .arrow{color:var(--accent);text-align:center;font-size:20px}
+  .citation{font-size:13px;color:#8f969e}
+  footer{border-top:1px solid var(--line);padding:25px 7vw;color:#777e87;font-size:12px}
+  @media(max-width:800px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Multimodal Fiction Research</div>
+  <h1>Image as Narrative Influence</h1>
+  <div class="subtitle">
+    Research notes on using visual information not merely to describe an image,
+    but to influence tone, behavior, pacing, scene logic, and generated prose.
+  </div>
+</header>
+
+<main>
+<section>
+  <h2>1. The Core Idea</h2>
+  <p>
+    Conventional image-to-text systems primarily answer: <strong>“What is in this image?”</strong>
+    The proposed experiment asks a different question:
+    <strong>“What should this image make the writing do?”</strong>
+  </p>
+  <div class="note">
+    The image is treated as an <strong>influence source</strong>, not simply a caption source.
+    Visual information can be converted into structured signals that participate in a fiction,
+    character, or behavior engine before text is generated.
+  </div>
+</section>
+
+<section>
+  <h2>2. Existing Research Landscape</h2>
+  <div class="grid">
+    <div class="card">
+      <strong>Image Captioning</strong>
+      Converts visual content into literal language descriptions. Useful as a semantic layer,
+      but does not by itself provide deep narrative steering.
+    </div>
+    <div class="card">
+      <strong>Grounded Story Generation</strong>
+      Uses images plus prompts to generate text consistent with visible characters, settings,
+      objects, and events.
+    </div>
+    <div class="card">
+      <strong>Visual Storytelling</strong>
+      Uses image sequences as narrative prompts and attempts to maintain event and character
+      continuity across the resulting story.
+    </div>
+    <div class="card">
+      <strong>Visual Influence</strong>
+      The experimental direction here: extract semantic and aesthetic properties and use them
+      to alter generation behavior, tone, pacing, and character reactions.
+    </div>
+  </div>
+  <p class="citation">
+    Related research includes visually grounded story generation, visual writing prompts,
+    multimodal long-story generation, and multimodal visual storytelling systems.
+  </p>
+</section>
+
+<section>
+  <h2>3. Semantic Information vs. Influence Information</h2>
+  <table>
+    <thead><tr><th>Traditional extraction</th><th>Influence-oriented extraction</th></tr></thead>
+    <tbody>
+      <tr><td>“A woman is standing in a room.”</td><td>“The framing makes the scene feel intimate.”</td></tr>
+      <tr><td>“There is a marketplace.”</td><td>“High visual density suggests energetic interaction.”</td></tr>
+      <tr><td>“Two characters are facing each other.”</td><td>“Their spatial arrangement suggests confrontation or recognition.”</td></tr>
+      <tr><td>“The image uses saturated colors.”</td><td>“Strong saturation can bias the scene toward heightened, playful or surreal expression.”</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>4. Visual Feature Layers</h2>
+  <div class="grid">
+    <div class="card"><strong>Semantic</strong>Characters, objects, location, action, clothing, environment.</div>
+    <div class="card"><strong>Expression</strong>Facial expression, gaze, pose, gesture, apparent interaction.</div>
+    <div class="card"><strong>Composition</strong>Framing, camera distance, spatial relationships, symmetry, visual hierarchy.</div>
+    <div class="card"><strong>Aesthetic</strong>Color palette, lighting, contrast, texture, rendering style, visual density.</div>
+    <div class="card"><strong>Energy</strong>Motion cues, exaggeration, visual intensity, clutter, scale, dynamism.</div>
+    <div class="card"><strong>Atmosphere</strong>Potential mood, tension, warmth, eeriness, comedy, melancholy, grandeur.</div>
+  </div>
+</section>
+
+<section>
+  <h2>5. Embedding-Based Approach</h2>
+  <p>
+    A vision encoder such as CLIP can represent an image as an embedding. A useful experiment is
+    to compare that embedding with text embeddings representing narrative concepts, styles,
+    emotional states, or behavioral tendencies.
+  </p>
+  <div class="diagram"><pre>
+IMAGE
+  │
+  ▼
+VISION ENCODER
+  │
+  ▼
+IMAGE EMBEDDING
+  │
+  ├──────────── Semantic similarity ────────────┐
+  ├──────────── Aesthetic similarity ───────────┤
+  ├──────────── Emotional similarity ───────────┤
+  ├──────────── Style similarity ───────────────┤
+  └──────────── Narrative concept similarity ───┘
+                                                 │
+                                                 ▼
+                                      VISUAL INFLUENCE PROFILE
+                                      ─────────────────────────
+                                      energy        0.72
+                                      absurdity     0.91
+                                      tension       0.34
+                                      elegance      0.58
+                                      intimacy      0.63
+                                      surrealism    0.88
+                                                 │
+                                                 ▼
+                                          FICTION ENGINE
+  </pre></div>
+</section>
+
+<section>
+  <h2>6. The Important Architectural Difference</h2>
+  <p>
+    The visual representation does not need to become prose. It can instead become an intermediate
+    state that modifies the fiction engine.
+  </p>
+  <div class="flow">
+    <div>IMAGE<br><span class="tag">raw evidence</span></div>
+    <div class="arrow">→</div>
+    <div>VISION ANALYSIS<br><span class="tag">features</span></div>
+    <div class="arrow">→</div>
+    <div>INFLUENCE PROFILE<br><span class="tag">weighted state</span></div>
+  </div>
+  <div class="flow">
+    <div>CHARACTER STATE</div><div class="arrow">+</div>
+    <div>RELATIONSHIPS</div><div class="arrow">+</div><div>SCENE STATE</div>
+  </div>
+  <div class="flow">
+    <div>BEHAVIOR ENGINE</div><div class="arrow">→</div>
+    <div>DECISIONS</div><div class="arrow">→</div>
+    <div>GENERATED STORY</div>
+  </div>
+</section>
+
+<section>
+  <h2>7. Example: Character Behavior</h2>
+  <p>
+    Imagine a scene containing a character whose established personality is serious and mercantile.
+    The visual input shows exaggerated cartoon proportions, saturated colors, a crowded marketplace,
+    and an absurd physical situation.
+  </p>
+  <div class="diagram"><pre>
+VISUAL INPUT
+  │
+  ├── saturated palette
+  ├── exaggerated pose
+  ├── crowded environment
+  ├── cartoon framing
+  └── absurd physical composition
+          │
+          ▼
+VISUAL INFLUENCE
+  comedy       0.91
+  energy       0.87
+  absurdity    0.94
+  tension      0.22
+  drama        0.18
+  physical_gag 0.88
+          │
+          ▼
+CHARACTER / BEHAVIOR ENGINE
+  │
+  ├── favor physical reaction
+  ├── increase interruption probability
+  ├── favor escalation over introspection
+  ├── preserve established personality
+  └── treat absurdity as locally plausible
+          │
+          ▼
+TEXT GENERATION
+  </pre></div>
+</section>
+
+<section>
+  <h2>8. Image Does Not Override Character Data</h2>
+  <p>
+    The image should function as evidence or influence, while the character model remains authoritative
+    for identity and established behavior. This is especially important for a fictional behavior engine.
+  </p>
+  <table>
+    <thead><tr><th>Layer</th><th>Function</th></tr></thead>
+    <tbody>
+      <tr><td>Character personality</td><td>Stable behavioral foundation.</td></tr>
+      <tr><td>Transformation state</td><td>Current physical/persona configuration.</td></tr>
+      <tr><td>Relationship rules</td><td>Controls reactions between characters.</td></tr>
+      <tr><td>Override rules</td><td>Higher-priority constraints.</td></tr>
+      <tr><td>Image evidence</td><td>Provides current visual information and influence.</td></tr>
+      <tr><td>Scene state</td><td>Determines what is currently happening.</td></tr>
+      <tr><td>Generation layer</td><td>Turns computed behavior into prose/dialogue.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>9. Multiple Images</h2>
+  <p>
+    A sequence of images could be treated as temporal evidence rather than one giant description.
+    Each image produces an influence state, and the engine computes changes between states.
+  </p>
+  <div class="diagram"><pre>
+IMAGE 01 ──► STATE 01
+                 │
+                 ▼
+IMAGE 02 ──► STATE 02 ──► VISUAL CHANGE DETECTOR
+                 │
+                 ▼
+IMAGE 03 ──► STATE 03
+                 │
+                 ▼
+          NARRATIVE TRANSITION
+                 │
+                 ▼
+          CHARACTER RESPONSE
+                 │
+                 ▼
+              STORY
+  </pre></div>
+  <p>
+    This opens the possibility of detecting visual escalation, character movement, changing
+    expressions, environmental changes, and cinematic progression.
+  </p>
+</section>
+
+<section>
+  <h2>10. Relationship to the Audio Experiment</h2>
+  <table>
+    <thead><tr><th>Audio</th><th>Image</th></tr></thead>
+    <tbody>
+      <tr><td>Tempo</td><td>Composition / visual density</td></tr>
+      <tr><td>Rhythm</td><td>Pose / movement cues</td></tr>
+      <tr><td>Timbre</td><td>Color / texture / rendering</td></tr>
+      <tr><td>Dynamics</td><td>Contrast / scale / framing</td></tr>
+      <tr><td>Harmony</td><td>Color relationships / visual harmony</td></tr>
+      <tr><td>Energy</td><td>Visual energy</td></tr>
+      <tr><td>Mood</td><td>Atmosphere / expression / lighting</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    The long-term experiment is therefore not “audio-to-text” or “image-to-text.”
+    It is <strong>multimodal influence-to-narrative</strong>.
+  </div>
+</section>
+
+<section>
+  <h2>11. Proposed Multimodal Influence Architecture</h2>
+  <div class="diagram"><pre>
+                    ┌───────────────────┐
+                    │   CHARACTER DATA  │
+                    │ personality/state │
+                    │ relationships     │
+                    │ overrides         │
+                    └─────────┬─────────┘
+                              │
+                              ▼
+┌───────────┐       ┌───────────────────┐       ┌───────────┐
+│   IMAGE   │──────►│ VISUAL ENCODER    │       │   AUDIO   │
+└───────────┘       └─────────┬─────────┘       └─────┬─────┘
+                              │                       │
+                              │               ┌───────▼───────┐
+                              │               │ AUDIO ANALYZER│
+                              │               └───────┬───────┘
+                              │                       │
+                              └──────────┬────────────┘
+                                         ▼
+                              ┌────────────────────┐
+                              │ MULTIMODAL         │
+                              │ INFLUENCE LAYER    │
+                              ├────────────────────┤
+                              │ visual influence   │
+                              │ audio influence    │
+                              │ temporal change    │
+                              │ confidence         │
+                              └──────────┬─────────┘
+                                         ▼
+                              ┌────────────────────┐
+                              │ FICTION BEHAVIOR   │
+                              │ ENGINE             │
+                              └──────────┬─────────┘
+                                         ▼
+                              ┌────────────────────┐
+                              │ STORY / DIALOGUE   │
+                              │ / SCENE GENERATION │
+                              └────────────────────┘
+  </pre></div>
+</section>
+
+<section>
+  <h2>12. Research Questions</h2>
+  <div class="grid">
+    <div class="card"><strong>RQ1</strong>Can visual embeddings reliably influence prose without merely causing image description?</div>
+    <div class="card"><strong>RQ2</strong>Can aesthetic properties be separated from semantic content?</div>
+    <div class="card"><strong>RQ3</strong>Can visual influence modify behavior while preserving character identity?</div>
+    <div class="card"><strong>RQ4</strong>Can multiple images create measurable narrative transitions?</div>
+    <div class="card"><strong>RQ5</strong>Can image and audio influences be combined without one modality overwhelming the other?</div>
+    <div class="card"><strong>RQ6</strong>Can influence weights be exposed and manually adjusted by a writer?</div>
+  </div>
+</section>
+
+<section>
+  <h2>13. Practical Prototype</h2>
+  <p>A first prototype does not require training a new multimodal model.</p>
+  <ol>
+    <li>Load an image.</li>
+    <li>Generate a vision embedding and/or structured visual analysis.</li>
+    <li>Compare the embedding against a library of textual influence concepts.</li>
+    <li>Build a weighted visual influence profile.</li>
+    <li>Combine that profile with character, relationship, transformation, and scene data.</li>
+    <li>Give the resulting state to an LLM as a structured control layer.</li>
+    <li>Generate the scene.</li>
+    <li>Optionally compare the generated result against the original influence profile.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>14. Experimental Control</h2>
+  <p>
+    A useful test is to hold the story seed and character data constant while changing only the image.
+    If the resulting prose changes in predictable ways, the experiment has measurable evidence that
+    the visual input is functioning as an influence rather than merely being quoted or described.
+  </p>
+  <div class="diagram"><pre>
+CONSTANT
+  Character = Rainee
+  Scene seed = "Rainee encounters Noir in Jade City."
+  Personality = fixed
+  Rules = fixed
+
+VARIABLE
+  Image A → comedic / energetic
+  Image B → ominous / dark
+  Image C → elegant / quiet
+  Image D → surreal / chaotic
+
+COMPARE
+  tone
+  pacing
+  dialogue density
+  physical behavior
+  reaction intensity
+  vocabulary
+  scene escalation
+  </pre></div>
+</section>
+
+<section>
+  <h2>15. Research Direction</h2>
+  <p>
+    The strongest conceptual direction is to treat images as one modality inside a broader
+    <strong>multimodal evidence and influence system</strong>. The goal is not to replace the
+    fiction engine with a vision model. The goal is to give the fiction engine another source of
+    structured evidence that can affect its decisions.
+  </p>
+  <div class="note">
+    <strong>Working concept:</strong><br>
+    Image → representation → influence profile → scene/behavior computation → language.
+    <br><br>
+    This is the visual counterpart to the audio experiment:
+    <strong>sound should influence what the story feels like; images should influence what the story sees,
+    feels like, and does.</strong>
+  </div>
+</section>
+
+<section>
+  <h2>16. Related Research Areas</h2>
+  <p class="citation">
+    Areas to investigate further include CLIP and vision-language embeddings, image captioning,
+    visually grounded story generation, visual writing prompts, multimodal long-story generation,
+    visual storytelling, multimodal LLMs, representation steering, activation steering, and
+    cross-modal alignment.
+  </p>
+</section>
+</main>
+
+<footer>
+  Research document • Image-Conditioned Narrative Influence • Prepared as an experimental architecture/reference document.
+</footer>
+</body>
+</html>

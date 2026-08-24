@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eclipse Visual Authoring — Three Layer Mockup</title>
+<style>
+:root{
+  --bg:#0c0e10;--panel:#121518;--panel2:#171a1e;--panel3:#1c2025;
+  --line:#2a2f35;--text:#eeeae2;--muted:#8d949d;--gold:#c8b184;
+  --blue:#61c6e6;--violet:#a995c5;--green:#8fb39b;--orange:#bd907a;
+  --cyan:#5bd6d8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:13px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{color:inherit;cursor:pointer}
+.app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.top{height:62px;border-bottom:1px solid var(--line);background:#101214;display:flex;align-items:center;padding:0 22px;gap:20px;flex:none}
+.brand{font:25px Georgia,serif;letter-spacing:.08em}.project{color:var(--muted);font-size:11px;border-left:1px solid var(--line);padding-left:18px}
+.topnav{display:flex;gap:4px;margin-left:15px}.topnav button{background:transparent;border:0;padding:9px 13px;border-radius:7px;color:var(--muted)}.topnav button.active{background:#20242a;color:#fff}
+.grow{flex:1}.topbtn{background:#171a1e;border:1px solid var(--line);padding:8px 11px;border-radius:7px}.primary{background:#e6ddcd;color:#151515;border:0;padding:9px 15px;border-radius:7px;font-weight:700}
+.layout{flex:1;display:grid;grid-template-columns:230px 1fr 315px;min-height:0}
+.left,.right{background:#111315;overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line);padding:18px}
+.leftsection{padding:16px 13px 5px}.eyebrow{font-size:9px;letter-spacing:.17em;color:#747b84;text-transform:uppercase;margin:8px 9px}
+.navitem{padding:10px 11px;border-radius:7px;color:#c4c8cd;margin:2px 0;display:flex;justify-content:space-between}.navitem:hover,.navitem.active{background:#1e2227;color:#fff}.count{color:#777e87;font-size:11px}
+.main{min-width:0;overflow:hidden;background:var(--bg)}
+.header{padding:21px 28px 16px;border-bottom:1px solid var(--line);display:flex;align-items:end;gap:20px}
+.title{font:30px Georgia,serif;margin:4px 0}.sub{color:var(--muted);max-width:720px;line-height:1.5}
+.toolbar{display:flex;gap:7px}.btn{background:#15181b;border:1px solid var(--line);padding:8px 11px;border-radius:7px}.btn:hover{background:#20242a}
+.layerbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:8px;background:#101214}
+.layer{height:48px;min-width:170px;padding:7px 13px;border:1px solid #2e343a;background:#15181b;border-radius:8px;text-align:left;position:relative}
+.layer:hover{border-color:#555d66}.layer.active{border-color:var(--cyan);box-shadow:0 0 0 1px #5bd6d822 inset;background:#182124}
+.layer .num{font-size:9px;letter-spacing:.14em;color:#707983}.layer b{display:block;margin-top:2px}.layer small{color:#777f87}
+.chev{color:#4e565f;font-size:18px}
+.canvas{height:calc(100% - 162px);min-height:500px;position:relative;overflow:hidden;background-image:radial-gradient(#292d32 1px,transparent 1px);background-size:22px 22px}
+.canvashead{height:40px;border-bottom:1px solid #252a2f;background:#0f1113dd;display:flex;align-items:center;padding:0 18px;position:relative;z-index:30}
+.layerbadge{font-size:10px;letter-spacing:.14em;color:var(--cyan)}.scope{color:#6f7780;font-size:10px;margin-left:12px}
+.svgflow{position:absolute;inset:40px 0 0 0;width:100%;height:calc(100% - 40px);z-index:2;pointer-events:none}
+.flow{fill:none;stroke:#52616a;stroke-width:2;opacity:.85}
+.flow.active{stroke:#5bd6d8;stroke-width:2.5;filter:drop-shadow(0 0 5px #5bd6d855)}
+.flow.cross{stroke:#a995c5}.flow.drive{stroke:#c8b184}
+.flow-dot{fill:#d9ffff;filter:drop-shadow(0 0 5px #5bd6d8)}
+@keyframes flowDash{to{stroke-dashoffset:-70}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.flow.active{stroke-dasharray:7 12;animation:flowDash 1.25s linear infinite}
+.node{position:absolute;width:205px;background:#15181b;border:1px solid #373c43;border-radius:9px;box-shadow:0 15px 35px #0009;z-index:10;user-select:none;transition:border-color .15s,transform .15s}
+.node:hover{border-color:#68717b;transform:translateY(-1px)}
+.node.selected{border-color:var(--cyan);box-shadow:0 0 0 1px #5bd6d833,0 15px 35px #0009}
+.node.input{border-top:2px solid var(--blue)}.node.process{border-top:2px solid var(--gold)}.node.drive{border-top:2px solid var(--green)}.node.output{border-top:2px solid var(--violet)}
+.nhead{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.nhead b{font-size:13px}.type{font-size:8px;color:#777e87;letter-spacing:.1em}
+.nbody{padding:10px 12px;color:#9da3aa;font-size:11px;line-height:1.5}.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #343941;border-radius:5px;padding:3px 6px;color:#aeb3b9;font-size:10px}
+.port{position:absolute;width:10px;height:10px;border-radius:50%;border:2px solid #15181b;background:#cfeef2;z-index:5}.port.l{left:-6px;top:50%}.port.r{right:-6px;top:50%}.port.t{top:-6px;left:50%}.port.b{bottom:-6px;left:50%}
+.layer-legend{position:absolute;right:18px;top:13px;z-index:25;display:flex;gap:8px}
+.legend{border:1px solid #30363c;background:#121518dd;padding:5px 8px;border-radius:6px;color:#8b949c;font-size:9px}.legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;background:var(--blue)}.legend.drive i{background:var(--green)}
+.nest-frame{position:absolute;border:1px dashed #39434a;border-radius:14px;background:#10151822;z-index:1;pointer-events:none}
+.nest-label{position:absolute;top:-9px;left:16px;background:#0c0e10;padding:0 7px;color:#65727a;font-size:9px;letter-spacing:.12em}
+.right h3{font:22px Georgia,serif;margin:5px 0}.muted{color:var(--muted)}.panelhead{display:flex;justify-content:space-between;align-items:start;margin-bottom:18px}
+.field{padding:13px 0;border-top:1px solid var(--line)}.label{font-size:9px;letter-spacing:.14em;color:#747b83;text-transform:uppercase;margin-bottom:7px}.value{background:#171a1e;border:1px solid #2c3137;border-radius:6px;padding:9px;color:#d3d5d8}
+.minirow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #24282d}.tag{border:1px solid #343940;padding:4px 7px;border-radius:99px;font-size:10px;color:#aeb3ba}
+.status{display:flex;align-items:center;gap:7px;font-size:10px;color:#9aa3aa}.statusdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite}
+.drawer{position:fixed;inset:0;background:#0008;display:none;z-index:100}.drawer.show{display:block}.modal{position:absolute;right:0;top:0;height:100%;width:430px;background:#121518;border-left:1px solid var(--line);box-shadow:-25px 0 70px #0008;padding:22px;overflow:auto}
+.close2{float:right;background:#1a1e22;border:1px solid var(--line);border-radius:7px;width:34px;height:34px}.formrow{display:grid;gap:6px;margin:14px 0}.formrow label{font-size:10px;color:#7d848d;letter-spacing:.1em;text-transform:uppercase}.formrow input,.formrow select{width:100%;background:#0f1113;color:#eee;border:1px solid #30353b;border-radius:7px;padding:9px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#e6ddcd;color:#161616;padding:10px 16px;border-radius:7px;display:none;z-index:200;box-shadow:0 10px 30px #0008}.toast.show{display:block}
+@media(max-width:1050px){.layout{grid-template-columns:190px 1fr 275px}.layer{min-width:140px}.node{width:180px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">Eclipse</div><div class="project">VISUAL AUTHORING / THREE-LAYER GRAPH</div>
+  <nav class="topnav"><button class="active">Authoring</button><button onclick="toast('Fiction Engine')">Fiction Engine</button><button onclick="toast('Data Library')">Data Library</button></nav>
+  <div class="grow"></div><div class="status"><span class="statusdot"></span> FLOW LIVE</div>
+  <button class="topbtn" onclick="openSettings()">⚙ Settings</button><button class="topbtn" onclick="toast('Graph exported')">Export</button>
+  <button class="primary" onclick="runGraph()">Run Graph</button>
+</header>
+
+<div class="layout">
+<aside class="left">
+  <div class="leftsection"><div class="eyebrow">GRAPH</div>
+    <div class="navitem active">Three-Layer Canvas</div>
+    <div class="navitem">Connections <span class="count" id="connectionCount">8</span></div>
+    <div class="navitem">Execution Order <span class="count">L1 → L2 → L3</span></div>
+  </div>
+  <div class="leftsection"><div class="eyebrow">LEVEL 1 · PROJECT</div>
+    <div class="navitem" onclick="selectNode('projectData')">Project Inputs <span class="count">12</span></div>
+    <div class="navitem" onclick="selectNode('world')">World Context <span class="count">24</span></div>
+  </div>
+  <div class="leftsection"><div class="eyebrow">LEVEL 2 · ENTITY</div>
+    <div class="navitem" onclick="selectNode('rainee')">Rainee <span class="count">37</span></div>
+    <div class="navitem" onclick="selectNode('noir')">Noir <span class="count">21</span></div>
+    <div class="navitem" onclick="selectNode('relationship')">Relationship <span class="count">12</span></div>
+  </div>
+  <div class="leftsection"><div class="eyebrow">LEVEL 3 · STATE</div>
+    <div class="navitem" onclick="selectNode('visualState')">Visual State</div>
+    <div class="navitem" onclick="selectNode('behavior')">Behavior Driver</div>
+    <div class="navitem" onclick="selectNode('output')">Authoring Output</div>
+  </div>
+  <div class="leftsection"><div class="eyebrow">DATA</div>
+    <div class="navitem" onclick="addNode('input')">＋ Add Input Node</div>
+    <div class="navitem" onclick="addNode('drive')">＋ Add Driver Node</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="header">
+    <div><div class="eyebrow">VISUAL AUTHORING</div><div class="title">Nested Graph Authoring</div>
+    <div class="sub">Three explicit graph layers. Each layer owns its own nodes. Inputs can feed upward, while driver nodes can push computed state downward or across the graph.</div></div>
+    <div class="grow"></div>
+    <div class="toolbar"><button class="btn" onclick="addNode('input')">＋ Input</button><button class="btn" onclick="addNode('drive')">＋ Driver</button><button class="btn" onclick="toggleFlow()">Flow: <span id="flowState">ON</span></button><button class="btn" onclick="fitGraph()">Fit</button></div>
+  </div>
+
+  <div class="layerbar">
+    <button class="layer active" id="layer1" onclick="setLayer(1)"><span class="num">LEVEL 1</span><b>Project / World Graph</b><small>Global context + source data</small></button>
+    <span class="chev">›</span>
+    <button class="layer" id="layer2" onclick="setLayer(2)"><span class="num">LEVEL 2</span><b>Character / Entity Graph</b><small>Entities + relationships</small></button>
+    <span class="chev">›</span>
+    <button class="layer" id="layer3" onclick="setLayer(3)"><span class="num">LEVEL 3</span><b>State / Behavior Graph</b><small>States + drivers + outputs</small></button>
+  </div>
+
+  <section class="canvas" id="canvas">
+    <div class="canvashead"><span class="layerbadge" id="canvasLayer">LEVEL 1 · PROJECT / WORLD</span><span class="scope" id="canvasScope">Current layer owns the visible nodes</span><div class="grow"></div><span class="scope">Drag nodes · click ports · connect data</span></div>
+    <div class="layer-legend"><span class="legend"><i></i>INPUT DATA</span><span class="legend drive"><i></i>DRIVER / OUTPUT</span></div>
+    <svg class="svgflow" id="svgflow"></svg>
+    <div id="nodes"></div>
+  </section>
+</main>
+
+<aside class="right">
+  <div class="panelhead"><div><div class="eyebrow" style="margin:0">INSPECTOR</div><h3 id="inspectTitle">Three-Layer Graph</h3><div class="muted" id="inspectSub">Select a node to inspect its role in the pipeline.</div></div></div>
+  <div class="field"><div class="label">Layer</div><div class="value" id="inspectLayer">Level 1 · Project / World</div></div>
+  <div class="field"><div class="label">Node role</div><div class="minirow"><span>Data ownership</span><span class="tag" id="inspectRole">INPUT</span></div><div class="minirow"><span>Flow direction</span><span class="tag">→ downstream</span></div><div class="minirow"><span>Connection state</span><span class="tag" id="inspectConnections">ACTIVE</span></div></div>
+  <div class="field"><div class="label">Data</div><div class="value" id="inspectData">No node selected. Choose a layer and click a node.</div></div>
+  <div class="field"><div class="label">Pipeline</div>
+    <div class="minirow"><span>Level 1</span><span class="tag">context</span></div>
+    <div class="minirow"><span>Level 2</span><span class="tag">entity</span></div>
+    <div class="minirow"><span>Level 3</span><span class="tag">behavior</span></div>
+  </div>
+  <div class="field"><button class="btn" onclick="addNode('input')">＋ Input Node</button> <button class="btn" onclick="addNode('drive')">＋ Driver Node</button></div>
+</aside>
+</div>
+</div>
+
+<div class="drawer" id="drawer"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const state={
+ layer:1, flow:true, selected:null, nextId:1,
+ layers:{
+  1:[
+   {id:'projectData',title:'Project Data',type:'input',kind:'INPUT DATA',desc:'Master project settings, story constraints and authoring directives.',chips:['12 records','global']},
+   {id:'world',title:'World Context',type:'input',kind:'INPUT DATA',desc:'World rules, locations, entities and environmental evidence.',chips:['24 records','rules']},
+   {id:'analysis',title:'Context Processor',type:'process',kind:'PROCESS',desc:'Combines project data and world context into a usable scene context.',chips:['normalize','context']},
+   {id:'level1out',title:'Level 1 Context',type:'drive',kind:'DRIVER OUTPUT',desc:'Publishes context to the entity layer.',chips:['→ Level 2','ready']}
+  ],
+  2:[
+   {id:'rainee',title:'Rainee',type:'input',kind:'ENTITY INPUT',desc:'Character dataset and transformation-state references.',chips:['37 evidence','3 states']},
+   {id:'noir',title:'Noir',type:'input',kind:'input',kind:'ENTITY INPUT',desc:'Secondary character dataset and observer behavior.',chips:['21 evidence','observer']},
+   {id:'relationship',title:'Sister Relationship',type:'process',kind:'RELATIONSHIP',desc:'Reusable relationship object connecting Rainee and Noir.',chips:['12 evidence','interaction']},
+   {id:'entityDrive',title:'Entity Context Driver',type:'drive',kind:'DRIVER OUTPUT',desc:'Publishes entity and relationship state into Level 3.',chips:['→ Level 3','active']}
+  ],
+  3:[
+   {id:'visualState',title:'Visual State',type:'input',kind:'STATE INPUT',desc:'Image-derived visual state and transformation references.',chips:['18 frames','visual']},
+   {id:'behavior',title:'Behavior Driver',type:'process',kind:'BEHAVIOR PROCESS',desc:'Computes behavior from evidence, entities, relationships and current state.',chips:['visual','audio','text']},
+   {id:'tone',title:'Tone / Music Driver',type:'input',kind:'MODIFIER INPUT',desc:'Optional tonal and musical influence on the current behavior computation.',chips:['mood','tempo']},
+   {id:'output',title:'Authoring Output',type:'drive',kind:'DRIVER OUTPUT',desc:'Final structured behavior/state package sent downstream to fiction generation.',chips:['behavior','state']}
+  ]
+ }
+};
+const layerNames={1:['LEVEL 1 · PROJECT / WORLD','Project / World','Global context + source data'],2:['LEVEL 2 · CHARACTER / ENTITY','Character / Entity','Entities + relationships'],3:['LEVEL 3 · STATE / BEHAVIOR','State / Behavior','States + drivers + outputs']};
+const connections=[
+ ['projectData','analysis'],['world','analysis'],['analysis','level1out'],
+ ['level1out','rainee'],['level1out','noir'],['rainee','relationship'],['noir','relationship'],['relationship','entityDrive'],
+ ['entityDrive','behavior'],['visualState','behavior'],['tone','behavior'],['behavior','output']
+];
+
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1500)}
+function setLayer(n){
+ state.layer=n;state.selected=null;
+ [1,2,3].forEach(i=>document.getElementById('layer'+i).classList.toggle('active',i===n));
+ document.getElementById('canvasLayer').textContent=layerNames[n][0];
+ document.getElementById('canvasScope').textContent=layerNames[n][2];
+ render();
+ toast('Switched to '+layerNames[n][1]);
+}
+function selectNode(id){
+ const found=Object.values(state.layers).flat().find(n=>n.id===id);
+ if(!found)return;
+ const owner=Object.entries(state.layers).find(([k,v])=>v.some(n=>n.id===id));
+ if(owner) state.layer=Number(owner[0]);
+ state.selected=id;
+ [1,2,3].forEach(i=>document.getElementById('layer'+i).classList.toggle('active',i===state.layer));
+ document.getElementById('canvasLayer').textContent=layerNames[state.layer][0];
+ document.getElementById('canvasScope').textContent=layerNames[state.layer][2];
+ render(); updateInspector(found);
+}
+function updateInspector(n){
+ document.getElementById('inspectTitle').textContent=n.title;
+ document.getElementById('inspectSub').textContent=n.desc;
+ document.getElementById('inspectLayer').textContent='Level '+state.layer+' · '+layerNames[state.layer][1];
+ document.getElementById('inspectRole').textContent=n.kind;
+ document.getElementById('inspectConnections').textContent=connections.some(c=>c.includes(n.id))?'ACTIVE':'ISOLATED';
+ document.getElementById('inspectData').textContent=n.desc+'  '+n.chips.join(' · ');
+}
+function render(){
+ const host=document.getElementById('nodes');host.innerHTML='';
+ const list=state.layers[state.layer];
+ const positions={
+  1:[[65,95],[65,285],[365,190],[680,190]],
+  2:[[55,105],[55,300],[360,205],[700,205]],
+  3:[[55,95],[360,205],[55,325],[700,205]]
+ };
+ list.forEach((n,i)=>{
+  const el=document.createElement('div');el.className='node '+n.type+(state.selected===n.id?' selected':'');
+  el.id='node-'+n.id;el.style.left=positions[state.layer][i][0]+'px';el.style.top=positions[state.layer][i][1]+'px';
+  const input=n.type==='input'||n.type==='process', output=n.type==='drive'||n.type==='process';
+  el.innerHTML=(input?'<span class="port l"></span>':'')+(output?'<span class="port r"></span>':'')+
+   '<div class="nhead"><b>'+n.title+'</b><span class="type">'+n.kind+'</span></div>'+
+   '<div class="nbody">'+n.desc+'<div class="chips">'+n.chips.map(c=>'<span class="chip">'+c+'</span>').join('')+'</div></div>';
+  el.onclick=e=>{e.stopPropagation();selectNode(n.id)};
+  makeDraggable(el,n);
+  host.appendChild(el);
+ });
+ drawConnections();
+}
+function makeDraggable(el,n){
+ let dragging=false,sx=0,sy=0,ox=0,oy=0;
+ el.addEventListener('mousedown',e=>{
+  if(e.target.classList.contains('port'))return;
+  dragging=true;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop;el.style.zIndex=20;
+  document.body.style.userSelect='none';
+  const move=ev=>{
+   if(!dragging)return;
+   el.style.left=Math.max(10,ox+ev.clientX-sx)+'px';el.style.top=Math.max(55,oy+ev.clientY-sy)+'px';drawConnections();
+  };
+  const up=()=>{dragging=false;el.style.zIndex='10';document.body.style.userSelect='';document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up)};
+  document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+ });
+}
+function nodeCenter(id,side){
+ const el=document.getElementById('node-'+id);if(!el)return null;
+ const canvas=document.getElementById('canvas'), cr=canvas.getBoundingClientRect(), er=el.getBoundingClientRect();
+ return {x:(side==='r'?er.right:er.left)-cr.left,y:er.top-cr.top+er.height/2};
+}
+function drawConnections(){
+ const svg=document.getElementById('svgflow');svg.innerHTML='';
+ const active=connections.filter(c=>c.some(id=>state.layers[state.layer].some(n=>n.id===id)));
+ active.forEach((c,i)=>{
+  let a=nodeCenter(c[0],'r'),b=nodeCenter(c[1],'l'); if(!a||!b)return;
+  const ns=document.createElementNS('http://www.w3.org/2000/svg','path');
+  const dx=Math.max(45,Math.abs(b.x-a.x)*.45);
+  ns.setAttribute('d',`M ${a.x} ${a.y-40} C ${a.x+dx} ${a.y-40}, ${b.x-dx} ${b.y-40}, ${b.x} ${b.y-40}`);
+  ns.setAttribute('class','flow '+(state.flow?'active ':'')+(c[0].includes('Drive')||c[1].includes('Drive')?'drive':''));
+  svg.appendChild(ns);
+  if(state.flow){
+   const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('r','3.5');dot.setAttribute('class','flow-dot');
+   const anim=document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
+   anim.setAttribute('dur',(1.6+i*.13)+'s');anim.setAttribute('repeatCount','indefinite');anim.setAttribute('path',`M ${a.x} ${a.y-40} C ${a.x+dx} ${a.y-40}, ${b.x-dx} ${b.y-40}, ${b.x} ${b.y-40}`);
+   dot.appendChild(anim);svg.appendChild(dot);
+  }
+ });
+ document.getElementById('connectionCount').textContent=active.length;
+}
+function toggleFlow(){state.flow=!state.flow;document.getElementById('flowState').textContent=state.flow?'ON':'OFF';drawConnections();toast(state.flow?'Animated flow enabled':'Animated flow paused')}
+function addNode(type){
+ const layer=state.layer;const id='custom'+state.nextId++;
+ const n={id,title:(type==='input'?'New Input ':'New Driver ')+id.slice(6),type:type==='input'?'input':'drive',kind:type==='input'?'INPUT DATA':'DRIVER OUTPUT',desc:type==='input'?'User-authored source data for this layer.':'User-authored driver that pushes state downstream.',chips:['new','editable']};
+ state.layers[layer].push(n);state.selected=id;render();updateInspector(n);toast('Added node to Level '+layer);
+}
+function fitGraph(){document.getElementById('canvas').scrollTop=0;document.getElementById('canvas').scrollLeft=0;toast('Graph fitted to canvas')}
+function runGraph(){
+ state.flow=true;document.getElementById('flowState').textContent='ON';drawConnections();
+ toast('Executing Level 1 → Level 2 → Level 3');
+}
+function openSettings(){
+ document.getElementById('modal').innerHTML='<button class="close2" onclick="closeModal()">×</button><div class="eyebrow">PROJECT SETTINGS</div><h2 style="font:28px Georgia,serif">Graph Configuration</h2><div class="muted">The three layers are explicit authoring scopes. Connections may cross layer boundaries without collapsing the scopes.</div><div class="formrow"><label>Execution order</label><select><option>Level 1 → Level 2 → Level 3</option><option>Interactive / live</option></select></div><div class="formrow"><label>Flow animation</label><select><option>Enabled</option><option>Disabled</option></select></div><div class="field"><div class="label">Layer ownership</div><div class="minirow"><span>Level 1</span><span class="tag">Project / World</span></div><div class="minirow"><span>Level 2</span><span class="tag">Character / Entity</span></div><div class="minirow"><span>Level 3</span><span class="tag">State / Behavior</span></div></div><button class="primary" onclick="closeModal();toast('Settings saved')">Save Settings</button>';
+ document.getElementById('drawer').classList.add('show');
+}
+function closeModal(){document.getElementById('drawer').classList.remove('show')}
+document.getElementById('drawer').addEventListener('click',e=>{if(e.target.id==='drawer')closeModal()});
+window.addEventListener('resize',drawConnections);
+document.getElementById('canvas').addEventListener('click',()=>{state.selected=null;render();});
+render();
+</script>
+</body>
+</html>

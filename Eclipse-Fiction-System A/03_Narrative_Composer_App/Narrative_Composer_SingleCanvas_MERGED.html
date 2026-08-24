@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse Narrative Composer — Single Canvas</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101113;color:#eee}
+  :root{
+    --paper:#f4f0e6; --ink:#262522; --muted:#77736b;
+    --gold:#c99a5d; --line:#34383f; --bg:#101113; --bg2:#16181b;
+    --edge-lore:#c99a5d;      /* primary cognition source */
+    --edge-noir:#4fd6ff;      /* character grouping — "All Noir" */
+    --edge-evidence:#ff9f4f;  /* transcript / comedy evidence */
+    --edge-reference:#7c6bff; /* deep reference / personality layer */
+  }
+  button,input,textarea{font:inherit}
+  .app{height:100vh;display:grid;grid-template-rows:58px 1fr}
+  header{
+    height:58px;background:#0d0e10;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:20px;padding:0 20px;z-index:30
+  }
+  .brand{font-family:Georgia,serif;font-size:21px;letter-spacing:.02em}
+  .brand small{display:block;font:8px Inter,sans-serif;letter-spacing:.24em;color:#999;margin-top:-2px}
+  .crumb{color:#999;font-size:12px;border-left:1px solid #333;padding-left:18px}
+  .spacer{flex:1}
+  .btn{border:1px solid #3b3f45;background:#191b1e;color:#ddd;border-radius:5px;padding:8px 12px;cursor:pointer;font-size:12px}
+  .btn:hover{background:#22252a}
+  .btn.primary{border-color:#d0aa78;background:#b78d5d;color:#131313;font-weight:700}
+
+  .workspace{display:grid;grid-template-columns:52px 1fr 320px;min-height:0}
+
+  /* ---- tool rail ---- */
+  .tools{background:#131418;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;z-index:15}
+  .tools button{width:34px;height:34px;padding:0;font-size:15px;border:1px solid #333;background:#1a1c20;color:#ccc;border-radius:6px;cursor:pointer}
+  .tools button:hover{background:#25282e}
+  .tools button.on{border-color:var(--gold);color:var(--gold)}
+
+  /* ---- canvas / stage ---- */
+  .stage{position:relative;overflow:hidden;background:#1c1d20;cursor:grab}
+  .stage.panning{cursor:grabbing}
+  .board-label{position:absolute;top:16px;left:20px;color:#8b8f96;font-size:10px;letter-spacing:.18em;text-transform:uppercase;z-index:12}
+  .minimap{position:absolute;right:16px;top:16px;width:170px;height:96px;border:1px solid #3a3e45;background:#17191c;border-radius:6px;opacity:.9;z-index:12}
+  .minimap:after{content:"";position:absolute;left:20px;top:22px;width:82px;height:50px;border:1px solid var(--gold)}
+  .status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#17191c;border:1px solid #3a3e45;border-radius:16px;padding:7px 13px;font-size:10.5px;color:#9fa4ab;z-index:12}
+  .legend{position:absolute;right:16px;bottom:16px;background:#17191c;border:1px solid #3a3e45;border-radius:6px;padding:9px 11px;width:196px;font-size:9.5px;color:#9da2a8;z-index:12}
+  .legend b{color:#eee;display:block;margin-bottom:6px;font-size:10px;letter-spacing:.06em}
+  .legend div{margin:4px 0;display:flex;align-items:center;gap:6px}
+  .legend .sw{width:10px;height:3px;border-radius:2px;flex:none}
+
+  .world{position:absolute;left:0;top:0;width:2600px;height:1500px;transform-origin:0 0;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:32px 32px;background-color:#1c1d20}
+
+  svg.wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:3}
+  .wire{fill:none;stroke-width:2;opacity:.8}
+  .wire-flow{stroke-dasharray:6 10;animation:flow 1.1s linear infinite}
+  @keyframes flow{ to{ stroke-dashoffset:-32; } }
+  .wire-glow{stroke-width:7;opacity:.14;filter:blur(1.5px)}
+  .wire-socket{fill:#17191c;stroke-width:2}
+
+  /* ---- manuscript block-nodes ---- */
+  .block-node{
+    position:absolute;width:400px;background:var(--paper);color:var(--ink);
+    border:1px solid #cfc8b9;border-radius:4px;box-shadow:0 16px 40px rgba(0,0,0,.4);z-index:5
+  }
+  .block-node.selected{box-shadow:0 0 0 2px var(--gold),0 16px 40px rgba(0,0,0,.4)}
+  .block-drag{padding:8px 14px;border-bottom:1px solid #e0dbd1;display:flex;align-items:center;justify-content:space-between;cursor:grab;background:#efe9db}
+  .block-kind{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b846f}
+  .block-grip{color:#b3a98f;font-size:11px}
+  .block-body{padding:14px 18px 18px;cursor:pointer}
+  .chips{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+  .chip{font-size:8px;border:1px solid #cfc7b8;border-radius:10px;padding:3px 7px;text-transform:uppercase;letter-spacing:.07em;color:#756f64}
+  .block-body p{font:14.5px/1.55 Georgia,serif;margin:6px 0}
+  .dialogue{font-family:Inter,sans-serif;font-size:11.5px;line-height:1.55;margin:6px 0}
+  .dialogue b{font-size:9px;letter-spacing:.12em}
+  .composer-note{background:#e6e0d2;border:1px solid #d3cabb;padding:9px 11px;font:10.5px/1.45 Inter,sans-serif;color:#635e55;margin:10px 0}
+  .port{position:absolute;width:12px;height:12px;border:2px solid var(--gold);background:var(--paper);border-radius:50%;top:26px;cursor:crosshair;z-index:6}
+  .port.left{left:-7px}.port.right{right:-7px}
+
+  /* ---- author-placed nodes ---- */
+  .node{position:absolute;width:236px;background:#17191c;border:1px solid #3d4249;border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.4);z-index:6;user-select:none}
+  .node.selected{box-shadow:0 0 0 2px var(--gold),0 12px 28px rgba(0,0,0,.4)}
+  .node-head{padding:9px 12px;border-bottom:1px solid #2c2f34;display:flex;align-items:center;gap:8px;cursor:grab}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .node-title{font-size:11.5px;font-weight:650;flex:1}
+  .node-kind{font-size:7.5px;color:#8d9096;text-transform:uppercase;letter-spacing:.11em}
+  .node-body{padding:10px 12px;cursor:pointer;color:#aeb2b9;font-size:10px;line-height:1.5}
+  .node-body strong{color:#eee}
+  .node-foot{padding:7px 12px;border-top:1px solid #26282c;color:#777d85;font-size:8.5px}
+  .npt{position:absolute;width:11px;height:11px;border-radius:50%;top:24px;border:2px solid #666;background:#17191c;z-index:6}
+  .npt.left{left:-6px}.npt.right{right:-6px}
+  /* static port dots hidden — wires now land on their own computed socket per side */
+  .port,.npt{display:none}
+
+  /* ---- inspector ---- */
+  .inspector{background:#131518;border-left:1px solid var(--line);overflow:auto}
+  .section{padding:16px;border-bottom:1px solid var(--line)}
+  .section h4{font-size:9px;letter-spacing:.16em;color:#858a91;text-transform:uppercase;margin:0 0 11px}
+  .title{font:17px Georgia,serif}
+  .pill{float:right;border:1px solid #3d4249;border-radius:10px;padding:3px 7px;font-size:8.5px;color:#9fa4ab}
+  .layer{margin-top:10px;border:1px solid #2c2f34;border-radius:5px;overflow:hidden}
+  .layer-head{padding:7px 10px;background:#1b1e22;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#c3c7cd;display:flex;justify-content:space-between}
+  .layer-head span.tag{font-size:7.5px;letter-spacing:.06em;color:#777d85;border:none;padding:0}
+  .layer-body{padding:9px 10px;font-size:10.5px;color:#b8bbc0;line-height:1.5}
+  .layer-body .kv{display:flex;justify-content:space-between;gap:8px;margin:3px 0}
+  .layer-body .kv span:first-child{color:#8b909a}
+  .check{display:block;font-size:10px;color:#aaa;margin:8px 0}
+  .w{display:grid;grid-template-columns:1fr 34px;gap:6px;margin:9px 0;font-size:9.5px}
+  .mini{height:4px;background:#292d32;margin-top:5px;border-radius:2px}
+  .mini i{display:block;height:100%;background:var(--gold);border-radius:2px}
+  .evidence{background:#17191c;border:1px solid #2c2f34;padding:9px;margin-top:7px;font-size:9.5px;color:#9da2a8;line-height:1.5}
+  .field{margin-top:11px}
+  .field label{display:block;font-size:8.5px;color:#858a92;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+  .field input,.field textarea{width:100%;background:#101215;border:1px solid #34383f;color:#eee;border-radius:3px;padding:7px;font-size:11px}
+  .empty-hint{color:#7c828a;font-size:11px;line-height:1.6;padding:4px 0}
+
+  .overlay{display:none;position:fixed;inset:0;background:#000b;align-items:center;justify-content:center;z-index:50}
+  .modal{width:min(720px,90vw);background:#17191c;border:1px solid #40454c;padding:22px;box-shadow:0 30px 90px #000}
+  .modal h2{font:22px Georgia,serif;font-weight:400;margin:0}
+  .modal p{color:#92979e;line-height:1.5;font-size:12px}
+  .matrix{display:grid;grid-template-columns:150px repeat(3,1fr);border-top:1px solid #34383f;border-left:1px solid #34383f;margin-top:14px}
+  .matrix div{padding:9px;border-right:1px solid #34383f;border-bottom:1px solid #34383f;font-size:10.5px}
+  .matrix .head{color:#888;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">Eclipse <small>NARRATIVE COMPOSER</small></div>
+  <div class="crumb">Project / Rainee &amp; Noir / Jade City — single canvas</div>
+  <div class="spacer"></div>
+  <button class="btn">Undo</button><button class="btn">Redo</button><button class="btn" id="fit">Fit Board</button>
+  <button class="btn" id="ev">Evidence Matrix</button>
+  <button class="btn primary" id="compute">RECOMPUTE</button>
+</header>
+
+<div class="workspace">
+  <div class="tools">
+    <button class="on" title="Select">↖</button>
+    <button title="Add node" id="addNode">＋</button>
+    <button title="Connect">⌁</button>
+    <button title="Zoom in" id="zoomIn">⊕</button>
+    <button title="Zoom out" id="zoomOut">⊖</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="board-label">SINGLE CANVAS · MANUSCRIPT + COGNITION GRAPH</div>
+    <div class="minimap"></div>
+
+    <div class="world" id="world">
+      <svg class="wires" id="wires"></svg>
+
+      <!-- ===== manuscript blocks (narrator/dialogue), pre-split ===== -->
+      <div class="block-node" id="block1" data-node="block1" style="left:520px;top:120px">
+        <div class="block-drag"><span class="block-kind">Narrator Block</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip">Rainee / State 03</span><span class="chip">Merchant</span></div>
+          <p>Rainee stared at the baby-diaper aisle, scanning the price tags with the seriousness of a merchant examining contraband.</p>
+          <p>She looked down at the tiny black diaper peeking above her pants.</p>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <div class="block-node" id="block2" data-node="block2" style="left:520px;top:420px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 2 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip">Noir / Recognition</span><span class="chip">Relationship</span></div>
+          <p>Noir drifted into the aisle, stopped, and stared.</p>
+          <div class="dialogue"><b>NOIR</b><br>“Rainee?”</div>
+          <div class="dialogue"><b>RAINEE</b><br>“Just a convenience upgrade.”</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <div class="block-node" id="block3" data-node="block3" style="left:520px;top:700px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 2 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip">Comedy</span><span class="chip">Stewie Evidence</span></div>
+          <p>Noir stared at the box of diapers Rainee had already begun pricing for resale.</p>
+          <div class="dialogue"><b>RAINEE</b><br>“Merchant never sleeps. It just sleeps in a diaper now.”</div>
+          <div class="composer-note">Composer note: Comedy is a high-priority behavioral influence. Diaper-specific evidence is scoped to Rainee's transformation state, not a generic rule for every character.</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <div class="block-node" id="block4" data-node="block4" style="left:520px;top:1000px">
+        <div class="block-drag"><span class="block-kind">Narrator Block</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip">Transformation Event</span><span class="chip">Physical Comedy</span></div>
+          <p>The transformation completes through the absurd logic established by the active lore node rather than shifting the scene into melodrama.</p>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== author-placed cognition nodes ===== -->
+      <div class="node" id="lore" data-node="lore" style="left:1060px;top:90px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-lore)"></span><span class="node-title">Rainee Transformation Lore</span><span class="node-kind">Lore</span></div>
+        <div class="node-body"><strong>Primary cognition source</strong><br>Transformation states, merchant behavior, comedy rules, persona transition, physical logic.</div>
+        <div class="node-foot">37 evidence · 14 relationships · priority stack</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <div class="node" id="noir" data-node="noir" style="left:1060px;top:420px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-noir)"></span><span class="node-title">Noir · Character (All Scenes)</span><span class="node-kind">Character</span></div>
+        <div class="node-body"><strong>Embedded behavior model</strong><br>Skeptical observer + willing participant. Drives every block Noir appears in across the canvas — one node, multiple blocks.</div>
+        <div class="node-foot">12 traits · 8 relationship rules</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <div class="node" id="stewie" data-node="stewie" style="left:1060px;top:700px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-evidence)"></span><span class="node-title">Stewie Evidence Cluster</span><span class="node-kind">Transcript</span></div>
+        <div class="node-body"><strong>Comedy reference</strong><br>Dialogue rhythm, escalation, physical gag timing, adult vocabulary in a child context, interruption patterns.</div>
+        <div class="node-foot">4 transcripts · confidence: medium</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <div class="node" id="rangiku" data-node="rangiku" style="left:120px;top:200px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-reference)"></span><span class="node-title">Rangiku Personality</span><span class="node-kind">Reference</span></div>
+        <div class="node-body"><strong>Deep personality layer</strong><br>Merchant confidence, social ease, appetite for teasing, established character habits. High volume does not override scene focus.</div>
+        <div class="node-foot">8 hours source material · weight 1.0</div>
+        <span class="npt right"></span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <b>Edge Key</b>
+      <div><span class="sw" style="background:var(--edge-lore)"></span>Lore · primary cognition</div>
+      <div><span class="sw" style="background:var(--edge-noir)"></span>Character grouping ("All Noir")</div>
+      <div><span class="sw" style="background:var(--edge-evidence)"></span>Comedy / transcript evidence</div>
+      <div><span class="sw" style="background:var(--edge-reference)"></span>Deep reference layer</div>
+    </div>
+    <div class="status" id="status">4 cognition nodes · 4 manuscript blocks · 7 connections · last compute: just now</div>
+  </div>
+
+  <aside class="inspector" id="inspector">
+    <div class="section" id="insp-empty">
+      <h4>Inspector</h4>
+      <div class="empty-hint">Select a manuscript block or a cognition node on the canvas to inspect its Parameter / Attribute / Channel data and recompute controls.</div>
+    </div>
+  </aside>
+</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="btn" style="float:right" id="close">CLOSE</button>
+    <h2>Evidence Matrix</h2>
+    <p>Evidence volume and evidence authority are separate. A large corpus can dominate a domain without dominating the entire narrative.</p>
+    <div class="matrix">
+      <div class="head">Domain</div><div class="head">Rangiku · 8h</div><div class="head">BBL · 5 eps</div><div class="head">Stewie</div>
+      <div>Personality</div><div>.95</div><div>.35</div><div>.62</div>
+      <div>Body / visual trait</div><div>.30</div><div>.95</div><div>.18</div>
+      <div>Comedy</div><div>.72</div><div>.65</div><div>.92</div>
+      <div>Dialogue</div><div>.95</div><div>.40</div><div>.90</div>
+      <div>Transformation</div><div>.20</div><div>.80</div><div>.86</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ node data model — Parameter / Attribute / Channel ============
+   Structural scaffold per the dev-plan's three-layer split (design intent,
+   not a locked schema — field names here are illustrative). */
+const GRAPH = {
+  block1:{title:'Narrator Block · Merchant Intro',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Narrator','Tagged characters':'Rainee','Manuscript position':'Beat 1'},
+    attribute:{'Inferred tone':'Deadpan comedic','Co-occurring blocks':'2, 3'},
+    channel:{'Transformation state':'State 03','Scene time':'Continuous — opening'}},
+  block2:{title:'Dialogue Block · Recognition',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Dialogue (2 speakers)','Tagged characters':'Noir, Rainee','Manuscript position':'Beat 2'},
+    attribute:{'Inferred relationship shift':'Recognition → disbelief','Co-occurring blocks':'1, 3'},
+    channel:{'Relationship state':'Noir: recognizing','Scene time':'Continuous'}},
+  block3:{title:'Dialogue Block · Comedy Beat',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Dialogue (2 speakers)','Tagged characters':'Rainee, Noir','Manuscript position':'Beat 3'},
+    attribute:{'Inferred tone':'Escalating absurd comedy','Evidence match':'Stewie · 0.86'},
+    channel:{'Transformation state':'State 03','Scene time':'Continuous'}},
+  block4:{title:'Narrator Block · Transformation',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Narrator','Tagged characters':'Rainee','Manuscript position':'Beat 4'},
+    attribute:{'Inferred logic source':'Active lore node','Co-occurring blocks':'3'},
+    channel:{'Transformation state':'State 03 → complete','Scene time':'Closing beat'}},
+  lore:{title:'Rainee Transformation Lore',kind:'Lore Node',dotColor:'var(--edge-lore)',
+    parameter:{'Node type':'Lore','Declared rule':'Comedy overrides melodrama on transform','Priority':'1 (highest)'},
+    attribute:{'Evidence count':'37 items','Relationships':'14'},
+    channel:{'Active for':'Blocks 1, 3, 4','Priority stack position':'Top'}},
+  noir:{title:'Noir · Character (All Scenes)',kind:'Character Node',dotColor:'var(--edge-noir)',
+    parameter:{'Node type':'Character','Declared traits':'Skeptical observer, willing participant','Grouping':'All-scenes'},
+    attribute:{'Inferred arc':'Recognition → escalation','Relationship rules':'8'},
+    channel:{'Wired blocks':'2, 3 (fans out — one node, many blocks)'}},
+  stewie:{title:'Stewie Evidence Cluster',kind:'Transcript Node',dotColor:'var(--edge-evidence)',
+    parameter:{'Node type':'Transcript reference','Source':'4 transcripts','Confidence':'Medium'},
+    attribute:{'Derived pattern':'Escalation + interruption timing','Comedy weight':'0.86'},
+    channel:{'Active for':'Block 3 only'}},
+  rangiku:{title:'Rangiku Personality',kind:'Reference Node',dotColor:'var(--edge-reference)',
+    parameter:{'Node type':'Deep reference','Source':'8h transcript','Author weight':'1.0'},
+    attribute:{'Derived trait':'Merchant confidence, teasing appetite'},
+    channel:{'Active for':'Block 1'}},
+};
+const EDGES = [
+  {a:'lore',b:'block1',color:'var(--edge-lore)'},
+  {a:'lore',b:'block3',color:'var(--edge-lore)'},
+  {a:'lore',b:'block4',color:'var(--edge-lore)'},
+  {a:'noir',b:'block2',color:'var(--edge-noir)'},
+  {a:'noir',b:'block3',color:'var(--edge-noir)'},
+  {a:'stewie',b:'block3',color:'var(--edge-evidence)'},
+  {a:'rangiku',b:'block1',color:'var(--edge-reference)'},
+];
+
+const stage=document.getElementById('stage'), world=document.getElementById('world');
+let scale=0.62, tx=-380, ty=-40;
+applyTransform();
+function applyTransform(){ world.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`; }
+
+/* ---- pan ---- */
+let panning=false, psx=0, psy=0, ptx=0, pty=0;
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.block-node,.node')) return;
+  panning=true; stage.classList.add('panning'); stage.setPointerCapture(e.pointerId);
+  psx=e.clientX; psy=e.clientY; ptx=tx; pty=ty;
+});
+stage.addEventListener('pointermove',e=>{
+  if(!panning) return;
+  tx=ptx+(e.clientX-psx); ty=pty+(e.clientY-psy); applyTransform();
+});
+stage.addEventListener('pointerup',()=>{panning=false; stage.classList.remove('panning');});
+
+/* ---- zoom ---- */
+function zoomAt(factor, cx, cy){
+  const ns=Math.min(2.2,Math.max(0.28,scale*factor));
+  const wx=(cx-tx)/scale, wy=(cy-ty)/scale;
+  tx=cx-ns*wx; ty=cy-ns*wy; scale=ns; applyTransform(); updateWires();
+}
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=stage.getBoundingClientRect();
+  zoomAt(e.deltaY<0?1.08:0.93, e.clientX-r.left, e.clientY-r.top);
+},{passive:false});
+document.getElementById('zoomIn').onclick=()=>zoomAt(1.15, stage.clientWidth/2, stage.clientHeight/2);
+document.getElementById('zoomOut').onclick=()=>zoomAt(0.87, stage.clientWidth/2, stage.clientHeight/2);
+document.getElementById('fit').onclick=()=>{ scale=0.62; tx=-380; ty=-40; applyTransform(); updateWires(); };
+
+/* ---- drag block-nodes and author nodes ---- */
+function makeDraggable(el, handle){
+  let dragging=false, sx=0, sy=0, ox=0, oy=0;
+  handle.addEventListener('pointerdown',e=>{
+    if(e.button!==0) return;
+    dragging=true; handle.setPointerCapture(e.pointerId);
+    sx=e.clientX; sy=e.clientY;
+    ox=parseFloat(el.style.left)||0; oy=parseFloat(el.style.top)||0;
+    el.style.zIndex=++zTop;
+    e.stopPropagation();
+  });
+  handle.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    el.style.left=(ox+(e.clientX-sx)/scale)+'px';
+    el.style.top=(oy+(e.clientY-sy)/scale)+'px';
+    updateWires();
+  });
+  handle.addEventListener('pointerup',()=>dragging=false);
+}
+let zTop=10;
+document.querySelectorAll('.block-node').forEach(b=>{
+  makeDraggable(b, b.querySelector('.block-drag'));
+  b.querySelector('.block-body').addEventListener('click',()=>select(b.dataset.node));
+});
+document.querySelectorAll('.node').forEach(n=>{
+  makeDraggable(n, n.querySelector('.node-head'));
+  n.querySelector('.node-body').addEventListener('click',()=>select(n.dataset.node));
+});
+
+/* ---- wires (world-space coords, unaffected by pan/zoom transform) ----
+   Side-aware routing: each wire attaches to the side of a node that FACES the
+   other node (source left of target → out source's RIGHT into target's LEFT;
+   mirrored otherwise), and every (node, side) spreads its connections evenly
+   down that side — one port slot per wire, ordered by the other endpoint, so
+   no two wires share an anchor point and fans stay parallel instead of random. */
+function rectOf(el){
+  return {left:parseFloat(el.style.left)||0, top:parseFloat(el.style.top)||0, w:el.offsetWidth, h:el.offsetHeight};
+}
+function centerY(id){ const r=rectOf(document.getElementById(id)); return r.top+r.h/2; }
+function pathD(a,b,dir){
+  const dx=Math.max(60,Math.abs(b.x-a.x)*.45)*dir;
+  return `M ${a.x} ${a.y} C ${a.x+dx} ${a.y}, ${b.x-dx} ${b.y}, ${b.x} ${b.y}`;
+}
+function updateWires(){
+  const svg=document.getElementById('wires');
+  const routed=EDGES.map(edge=>{
+    const ra=rectOf(document.getElementById(edge.a)), rb=rectOf(document.getElementById(edge.b));
+    const srcLeft=ra.left+ra.w/2 < rb.left+rb.w/2;
+    return {edge, aSide:srcLeft?'right':'left', bSide:srcLeft?'left':'right'};
+  });
+  const groups={};
+  routed.forEach(rt=>{
+    const push=(id,side,otherId)=>((groups[id+'::'+side] ??= {id,side,list:[]}).list.push({rt,otherY:centerY(otherId)}));
+    push(rt.edge.a,rt.aSide,rt.edge.b);
+    push(rt.edge.b,rt.bSide,rt.edge.a);
+  });
+  const slots=new Map();
+  Object.values(groups).forEach(g=>{
+    g.list.sort((p,q)=>p.otherY-q.otherY);
+    const el=document.getElementById(g.id), r=rectOf(el);
+    const topPad=el.classList.contains('block-node')?36:26;
+    const usable=Math.max(r.h-topPad-12,20);
+    g.list.forEach((p,i)=>{
+      const y=r.top+topPad+(g.list.length===1?usable/2:usable*i/(g.list.length-1));
+      const x=g.side==='left'?r.left:r.left+r.w;
+      const s=slots.get(p.rt) ?? {};
+      s[g.id===p.rt.edge.a?'a':'b']={x,y,paper:el.classList.contains('block-node')};
+      slots.set(p.rt,s);
+    });
+  });
+  svg.innerHTML=routed.map(rt=>{
+    const s=slots.get(rt), dir=rt.aSide==='right'?1:-1, d=pathD(s.a,s.b,dir);
+    const sock=p=>`<circle class="wire-socket" cx="${p.x}" cy="${p.y}" r="4" fill="${p.paper?'#f4f0e6':'#17191c'}" style="stroke:${rt.edge.color}"/>`;
+    return sock(s.a)+sock(s.b)+
+      `<path class="wire wire-glow" style="stroke:${rt.edge.color}" d="${d}"/>`+
+      `<path class="wire wire-flow" style="stroke:${rt.edge.color}" d="${d}"/>`;
+  }).join('');
+}
+updateWires();
+
+/* ---- selection + inspector ---- */
+let selected=null;
+function select(id){
+  selected=id;
+  document.querySelectorAll('.block-node,.node').forEach(el=>el.classList.toggle('selected', el.dataset.node===id));
+  renderInspector(id);
+}
+function layerRows(obj){
+  return Object.entries(obj).map(([k,v])=>`<div class="kv"><span>${k}</span><span>${v}</span></div>`).join('');
+}
+function renderInspector(id){
+  const d=GRAPH[id];
+  const isBlock=id.startsWith('block');
+  const insp=document.getElementById('inspector');
+  insp.innerHTML=`
+    <div class="section">
+      <span class="pill">${isBlock?'MANUSCRIPT':'COGNITION NODE'}</span>
+      <div class="title">${d.title}</div>
+      <div class="field"><label>Node kind</label><input value="${d.kind}"></div>
+    </div>
+    <div class="section">
+      <h4>Three-Layer Data</h4>
+      <div class="layer"><div class="layer-head">Parameter<span class="tag">author-set</span></div><div class="layer-body">${layerRows(d.parameter)}</div></div>
+      <div class="layer"><div class="layer-head">Attribute<span class="tag">computed / derived</span></div><div class="layer-body">${layerRows(d.attribute)}</div></div>
+      <div class="layer"><div class="layer-head">Channel<span class="tag">varies over timeline</span></div><div class="layer-body">${layerRows(d.channel)}</div></div>
+    </div>
+    ${isBlock? `
+    <div class="section">
+      <h4>Recompute Scope</h4>
+      <label class="check"><input type="checkbox" checked> Attached node relationships</label>
+      <label class="check"><input type="checkbox" checked> Character behavior</label>
+      <label class="check"><input type="checkbox" checked> Comedy behavior</label>
+      <label class="check"><input type="checkbox"> Existing prose</label>
+      <label class="check"><input type="checkbox" checked> Transformation state</label>
+      <small style="color:#737981">Unchecked material is preserved during regeneration.</small>
+    </div>
+    <div class="section">
+      <h4>Evidence Influence</h4>
+      <div class="w">Rangiku · Personality <span>0.95</span><div class="mini"><i style="width:95%"></i></div></div>
+      <div class="w">BBL · Body / State <span>0.35</span><div class="mini"><i style="width:35%"></i></div></div>
+      <div class="w">Stewie · Comedy <span>0.86</span><div class="mini"><i style="width:86%"></i></div></div>
+      <div class="w">Noir · Relationship <span>0.78</span><div class="mini"><i style="width:78%"></i></div></div>
+    </div>` : ''}
+    <div class="section">
+      <h4>Trace / Why</h4>
+      <div class="evidence"><b>Comedy behavior</b><br>Stewie transcripts support absurd normalization, blunt reactions and escalation.</div>
+      <div class="evidence"><b>${isBlock?'Merchant identity':'Wiring rationale'}</b><br>${isBlock? 'Rainee lore preserves merchant cognition through transformation.' : 'This node connects into every block it is tagged as influencing — not a replacement for the manuscript text.'}</div>
+    </div>
+    <div class="section">
+      <h4>Output</h4>
+      <button class="btn primary" style="width:100%" id="json">COMPILE TO JSON TRANSCRIPT</button>
+      <button class="btn" style="width:100%;margin-top:7px" id="story">GENERATE REVISED STORY</button>
+    </div>`;
+  document.getElementById('json').onclick=()=>alert('Mock export: scene text + active node graph become a structured JSON transcript.');
+  document.getElementById('story').onclick=()=>alert('Mock generation: Character → World → Text → optional Plot Logic → JSON recompilation.');
+}
+
+/* ---- header actions ---- */
+document.getElementById('ev').onclick=()=>document.getElementById('overlay').style.display='flex';
+document.getElementById('close').onclick=()=>document.getElementById('overlay').style.display='none';
+document.getElementById('compute').onclick=()=>{
+  const s=document.getElementById('status');
+  s.textContent='Computing cognition graph… comedy → relationships → character behavior → prose';
+  setTimeout(()=>s.textContent='4 cognition nodes · 4 manuscript blocks · 7 connections · computed just now',700);
+};
+document.getElementById('addNode').onclick=()=>{
+  const id='node'+(++zTop);
+  const n=document.createElement('div');
+  n.className='node'; n.dataset.node=id; n.style.left='700px'; n.style.top='1150px'; n.style.zIndex=++zTop;
+  n.innerHTML=`<div class="node-head"><span class="dot" style="background:#888"></span><span class="node-title">New Cognition Node</span><span class="node-kind">Source</span></div>
+   <div class="node-body"><strong>Untitled source</strong><br>Drop transcripts, lore, images, relationships, or rules here.</div>
+   <div class="node-foot">Click to select · drag to position</div>
+   <span class="npt left"></span><span class="npt right"></span>`;
+  world.appendChild(n);
+  GRAPH[id]={title:'New Cognition Node',kind:'Source Node',parameter:{'Node type':'Unset'},attribute:{'Evidence count':'0'},channel:{'Active for':'Not yet wired'}};
+  makeDraggable(n, n.querySelector('.node-head'));
+  n.querySelector('.node-body').addEventListener('click',()=>select(id));
+};
+</script>
+</body>
+</html>

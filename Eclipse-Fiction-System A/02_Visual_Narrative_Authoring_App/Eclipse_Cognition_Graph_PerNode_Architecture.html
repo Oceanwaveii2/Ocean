@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eclipse Cognition Graph - Per-Node Data Architecture</title>
+<style>
+  :root{
+    --bg:#eef1f5;
+    --panel:#ffffff;
+    --ink:#1f2732;
+    --muted:#66717f;
+    --line:#cfd6df;
+    --accent:#536b8d;
+    --accent2:#7d91ad;
+    --soft:#f5f7fa;
+    --green:#607f70;
+    --orange:#a77b52;
+    --purple:#76658d;
+    --shadow:0 8px 24px rgba(31,39,50,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55
+  }
+  header{
+    background:#202833;color:#fff;padding:34px 42px;
+    border-bottom:4px solid #8da0ba
+  }
+  header h1{margin:0 0 8px;font-size:30px}
+  header p{margin:0;color:#cbd3dd;max-width:950px}
+  main{max-width:1250px;margin:28px auto;padding:0 22px}
+  section{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:26px;margin:0 0 22px;box-shadow:var(--shadow)
+  }
+  h2{margin-top:0;font-size:23px}
+  h3{font-size:17px;margin-bottom:8px}
+  .tag{
+    display:inline-block;padding:4px 9px;border-radius:999px;
+    background:#e8edf4;color:#41526a;font-size:12px;font-weight:700;
+    margin:2px 4px 2px 0
+  }
+  .note{
+    background:#f7f8fa;border-left:4px solid var(--accent);
+    padding:14px 16px;border-radius:8px;margin:15px 0
+  }
+  .warning{
+    background:#fbf5ef;border-left:4px solid var(--orange);
+    padding:14px 16px;border-radius:8px;margin:15px 0
+  }
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .card{
+    border:1px solid var(--line);border-radius:10px;padding:17px;background:#fff
+  }
+  .card strong{display:block;margin-bottom:6px}
+  pre{
+    background:#171d25;color:#e7edf5;padding:20px;border-radius:10px;
+    overflow:auto;font:13px/1.45 Consolas,Monaco,monospace;
+    border:1px solid #303b49
+  }
+  code{
+    background:#edf0f4;padding:2px 5px;border-radius:4px;
+    font-family:Consolas,monospace
+  }
+  table{width:100%;border-collapse:collapse;margin:14px 0}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:#f1f4f8}
+  .small{font-size:13px;color:var(--muted)}
+  .flow{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+    gap:10px;margin:18px 0
+  }
+  .node{
+    border:2px solid var(--accent2);background:#f8fafc;border-radius:10px;
+    padding:12px 17px;text-align:center;min-width:150px
+  }
+  .arrow{font-size:22px;color:#718096}
+  .legend span{margin-right:16px;font-size:13px}
+  footer{max-width:1250px;margin:0 auto 40px;padding:0 22px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Eclipse Cognition Graph</h1>
+  <p>
+    Per-node evidence, RELATIONSHIP VARIANT, relationship logic, weighting, priorities, biases,
+    overrides, and copyable datasets for a visual fiction-engine authoring system.
+  </p>
+  <p><strong>Guiding concept — Pseudo-cognition:</strong> convert media-derived observable behavior, social responses, context, and relationships into editable nodes that can support fictional simulation and, conceptually, narrative decomposition and recomposition.</p>
+  <p><strong>Migration status:</strong> “Relationship Variant” is an internal variant of a Relationship Node, not a standalone node type. This is a conceptual background document; current decisions are in <code>Documentation_Migration_and_Authority.md</code>.</p>
+</header>
+
+<main>
+
+<section>
+<h2>1. Core Design Principle</h2>
+<p>
+The system is intended to function as an <strong>active cognition layer for fictional characters</strong>.
+It is not simply a prompt library and not simply a database of character descriptions.
+The goal is to organize evidence so an AI can compute how a character should behave,
+react, speak, interpret a situation, and interact with other characters.
+</p>
+<div class="note">
+<strong>Central separation:</strong> Evidence describes what was observed. Relationship and
+RELATIONSHIP VARIANTs describe how evidence is allowed to interact. Rules, weights, priorities,
+biases, and overrides control that interaction.
+</div>
+
+<pre>
+                         CHARACTER BRAIN
+                               |
+                    +----------+----------+
+                    |                     |
+             DIRECT EVIDENCE       SUPPORT / REFERENCE
+                    |                     |
+                    v                     v
+             Character Data         Comparative Data
+                    \                     /
+                     \                   /
+                      +-------+---------+
+                              |
+                              v
+                    COMPUTED COGNITION
+                              |
+                 +------------+------------+
+                 |            |            |
+              Behavior      Dialogue     Reaction
+</pre>
+</section>
+
+<section>
+<h2>2. The Basic Visual Unit: Evidence Node</h2>
+<p>
+The UI should stay simple. The author creates an evidence node, selects the data type from
+a dropdown, identifies the source and target, and sets its global influence. The deeper
+schema remains inside the inspector rather than cluttering the board.
+</p>
+
+<div class="card">
+<strong>Example Evidence Node</strong>
+<pre>
++-----------------------------------------+
+| + ADD EVIDENCE                          |
++-----------------------------------------+
+| Data Type: [ Transcript v ]             |
+|                                         |
+| Source:                                 |
+| [ Akane Akawa - Magic User's Club ]     |
+|                                         |
+| Dataset Scope:                           |
+| [ Direct Character Dataset v ]          |
+|                                         |
+| Global Weight:  █████████░ 90           |
+| Priority:       [ High v ]              |
+|                                         |
+| Evidence: 43 excerpts                   |
+| Confidence: High                        |
+|                                         |
+| [Open Dataset] [Duplicate] [Connect]   |
++-----------------------------------------+
+</pre>
+</div>
+
+<h3>Supported data types</h3>
+<p>
+<span class="tag">Transcript</span>
+<span class="tag">Image</span>
+<span class="tag">Audio</span>
+<span class="tag">Video Analysis</span>
+<span class="tag">Social / Cultural Reference</span>
+<span class="tag">Character Reference</span>
+<span class="tag">Relationship Evidence</span>
+<span class="tag">General Writing Reference</span>
+</p>
+
+<p>
+The <strong>data type</strong> describes the medium or evidence format. The
+<strong>target/source identity</strong> describes what the evidence is about.
+Those concepts should not be collapsed.
+</p>
+</section>
+
+<section>
+<h2>3. Direct Character Dataset vs Reference Dataset</h2>
+<p>
+A transcript can contain many characters, but the engine must know which character is being
+mined. This prevents a large episode from accidentally turning every character in the episode
+into one personality.
+</p>
+
+<div class="grid">
+<div class="card">
+<strong>Direct Character Dataset</strong>
+<p>The evidence is intended to model the target character directly.</p>
+<pre>
+Type: Transcript
+Source: Magic User's Club
+Target: Akane Akawa
+Scope: Direct
+Weight: 90
+Priority: High
+</pre>
+</div>
+
+<div class="card">
+<strong>Reference / Supporting Dataset</strong>
+<p>The evidence fills a behavioral gap or supplies a comparative signal. It does not redefine the target character.</p>
+<pre>
+Type: Transcript
+Source: Love Hina
+Target: Naru Narusegawa
+Scope: Reference
+Weight: 55
+Purpose: Comedy / reactions
+</pre>
+</div>
+</div>
+
+<div class="warning">
+<strong>Important:</strong> supporting data must never silently become identity data.
+If a reference character is useful because of a particular trait, only that selected
+behavioral dimension should be eligible for transfer.
+</div>
+</section>
+
+<section>
+<h2>4. Global Weight</h2>
+<p>
+Every dataset gets a global weight. This determines how strongly that dataset contributes
+to the character's overall evidence hierarchy.
+</p>
+
+<pre>
+PRIMARY CHARACTER EVIDENCE
+Akane direct data ................ 90
+        |
+        +---- strongest authority
+
+SECONDARY REFERENCE
+Naru comparative data ............ 55
+        |
+        +---- useful for selected gaps
+
+TERTIARY REFERENCE
+Other material ................... 20
+        |
+        +---- weak contextual signal
+</pre>
+
+<p>
+A weight does not mean "this character becomes the reference character."
+It means "this evidence source has this much authority when the engine is computing
+the relevant signal."
+</p>
+</section>
+
+<section>
+<h2>5. RELATIONSHIP VARIANT</h2>
+<p>
+A <strong>RELATIONSHIP VARIANT</strong> connects two evidence datasets that share a useful
+behavioral dimension. This is not the same thing as a story relationship.
+</p>
+
+<pre>
+      AKANE AKAWA
+   Direct Character Data
+       Weight: 90
+            |
+            |
+            v
++--------------------------------+
+|       RELATIONSHIP VARIANT         |
+|                                |
+| Shared dimensions:             |
+| • energetic reactions          |
+| • comedic embarrassment        |
+| • interpersonal friction       |
+| • expressive dialogue          |
+|                                |
+| Similarity: 72                 |
+| Transfer Weight: 42            |
+| Confidence: 67                 |
+| Priority: Medium               |
++---------------+----------------+
+                |
+                v
+       NARU NARUSEGAWA
+       Reference Dataset
+          Weight: 55
+</pre>
+
+<p>
+The RELATIONSHIP VARIANT says, in effect:
+<strong>"These datasets contain overlapping evidence for this particular behavioral dimension."</strong>
+It does not say the characters are related, identical, or interchangeable.
+</p>
+</section>
+
+<section>
+<h2>6. Relationship Node vs RELATIONSHIP VARIANT</h2>
+
+<table>
+<thead>
+<tr><th>Node</th><th>Purpose</th><th>Example</th><th>What it means</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Relationship Node</strong></td>
+<td>Represents an actual story relationship between characters.</td>
+<td>Akane ↔ Taro</td>
+<td>Rivalry, friendship, affection, family, conflict, dependency, etc.</td>
+</tr>
+<tr>
+<td><strong>RELATIONSHIP VARIANT</strong></td>
+<td>Connects evidence sources because they overlap on a behavioral dimension.</td>
+<td>Akane ↔ Naru</td>
+<td>Both provide useful evidence about expressive comedy or social reactivity.</td>
+</tr>
+</tbody>
+</table>
+
+<pre>
+ACTUAL STORY RELATIONSHIP
+
+Akane
+  |
+  +---- Relationship Node ---- Taro
+            |
+            +-- rivalry
+            +-- affection
+            +-- conflict
+
+
+EVIDENCE RELATIONSHIP VARIANT
+
+Akane Dataset
+  |
+  +---- RELATIONSHIP VARIANT ---- Naru Dataset
+            |
+            +-- comedic reaction
+            +-- embarrassment
+            +-- dialogue energy
+</pre>
+
+<div class="note">
+This distinction is crucial. Otherwise the graph becomes a spaghetti bowl where
+"these characters remind me of each other" accidentally becomes "these characters know each other."
+</div>
+</section>
+
+<section>
+<h2>7. Relationship / RELATIONSHIP VARIANT Controls</h2>
+<p>
+Connections themselves can carry data. The same two datasets may be strongly related for one
+dimension and weakly related for another.
+</p>
+
+<pre>
++--------------------------------+
+| RELATIONSHIP / RELATIONSHIP VARIANT     |
+|                                |
+| Source A: Akane                |
+| Source B: Naru                 |
+|                                |
+| Similarity          72         |
+| Contrast            38         |
+| Humor Compatibility 88         |
+| Dialogue Influence  69         |
+| Behavior Transfer   52         |
+| Visual Influence    31         |
+|                                |
+| Priority: Medium               |
+| Override: None                 |
+| Enabled: YES                   |
++--------------------------------+
+</pre>
+
+<p>
+Possible controls include:
+<span class="tag">Similarity</span>
+<span class="tag">Contrast</span>
+<span class="tag">Transfer Weight</span>
+<span class="tag">Confidence</span>
+<span class="tag">Priority</span>
+<span class="tag">Bias</span>
+<span class="tag">Override</span>
+<span class="tag">Domain Filters</span>
+</p>
+</section>
+
+<section>
+<h2>8. Sparse Character Problem</h2>
+<p>
+Minor characters are inherently difficult to reproduce because the available evidence may
+only consist of a handful of scenes. The engine should represent that uncertainty rather
+than hallucinating a complete personality.
+</p>
+
+<pre>
+                    AKANE BRAIN
+                         |
+          +--------------+--------------+
+          |                             |
+          v                             v
+     DIRECT DATA                  SUPPORTING DATA
+       Weight 90                     Weight 45
+          |                             |
+          v                             v
+   43 useful excerpts           Similar archetype
+   7 interactions               comedy reference
+          \                             /
+           \                           /
+            +-----------+-------------+
+                        |
+                        v
+                 BEHAVIORAL MODEL
+</pre>
+
+<p>
+A reference dataset can fill a missing behavioral dimension, but its lower weight and
+scope restrictions prevent it from pretending to be original canon evidence.
+</p>
+</section>
+
+<section>
+<h2>9. Mixed Data Volume and Structure</h2>
+<p>
+Different sources produce different kinds and quantities of evidence. A long transcript,
+a single image, an influencer-style post, an audio recording, and a character capture
+should not be treated as equal simply because each is "one dataset."
+</p>
+
+<table>
+<thead>
+<tr><th>Evidence</th><th>Possible information</th><th>Typical limitation</th></tr>
+</thead>
+<tbody>
+<tr><td>Transcript</td><td>Dialogue, reactions, jokes, interactions, recurring behavior</td><td>May miss visual/audio cues</td></tr>
+<tr><td>Image</td><td>Appearance, pose, expression, visual motifs</td><td>Very little temporal behavior</td></tr>
+<tr><td>Audio</td><td>Tone, cadence, rhythm, emotional energy, delivery</td><td>May lack visual context</td></tr>
+<tr><td>Video analysis</td><td>Combined behavior, timing, gesture, scene dynamics</td><td>More expensive to process</td></tr>
+<tr><td>Social / cultural reference</td><td>Speech patterns, attitudes, aesthetics, behavioral signals</td><td>May not represent a fictional character</td></tr>
+</tbody>
+</table>
+
+<p>
+The engine should therefore track both <strong>weight</strong> and <strong>evidence quality/confidence</strong>.
+A dataset with thousands of weak or irrelevant samples should not automatically defeat a small,
+high-confidence direct dataset.
+</p>
+</section>
+
+<section>
+<h2>10. Selective Transfer</h2>
+<p>
+The most important safeguard for reference data is dimensional transfer. A RELATIONSHIP VARIANT
+should be able to specify <em>what</em> is allowed to cross the connection.
+</p>
+
+<pre>
+REFERENCE DATASET
+       |
+       v
++--------------------------+
+| SELECTIVE TRANSFER       |
+|                          |
+| Comedy .......... 85     |  <-- allowed
+| Dialogue ........ 70     |  <-- allowed
+| Social reaction . 60     |  <-- allowed
+| Visual design ... 15     |  <-- weak
+| Biography ....... BLOCK  |  <-- never transfer
+| Canon history ... BLOCK  |  <-- never transfer
++--------------------------+
+       |
+       v
+TARGET CHARACTER
+</pre>
+
+<p>
+This lets a reference character act as a <strong>behavioral tool</strong> without becoming
+a personality transplant.
+</p>
+</section>
+
+<section>
+<h2>11. Copyable Node Architecture</h2>
+<p>
+Nodes should be portable because the same useful dataset may be needed by multiple character
+brains or stories.
+</p>
+
+<pre>
+COPYABLE EVIDENCE NODE
+|
++-- metadata
++-- source
++-- target
++-- evidence_type
++-- scope
++-- global_weight
++-- priority
++-- confidence
++-- extracted_traits
++-- behavioral_patterns
++-- dialogue_patterns
++-- visual_patterns
++-- audio_patterns
++-- domain_tags
++-- rule_sets
++-- relationship_connections
+|
++-- Duplicate
+       |
+       +-- change target
+       +-- change weight
+       +-- change scope
+       +-- change filters
+       +-- change connections
+</pre>
+
+<p>
+The duplicate should preserve the underlying dataset structure while allowing the author
+to retarget or specialize it.
+</p>
+</section>
+
+<section>
+<h2>12. Rules, Biases, Priorities, and Overrides</h2>
+<p>
+Each node and each connection can have its own control layer. The controls should be
+hierarchical rather than flattened into one giant global prompt.
+</p>
+
+<pre>
+GLOBAL CHARACTER HIERARCHY
+        |
+        v
++---------------------+
+| GLOBAL PRIORITIES   |
++----------+----------+
+           |
+           v
++---------------------+
+| NODE WEIGHTS        |
+| NODE BIASES         |
+| NODE OVERRIDES      |
++----------+----------+
+           |
+           v
++---------------------+
+| CONNECTION RULES    |
+| CONNECTION WEIGHTS  |
+| CONNECTION BIASES   |
+| CONNECTION OVERRIDES|
++----------+----------+
+           |
+           v
+      COMPUTED SIGNAL
+</pre>
+
+<p>
+An override should have higher authority than ordinary evidence when the story explicitly
+requires it. This is especially useful for transformation states, temporary character
+conditions, scene-specific behavior, or other deliberate exceptions.
+</p>
+</section>
+
+<section>
+<h2>13. Example: Akane + Naru RELATIONSHIP VARIANT</h2>
+<p>
+For the UX demonstration, use a fictional-character-to-fictional-character comparison rather
+than using Marilyn Monroe as a person. The dataset can instead represent the character
+<strong>Sugar Kane Kowalczyk</strong> from <em>Some Like It Hot</em>, or another fictional
+character from a different work. This preserves the distinction between actor and character.
+</p>
+
+<pre>
+                 +-------------------------+
+                 | AKANE AKAWA             |
+                 | Magic User's Club       |
+                 | Direct Character Data   |
+                 | Global Weight: 90       |
+                 +------------+------------+
+                              |
+                              v
+                  +-----------------------+
+                  | RELATIONSHIP VARIANT           |
+                  |                       |
+                  | Comedic reactivity    |
+                  | Social embarrassment  |
+                  | Expressive dialogue   |
+                  | Interpersonal friction|
+                  |                       |
+                  | Similarity: 72        |
+                  | Transfer: 42          |
+                  | Confidence: 67        |
+                  +-----------+-----------+
+                              |
+                              v
+                 +-------------------------+
+                 | NARU NARUSEGAWA        |
+                 | Love Hina               |
+                 | Reference Data          |
+                 | Global Weight: 55       |
+                 +-------------------------+
+</pre>
+
+<p>
+The same visual pattern can be reused with other fictional characters whenever the author
+finds a useful behavioral RELATIONSHIP VARIANT.
+</p>
+</section>
+
+<section>
+<h2>14. Eclipse Visual Authoring UX</h2>
+<p>
+The board should be a literal visual workspace. The graph is the primary authoring surface.
+There should not be a mandatory large text page sitting behind it. Detailed data belongs
+in the inspector.
+</p>
+
+<pre>
++-----------------------------------------------------------------------+
+| ECLIPSE | VISUAL AUTHORING                         Save   Compute     |
++----------+----------------------------------------------+------------+
+|          |                                              |            |
+| DATA     |              WHITEBOARD / GRAPH               | INSPECTOR  |
+|          |                                              |            |
+| + Add    |       +-------------------+                   | Node       |
+|          |       | AKANE              |                   | Type       |
+|Transcript|       | Character Data      |-------+           | Source     |
+|Image     |       | Weight: 90          |       |           | Target     |
+|Audio     |       +-------------------+       |           | Weight     |
+|Video     |                                   v           | Priority   |
+|Reference |                         +----------------+   | Bias       |
+|          |                         | RELATIONSHIP VARIANT    |   | Rules      |
+|          |                         |                |   | Overrides  |
+|          |                         +-------+--------+   |            |
+|          |                                 |            |            |
+|          |                                 v            |            |
+|          |                         +----------------+   |            |
+|          |                         | NARU           |   |            |
+|          |                         | Reference      |   |            |
+|          |                         | Weight: 55     |   |            |
+|          |                         +----------------+   |            |
+|          |                                              |            |
++----------+----------------------------------------------+------------+
+</pre>
+
+<h3>Board interaction</h3>
+<ul>
+<li>Drag nodes around freely.</li>
+<li>Draw connections between nodes.</li>
+<li>Select a connection to edit its rules.</li>
+<li>Select a node to open its inspector.</li>
+<li>Double-click a node to open its dataset.</li>
+<li>Duplicate nodes without rebuilding their schemas.</li>
+<li>Zoom and pan the whiteboard.</li>
+<li>Group nodes into character, reference, scene, or research clusters.</li>
+<li>Temporarily disable connections without deleting them.</li>
+<li>Run the cognition graph to produce a computed character state.</li>
+</ul>
+</section>
+
+<section>
+<h2>15. Proposed Data Schema</h2>
+
+<pre>
+CHARACTER_BRAIN
+|
++-- character_id
++-- global_rules
++-- global_priority
++-- global_overrides
+|
++-- EVIDENCE_NODES[]
+|   |
+|   +-- node_id
+|   +-- data_type
+|   +-- source
+|   +-- target
+|   +-- scope
+|   +-- global_weight
+|   +-- priority
+|   +-- confidence
+|   +-- evidence[]
+|   +-- extracted_signals[]
+|   +-- node_rules[]
+|   +-- node_biases[]
+|   +-- node_overrides[]
+|
++-- RELATIONSHIP VARIANT_NODES[]
+|   |
+|   +-- node_id
+|   +-- source_node_ids[]
+|   +-- shared_dimensions[]
+|   +-- similarity
+|   +-- contrast
+|   +-- transfer_weights
+|   +-- confidence
+|   +-- priority
+|   +-- filters
+|   +-- rules[]
+|   +-- biases[]
+|   +-- overrides[]
+|
++-- RELATIONSHIP_NODES[]
+|   |
+|   +-- source_character
+|   +-- target_character
+|   +-- relationship_type
+|   +-- relationship_strength
+|   +-- scene_conditions
+|   +-- behavior_rules[]
+|
++-- COMPUTATION
+    |
+    +-- active_context
+    +-- active_scene
+    +-- active_character_state
+    +-- evidence_resolution
+    +-- conflict_resolution
+    +-- final_behavior_signal
+</pre>
+</section>
+
+<section>
+<h2>16. Computation Model</h2>
+<p>
+Conceptually, the engine can resolve a behavior signal through several stages rather than
+throwing the entire graph into an LLM prompt at once.
+</p>
+
+<pre>
+RAW DATA
+   |
+   v
+EXTRACTION
+   |
+   +-- dialogue signals
+   +-- reaction signals
+   +-- visual signals
+   +-- audio signals
+   +-- interaction signals
+   |
+   v
+EVIDENCE NORMALIZATION
+   |
+   v
+NODE WEIGHTING
+   |
+   v
+RELATIONSHIP VARIANT / RELATIONSHIP RESOLUTION
+   |
+   v
+PRIORITY + BIAS + OVERRIDE RESOLUTION
+   |
+   v
+ACTIVE CHARACTER STATE
+   |
+   v
+SCENE COGNITION
+   |
+   v
+LLM GENERATION
+   |
+   v
+STORY / DIALOGUE / ACTION
+</pre>
+
+<div class="note">
+The LLM becomes the final language generator rather than the sole source of character logic.
+The graph supplies structured cognitive constraints and evidence before generation.
+</div>
+</section>
+
+<section>
+<h2>17. Why This Architecture Fits the Fiction Engine</h2>
+<p>
+The original fiction-engine problem was that an ordinary LLM tends to flatten a character
+into a handful of obvious adjectives. It can also overuse the strongest or most recent piece
+of context. The graph provides persistent structure.
+</p>
+
+<div class="grid">
+<div class="card">
+<strong>Without the graph</strong>
+<p>Prompt → LLM → generic personality → story.</p>
+</div>
+<div class="card">
+<strong>With the graph</strong>
+<p>Evidence → weighted cognition → relationships/RELATIONSHIP VARIANTs → active state → LLM → story.</p>
+</div>
+</div>
+
+<p>
+This makes it possible to keep low-frequency information alive. A small recurring behavior
+does not have to disappear simply because the current scene is about something else.
+Likewise, a huge reference dataset does not automatically overwhelm a smaller but more
+authoritative character dataset.
+</p>
+</section>
+
+<section>
+<h2>18. Design Rules to Preserve</h2>
+<ol>
+<li><strong>Evidence and inference are different.</strong> Store what was observed separately from what the engine concludes.</li>
+<li><strong>Direct character data has higher authority than reference data.</strong></li>
+<li><strong>Global weight controls overall influence.</strong></li>
+<li><strong>Connection weights control influence between specific datasets.</strong></li>
+<li><strong>Reference data must be dimension-filtered.</strong></li>
+<li><strong>Relationship nodes and RELATIONSHIP VARIANTs are different concepts.</strong></li>
+<li><strong>Overrides outrank ordinary evidence when explicitly configured.</strong></li>
+<li><strong>Sparse characters should carry uncertainty rather than fabricated completeness.</strong></li>
+<li><strong>Large datasets should not automatically overpower small, high-quality datasets.</strong></li>
+<li><strong>Nodes should be copyable and reusable.</strong></li>
+<li><strong>The whiteboard is the primary visual authoring surface.</strong></li>
+<li><strong>Complex controls belong in the inspector, not on every node.</strong></li>
+</ol>
+</section>
+
+<section>
+<h2>19. Final Architecture at a Glance</h2>
+
+<pre>
+                           ┌─────────────────────────────┐
+                           │       CHARACTER BRAIN      │
+                           └──────────────┬──────────────┘
+                                          │
+                           ┌──────────────▼──────────────┐
+                           │     GLOBAL HIERARCHY        │
+                           │ priority / rules / override │
+                           └──────────────┬──────────────┘
+                                          │
+             ┌────────────────────────────┼────────────────────────────┐
+             │                            │                            │
+             ▼                            ▼                            ▼
+    ┌────────────────┐          ┌────────────────┐          ┌────────────────┐
+    │ EVIDENCE NODE  │          │ EVIDENCE NODE  │          │ EVIDENCE NODE  │
+    │ Akane          │          │ Naru           │          │ Audio/Image    │
+    │ Direct         │          │ Reference      │          │ Reference      │
+    │ Weight 90      │          │ Weight 55      │          │ Weight 30      │
+    └───────┬────────┘          └───────┬────────┘          └────────────────┘
+            │                           │
+            └──────────────┬────────────┘
+                           ▼
+                ┌────────────────────────┐
+                │   RELATIONSHIP VARIANT     │
+                │                        │
+                │ shared dimensions      │
+                │ similarity             │
+                │ transfer               │
+                │ confidence             │
+                │ rules / biases         │
+                │ overrides              │
+                └────────────┬───────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │ ACTIVE COGNITION    │
+                  │                     │
+                  │ What does this      │
+                  │ character do here?  │
+                  └──────────┬──────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │   LLM GENERATION    │
+                  │                     │
+                  │ dialogue / action   │
+                  │ prose / scene       │
+                  └─────────────────────┘
+
+
+STORY RELATIONSHIPS ARE A SEPARATE GRAPH:
+
+Character A ─── Relationship Node ─── Character B
+                    │
+                    ├── affection
+                    ├── conflict
+                    ├── history
+                    ├── dependency
+                    └── scene-specific rules
+
+
+EVIDENCE RELATIONSHIP VARIANT IS A DIFFERENT GRAPH:
+
+Dataset A ─── RELATIONSHIP VARIANT ─── Dataset B
+                  │
+                  ├── shared behavior
+                  ├── similarity
+                  ├── transfer weight
+                  ├── confidence
+                  └── domain filters
+</pre>
+</section>
+
+<section>
+<h2>20. Implementation Direction</h2>
+<p>
+The first implementation should remain deliberately small. A working prototype does not
+need a neural network or an elaborate knowledge graph. It can use JSON objects representing
+nodes and edges, then perform deterministic weighting and filtering before handing the
+resolved context to an LLM.
+</p>
+
+<pre>
+STEP 1
+Visual node editor
+      |
+STEP 2
+JSON node / edge representation
+      |
+STEP 3
+Evidence ingestion
+      |
+STEP 4
+Weighted RELATIONSHIP VARIANT
+      |
+STEP 5
+Priority / bias / override resolution
+      |
+STEP 6
+Active scene context
+      |
+STEP 7
+LLM story generation
+      |
+STEP 8
+Feedback + new evidence
+      |
+      +----------------------+
+                             |
+                             v
+                     UPDATED BRAIN
+</pre>
+
+<p>
+The result is a system where the author can literally see the character's cognitive
+architecture on a whiteboard, move evidence around, connect datasets, tune relationships,
+and then run the graph as a structured pre-processing layer for story generation.
+</p>
+</section>
+
+</main>
+
+<footer>
+  Eclipse Cognition Graph Architecture • Working design document • Intended as a persistent
+  reference for future fiction-engine and visual-authoring implementations.
+</footer>
+</body>
+</html>
+

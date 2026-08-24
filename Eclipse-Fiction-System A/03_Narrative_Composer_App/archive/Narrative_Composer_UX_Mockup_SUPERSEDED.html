@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eclipse Narrative Composer UX Mockup</title>
+<style>
+:root{--bg:#101113;--panel:#15171a;--panel2:#1b1d21;--line:#34383f;--text:#eeeae3;--muted:#92979e;--gold:#c49a67;--blue:#6e8cff;--teal:#3d9ca8}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:12px Inter,system-ui,sans-serif}
+button,input,textarea{font:inherit}.app{height:100vh;display:grid;grid-template-rows:64px 1fr;overflow:hidden}
+.top{display:flex;align-items:center;justify-content:space-between;padding:0 26px;background:#111214;border-bottom:1px solid #292c31}
+.logo{font:25px Georgia,serif}.logo small{display:block;text-align:center;font:8px Inter;letter-spacing:.25em;color:#999}
+.nav{display:flex;height:100%;gap:4px}.nav button{border:0;background:transparent;color:#aaa;padding:0 15px;border-bottom:2px solid transparent}.nav .active{color:#fff;border-color:var(--gold)}
+.actions{display:flex;align-items:center;gap:8px}.btn{background:#191b1e;color:#ddd;border:1px solid #3b3f45;border-radius:3px;padding:9px 12px;cursor:pointer}.primary{background:#b78d5d;color:#111;border-color:#d0aa78;font-weight:700}
+.workspace{display:grid;grid-template-columns:230px minmax(500px,1fr) 315px;min-height:0}
+.sidebar,.inspector{background:#131518;overflow:auto}.sidebar{border-right:1px solid var(--line)}.inspector{border-left:1px solid var(--line)}
+.project{padding:18px;border-bottom:1px solid var(--line)}.project b{font:20px Georgia,serif}.project small{display:block;color:#777;margin-top:4px}
+.tree{padding:14px}.tree h4{font-size:9px;letter-spacing:.18em;color:#858a91;margin:12px 4px 7px;text-transform:uppercase}.row{padding:9px;border-radius:3px;color:#b8bbc0;cursor:pointer}.row:hover,.row.active{background:#22252a;color:#fff}.row.active{border-left:2px solid var(--gold)}.badge{float:right;border:1px solid #3b3f45;border-radius:9px;padding:2px 6px;font-size:9px;color:#858a92}.source{padding:8px;color:#aaa}.sw{display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--teal);margin-right:8px}.gold{background:var(--gold)}.blue{background:var(--blue)}
+.main{min-width:0;display:grid;grid-template-rows:48px 1fr;overflow:hidden}.toolbar{display:flex;align-items:center;gap:5px;padding:0 12px;background:#141619;border-bottom:1px solid var(--line)}.tool{border:0;background:transparent;color:#aaa;padding:8px 10px;cursor:pointer}.tool:hover{background:#22252a;color:#fff}.modes{margin-left:auto;display:flex;border:1px solid #363a40}.modes button{border:0;background:#17191c;color:#888;padding:7px 11px}.modes .active{background:#292c31;color:#fff}
+.canvas{position:relative;overflow:auto}.editor{width:min(760px,88%);min-height:calc(100% - 40px);margin:20px auto 100px;background:#f0ede6;color:#282724;box-shadow:0 18px 55px #000;padding:58px 68px 100px}.kicker{font-size:9px;letter-spacing:.2em;color:#897a65;text-transform:uppercase}.editor h1{font:32px Georgia,serif;margin:12px 0}.slug{font-size:10px;color:#777;border-bottom:1px solid #d1cbc0;padding-bottom:14px}.beat{position:relative;margin:22px 0;padding:10px 0 10px 17px;border-left:2px solid transparent}.beat:hover{border-color:#c49a67;background:#c49a6710}.beat p{font:16px/1.7 Georgia,serif;margin:7px 0}.character{font-size:10px;font-weight:800;letter-spacing:.12em;color:#75644e;margin-top:12px}.dialogue{font:15px/1.6 Georgia,serif}.tag{display:inline-flex;gap:5px;border:1px solid #bca889;border-radius:10px;padding:3px 7px;margin:2px;font-size:9px;color:#665b4b}.tag i{width:5px;height:5px;border-radius:50%;background:#a37d4d}.attach{position:absolute;right:-31px;top:8px;border:1px solid #b8a98f;background:#f5f1e8;color:#74654f;border-radius:50%;width:21px;height:21px}
+.note{background:#e3ddd1;border:1px solid #cfc6b6;padding:11px;margin:16px 0;font-size:10px;color:#665f55}
+.graph{display:none;position:relative;width:100%;height:100%;min-width:900px;background:linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px);background-size:32px 32px}.graphlabel{position:absolute;top:20px;left:24px;color:#777;font-size:9px;letter-spacing:.18em;text-transform:uppercase}.graph svg{position:absolute;width:100%;height:100%}.edge{fill:none;stroke:#777d85;stroke-width:1.5}.edge.gold{stroke:var(--gold)}.edge.blue{stroke:var(--blue)}
+.node{position:absolute;width:190px;background:#171a1e;border:1px solid #464b53;border-radius:5px;box-shadow:0 14px 30px #0007;cursor:grab}.node .nh{padding:9px 11px;border-bottom:1px solid #34383f;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.node .nb{padding:10px;color:#aeb2b9;font-size:11px;line-height:1.45}.node .bar{height:3px;background:#2d3136;margin-top:6px}.node .bar i{display:block;height:100%;background:var(--gold)}
+.char{border-top:2px solid var(--teal)}.comedy{border-top:2px solid var(--gold)}.rel{border-top:2px solid var(--blue)}
+.section{padding:18px;border-bottom:1px solid var(--line)}.section h4{font-size:9px;letter-spacing:.18em;color:#858a91;text-transform:uppercase;margin:0 0 12px}.title{font:18px Georgia,serif}.pill{float:right;border:1px solid #3d4249;border-radius:10px;padding:4px 7px;font-size:9px;color:#9fa4ab}.field{margin-top:13px}.field label{display:block;font-size:9px;color:#858a92;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}.field input,.field textarea{width:100%;background:#101215;border:1px solid #34383f;color:#eee;border-radius:3px;padding:8px}.field textarea{min-height:72px}.toggle{display:flex;justify-content:space-between;padding:9px 0;color:#b8bbc0}.switch{width:31px;height:17px;border-radius:20px;background:#34383f;position:relative;cursor:pointer}.switch:after{content:"";position:absolute;top:3px;left:3px;width:11px;height:11px;border-radius:50%;background:#eee}.switch.on{background:#9a7953}.switch.on:after{left:17px}.check{display:block;font-size:10px;color:#aaa;margin:9px 0}.weights{margin-top:8px}.w{display:grid;grid-template-columns:1fr 38px;gap:7px;margin:10px 0;font-size:10px}.mini{height:4px;background:#292d32;margin-top:5px}.mini i{display:block;height:100%;background:var(--gold)}.evidence{background:#17191c;border:1px solid #35393f;padding:10px;margin-top:8px;font-size:10px;color:#9da2a8}.status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#1b1e22;border:1px solid #3a3e45;padding:7px 12px;color:#858b92;font-size:9px;box-shadow:0 10px 30px #0008}
+.overlay{display:none;position:fixed;inset:0;background:#000b;align-items:center;justify-content:center;z-index:9}.modal{width:min(720px,90vw);background:#17191c;border:1px solid #40454c;padding:22px;box-shadow:0 30px 90px #000}.modal h2{font:23px Georgia,serif;font-weight:400;margin:0}.modal p{color:#92979e;line-height:1.5}.matrix{display:grid;grid-template-columns:150px repeat(3,1fr);border-top:1px solid #34383f;border-left:1px solid #34383f}.matrix div{padding:9px;border-right:1px solid #34383f;border-bottom:1px solid #34383f;font-size:10px}.matrix .head{color:#888;text-transform:uppercase}
+@media(max-width:1050px){.workspace{grid-template-columns:205px 1fr}.inspector{display:none}}@media(max-width:700px){.sidebar{display:none}.workspace{grid-template-columns:1fr}.nav{display:none}.editor{width:94%;padding:40px 28px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="logo">Eclipse<small>NARRATIVE COMPOSER</small></div>
+  <nav class="nav"><button class="active">Compose</button><button>Story Bible</button><button>Evidence</button><button>Graph</button><button>Export</button></nav>
+  <div class="actions"><button class="btn" id="ev">Evidence Matrix</button><button class="btn primary" id="compute">RECOMPUTE</button></div>
+</header>
+<div class="workspace">
+<aside class="sidebar">
+  <div class="project"><b>Rainee Transformation</b><small>Narrative Node Project · V1</small></div>
+  <div class="tree">
+    <h4>Document</h4><div class="row active">▤ Scene 01 · Jade City <span class="badge">LIVE</span></div><div class="row">◇ Scenario</div><div class="row">◆ Old Fiction</div><div class="row">◌ Brainstorm</div>
+    <h4>Characters</h4><div class="row">● Rainee <span class="badge">04</span></div><div class="row">● Noir <span class="badge">03</span></div><div class="row">● Jillian <span class="badge">01</span></div>
+    <h4>Evidence Sources</h4><div class="source"><i class="sw"></i>Rangiku transcripts <span class="badge">8h</span></div><div class="source"><i class="sw gold"></i>BBL episodes <span class="badge">5</span></div><div class="source"><i class="sw blue"></i>Family Guy / Stewie <span class="badge">12</span></div><div class="source"><i class="sw"></i>Lore Node <span class="badge">01</span></div>
+    <h4>Processing Nodes</h4><div class="row">▣ Character Engine</div><div class="row">▣ World Engine</div><div class="row">▣ Text Engine</div><div class="row">⌁ Plot Logic / Gaps</div><div class="row">↻ JSON Recompiler</div>
+  </div>
+</aside>
+<main class="main">
+  <div class="toolbar"><button class="tool">Undo</button><button class="tool">Redo</button><button class="tool" id="attach">＋ Attach Node</button><button class="tool">⌁ Trace Logic</button><button class="tool">☑ Recompute Scope</button><div class="modes"><button class="active" data-mode="text">TEXT</button><button data-mode="split">SPLIT</button><button data-mode="graph">GRAPH</button></div></div>
+  <div class="canvas">
+    <section class="editor" id="editor">
+      <div class="kicker">Scene Node · Active Narrative</div><h1>Rainee &amp; Noir · Jade City</h1><div class="slug">INT. JADE CITY MARKET · DAY · TRANSFORMATION STATE 03</div>
+      <div class="beat"><button class="attach">+</button><span class="tag"><i></i>RAINEE / STATE 03</span><span class="tag"><i></i>MERCHANT</span><p>Rainee stared at the baby-diaper aisle, scanning the price tags with the seriousness of a merchant examining contraband.</p><p>She looked down at the tiny black diaper peeking above her pants.</p></div>
+      <div class="beat"><button class="attach">+</button><span class="tag"><i></i>NOIR / RECOGNITION</span><span class="tag"><i></i>RELATIONSHIP</span><p>Noir drifted into the aisle, stopped, and stared.</p><div class="character">NOIR</div><div class="dialogue">“Rainee?”</div><div class="character">RAINEE</div><div class="dialogue">“Just a convenience upgrade.”</div></div>
+      <div class="beat"><button class="attach">+</button><span class="tag"><i></i>COMEDY</span><span class="tag"><i></i>STEWIE EVIDENCE</span><p>Noir stared at the box of diapers Rainee had already begun pricing for resale.</p><div class="character">RAINEE</div><div class="dialogue">“Merchant never sleeps. It just sleeps in a diaper now.”</div></div>
+      <div class="note"><b>Composer note:</b> Comedy is a high-priority behavioral influence. Diaper-specific evidence is scoped to Rainee's transformation state, not a generic rule for every character.</div>
+      <div class="beat"><button class="attach">+</button><span class="tag"><i></i>TRANSFORMATION EVENT</span><span class="tag"><i></i>PHYSICAL COMEDY</span><p>The transformation completes through the absurd logic established by the active lore node rather than shifting the scene into melodrama.</p></div>
+    </section>
+    <section class="graph" id="graph">
+      <div class="graphlabel">Visual Cognition Graph · drag nodes · connections are computable relationships</div>
+      <svg viewBox="0 0 1100 760"><path class="edge gold" d="M300 230 C430 170 480 180 590 225"/><path class="edge" d="M300 230 C380 330 440 410 565 430"/><path class="edge blue" d="M740 230 C680 290 650 340 620 430"/><path class="edge gold" d="M620 430 C730 410 790 370 880 390"/></svg>
+      <div class="node char" style="left:8%;top:24%"><div class="nh">Character · Rainee</div><div class="nb">Merchant identity + transformation state.<div class="bar"><i style="width:91%"></i></div></div></div>
+      <div class="node comedy" style="left:40%;top:20%"><div class="nh">Comedy Behavior</div><div class="nb">Absurd normalization · escalation · joke-first movement.<div class="bar"><i style="width:86%"></i></div></div></div>
+      <div class="node rel" style="left:67%;top:24%"><div class="nh">Relationship · Noir</div><div class="nb">Recognition → disbelief → participation.<div class="bar"><i style="width:78%"></i></div></div></div>
+      <div class="node" style="left:48%;top:54%"><div class="nh">Transformation State 03</div><div class="nb">Stewie-derived behavioral overlay. Diaper evidence scoped to Rainee.<div class="bar"><i style="width:83%"></i></div></div></div>
+    </section>
+    <div class="status"><b>6</b> active nodes · <b>14</b> relationships · <b>37</b> evidence items · last compute just now</div>
+  </div>
+</main>
+<aside class="inspector">
+  <div class="section"><span class="pill">ACTIVE</span><div class="title">Scene Node</div><div class="field"><label>Node name</label><input value="Rainee Transformation · Scene 01"></div><div class="field"><label>Purpose</label><textarea>Low-frequency plot data, relationships, behavior evidence and transformation rules that make the scene flow coherently.</textarea></div></div>
+  <div class="section"><h4>Processing Order</h4><div class="toggle">Visual Authoring Data <span class="switch on"></span></div><div class="toggle">Character Engine <span class="switch on"></span></div><div class="toggle">World Engine <span class="switch on"></span></div><div class="toggle">Text Engine <span class="switch on"></span></div><div class="toggle">Plot Logic / Gap Scan <span class="switch"></span></div><div class="toggle">JSON Recompiler <span class="switch on"></span></div></div>
+  <div class="section"><h4>Recompute Scope</h4><label class="check"><input type="checkbox" checked> Attached node relationships</label><label class="check"><input type="checkbox" checked> Character behavior</label><label class="check"><input type="checkbox" checked> Comedy behavior</label><label class="check"><input type="checkbox"> Existing prose</label><label class="check"><input type="checkbox" checked> Transformation state</label><small style="color:#737981">Unchecked material is preserved during regeneration.</small></div>
+  <div class="section"><h4>Evidence Influence</h4><div class="w">Rangiku · Personality <span>0.95</span><div class="mini"><i style="width:95%"></i></div></div><div class="w">BBL · Body / State <span>0.35</span><div class="mini"><i style="width:35%"></i></div></div><div class="w">Stewie · Comedy <span>0.86</span><div class="mini"><i style="width:86%"></i></div></div><div class="w">Noir · Relationship <span>0.78</span><div class="mini"><i style="width:78%"></i></div></div></div>
+  <div class="section"><h4>Trace / Why</h4><div class="evidence"><b>Comedy behavior</b><br>Stewie transcripts support absurd normalization, blunt reactions and escalation.</div><div class="evidence"><b>Merchant identity</b><br>Rainee lore preserves merchant cognition through transformation.</div></div>
+  <div class="section"><h4>Output</h4><button class="btn primary" style="width:100%" id="json">COMPILE TO JSON TRANSCRIPT</button><button class="btn" style="width:100%;margin-top:7px" id="story">GENERATE REVISED STORY</button></div>
+</aside>
+</div>
+</div>
+<div class="overlay" id="overlay"><div class="modal"><button class="btn" style="float:right" id="close">CLOSE</button><h2>Evidence Matrix</h2><p>Evidence volume and evidence authority are separate. A large corpus can dominate a domain without dominating the entire narrative.</p><div class="matrix"><div class="head">Domain</div><div class="head">Rangiku · 8h</div><div class="head">BBL · 5 eps</div><div class="head">Stewie</div><div>Personality</div><div>.95</div><div>.35</div><div>.62</div><div>Body / visual trait</div><div>.30</div><div>.95</div><div>.18</div><div>Comedy</div><div>.72</div><div>.65</div><div>.92</div><div>Dialogue</div><div>.95</div><div>.40</div><div>.90</div><div>Transformation</div><div>.20</div><div>.80</div><div>.86</div></div></div></div>
+<script>
+const editor=document.getElementById('editor'),graph=document.getElementById('graph');
+document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.modes button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+ if(b.dataset.mode==='graph'){editor.style.display='none';graph.style.display='block'}
+ else if(b.dataset.mode==='split'){editor.style.display='block';graph.style.display='block';editor.style.width='52%';editor.style.marginLeft='2%';editor.style.marginRight='0';graph.style.position='absolute';graph.style.left='56%';graph.style.width='44%';graph.style.height='100%'}
+ else{editor.style.display='block';graph.style.display='none';editor.style.width='min(760px,88%)';editor.style.margin='20px auto 100px'}
+});
+document.querySelectorAll('.switch').forEach(s=>s.onclick=()=>s.classList.toggle('on'));
+document.getElementById('ev').onclick=()=>document.getElementById('overlay').style.display='flex';
+document.getElementById('close').onclick=()=>document.getElementById('overlay').style.display='none';
+document.getElementById('compute').onclick=()=>alert('Mock compute: active processing nodes run in order; disabled nodes are skipped.');
+document.getElementById('attach').onclick=()=>alert('Mock attach workflow: select text, then choose an existing node or create a new one.');
+document.getElementById('json').onclick=()=>alert('Mock export: scene text + active node graph become a structured JSON transcript.');
+document.getElementById('story').onclick=()=>alert('Mock generation: Character → World → Text → optional Plot Logic → JSON recompilation.');
+document.querySelectorAll('.node').forEach(n=>{let d=false,x=0,y=0;n.onmousedown=e=>{d=true;x=e.clientX-n.offsetLeft;y=e.clientY-n.offsetTop};window.onmousemove=e=>{if(d){n.style.left=Math.max(0,e.clientX-x)+'px';n.style.top=Math.max(0,e.clientY-y)+'px'}};window.onmouseup=()=>d=false});
+</script>
+</body></html>

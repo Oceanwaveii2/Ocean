@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse Narrative Composer — Whiteboard Prototype</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#252525;color:#eee}
+  :root{
+    --paper:#f7f4ec; --ink:#262522; --muted:#77736b;
+    --gold:#c99a5d; --line:#7f7f7f; --panel:#171717;
+  }
+  .app{height:100vh;display:flex;flex-direction:column}
+  header{
+    height:58px;background:#101010;border-bottom:1px solid #383838;
+    display:flex;align-items:center;gap:22px;padding:0 22px;z-index:20
+  }
+  .brand{font-family:Georgia,serif;font-size:22px;letter-spacing:.03em}
+  .brand small{display:block;font:9px Inter,sans-serif;letter-spacing:.25em;color:#aaa;text-align:center;margin-top:-2px}
+  .crumb{color:#aaa;font-size:13px;border-left:1px solid #444;padding-left:20px}
+  .spacer{flex:1}
+  button{
+    border:1px solid #484848;background:#202020;color:#eee;border-radius:6px;
+    padding:8px 12px;cursor:pointer;font-size:12px
+  }
+  button:hover{background:#2d2d2d}
+  .primary{border-color:#b88950;background:#8b6338}
+  .workspace{position:relative;flex:1;overflow:hidden}
+  .board{
+    position:absolute;inset:0;
+    background-color:#292929;
+    background-image:
+      linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+  .board-label{position:absolute;top:18px;left:22px;color:#999;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  .minimap{
+    position:absolute;right:18px;top:18px;width:185px;height:104px;border:1px solid #555;
+    background:#202020;border-radius:6px;opacity:.92
+  }
+  .minimap:after{content:"";position:absolute;left:22px;top:24px;width:90px;height:55px;border:1px solid #c99a5d}
+  .tools{
+    position:absolute;left:18px;top:18px;width:48px;background:#171717;border:1px solid #444;
+    border-radius:9px;padding:6px;display:flex;flex-direction:column;gap:5px;z-index:12
+  }
+  .tools button{width:34px;height:34px;padding:0;font-size:15px}
+  .status{
+    position:absolute;bottom:15px;left:50%;transform:translateX(-50%);
+    background:#111;border:1px solid #444;border-radius:18px;padding:7px 13px;font-size:11px;color:#aaa;z-index:12
+  }
+
+  /* The manuscript is literally a whiteboard object. */
+  .page{
+    position:absolute;left:210px;top:82px;width:570px;min-height:720px;
+    background:var(--paper);color:var(--ink);box-shadow:0 18px 45px rgba(0,0,0,.38);
+    border:1px solid #cfc8b9;z-index:4;cursor:default
+  }
+  .page-head{padding:42px 48px 18px;border-bottom:1px solid #d9d3c8}
+  .eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#918b80}
+  h1{font:31px Georgia,serif;font-weight:400;margin:10px 0 7px}
+  .sub{font-size:10px;letter-spacing:.08em;color:#918b80;text-transform:uppercase}
+  .page-body{padding:18px 48px 60px}
+  .block{position:relative;padding:12px 0 16px;border-bottom:1px solid #e0dbd1}
+  .chips{display:flex;gap:5px;margin-bottom:8px}
+  .chip{font-size:8px;border:1px solid #cfc7b8;border-radius:10px;padding:3px 7px;text-transform:uppercase;letter-spacing:.08em;color:#756f64}
+  .block p{font:15px/1.55 Georgia,serif;margin:7px 0}
+  .dialogue{font-family:Inter,sans-serif;font-size:12px;line-height:1.55}
+  .dialogue b{font-size:9px;letter-spacing:.12em}
+  .composer-note{background:#ebe6da;border:1px solid #d8d0c1;padding:10px 12px;font:11px/1.45 Inter,sans-serif;color:#635e55;margin:12px 0}
+  .anchor{
+    position:absolute;right:-9px;top:50%;width:18px;height:18px;border-radius:50%;
+    background:#f7f4ec;border:1px solid #c2b8a8;color:#8b806f;display:grid;place-items:center;
+    font-size:13px;cursor:crosshair;z-index:8
+  }
+  .anchor:hover{background:#d4c09f;color:#292929}
+  .page-tag{position:absolute;right:14px;top:12px;font:9px Inter,sans-serif;color:#8a8378}
+
+  /* Nodes live on the same infinite board, not in a sidebar. */
+  .node{
+    position:absolute;width:245px;background:#151515;border:1px solid #4b4b4b;border-radius:7px;
+    box-shadow:0 12px 28px rgba(0,0,0,.35);z-index:6;user-select:none
+  }
+  .node.selected{border-color:#c99a5d;box-shadow:0 0 0 1px #c99a5d,0 12px 28px rgba(0,0,0,.35)}
+  .node-head{padding:10px 12px;border-bottom:1px solid #343434;display:flex;align-items:center;gap:8px;cursor:grab}
+  .dot{width:8px;height:8px;border-radius:50%;background:#c99a5d}
+  .node-title{font-size:12px;font-weight:650;flex:1}
+  .node-kind{font-size:8px;color:#8d8d8d;text-transform:uppercase;letter-spacing:.12em}
+  .node-body{padding:11px 12px;color:#bbb;font-size:10px;line-height:1.5}
+  .node-body strong{color:#eee}
+  .node-foot{padding:8px 12px;border-top:1px solid #303030;color:#777;font-size:9px}
+  .port{position:absolute;width:12px;height:12px;border:2px solid #c99a5d;background:#151515;border-radius:50%;right:-7px;top:50%;cursor:crosshair}
+  .port.left{left:-7px;right:auto}
+  .floating{
+    position:absolute;left:calc(50% - 180px);top:22px;width:360px;background:#111;border:1px solid #444;
+    border-radius:8px;padding:10px 12px;z-index:15;display:flex;gap:8px;align-items:center
+  }
+  .floating input{flex:1;background:#1c1c1c;border:1px solid #444;border-radius:5px;color:#eee;padding:8px;font-size:11px}
+  .hint{color:#777;font-size:10px;white-space:nowrap}
+  svg.connections{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+  .connection{fill:none;stroke:#b8b8b8;stroke-width:1.8;opacity:.75}
+  .connection.active{stroke:#c99a5d;stroke-width:2.6}
+  .legend{
+    position:absolute;right:18px;bottom:18px;background:#111;border:1px solid #444;border-radius:7px;
+    padding:10px 12px;width:210px;font-size:10px;color:#999;z-index:10
+  }
+  .legend b{color:#eee;display:block;margin-bottom:6px}
+  .legend div{margin:4px 0}.key{display:inline-block;width:8px;height:8px;border-radius:50%;background:#c99a5d;margin-right:6px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">Eclipse <small>NARRATIVE COMPOSER</small></div>
+  <div class="crumb">Project / Rainee & Noir / Jade City</div>
+  <div class="spacer"></div>
+  <button>Undo</button><button>Redo</button><button>Fit Board</button>
+  <button class="primary" id="compose">Compute Scene</button>
+</header>
+
+<div class="workspace" id="workspace">
+  <div class="board" id="board">
+    <div class="board-label">WHITEBOARD · SCENE GRAPH</div>
+    <div class="tools">
+      <button title="Select">↖</button>
+      <button title="Add node" id="addNode">＋</button>
+      <button title="Connect">⌁</button>
+      <button title="Text">T</button>
+      <button title="Zoom">⊕</button>
+    </div>
+
+    <div class="floating">
+      <input value="Rainee & Noir — Jade City" aria-label="scene title">
+      <span class="hint">drag page + nodes • connect anchors</span>
+    </div>
+
+    <svg class="connections" id="connections" viewBox="0 0 1600 900" preserveAspectRatio="none">
+      <path class="connection active" d="M 455 380 C 610 330, 730 255, 905 245"/>
+      <path class="connection" d="M 490 500 C 710 490, 850 420, 1120 430"/>
+      <path class="connection" d="M 520 610 C 720 650, 870 690, 1120 640"/>
+    </svg>
+
+    <article class="page" id="page">
+      <div class="page-tag">SCENE NODE · ACTIVE NARRATIVE</div>
+      <div class="page-head">
+        <div class="eyebrow">Scene Node · Active Narrative</div>
+        <h1>Rainee & Noir · Jade City</h1>
+        <div class="sub">INT. JADE CITY MARKET · DAY · TRANSFORMATION STATE 03</div>
+      </div>
+      <div class="page-body">
+        <section class="block">
+          <div class="chips"><span class="chip">Rainee / State 03</span><span class="chip">Merchant</span></div>
+          <p>Rainee stared at the baby-diaper aisle, scanning the price tags with the seriousness of a merchant examining contraband.</p>
+          <p>She looked down at the tiny black diaper peeking above her pants.</p>
+          <span class="anchor" data-anchor="scene1">+</span>
+        </section>
+        <section class="block">
+          <div class="chips"><span class="chip">Noir / Recognition</span><span class="chip">Relationship</span></div>
+          <p>Noir drifted into the aisle, stopped, and stared.</p>
+          <div class="dialogue"><b>NOIR</b><br>“Rainee?”</div>
+          <div class="dialogue"><b>RAINEE</b><br>“Just a convenience upgrade.”</div>
+          <span class="anchor" data-anchor="scene2">+</span>
+        </section>
+        <section class="block">
+          <div class="chips"><span class="chip">Comedy</span><span class="chip">Stewie Evidence</span></div>
+          <p>Noir stared at the box of diapers Rainee had already begun pricing for resale.</p>
+          <div class="dialogue"><b>RAINEE</b><br>“Merchant never sleeps. It just sleeps in a diaper now.”</div>
+          <div class="composer-note">Composer note: Comedy is a high-priority behavioral influence. Diaper-specific evidence is scoped to Rainee's transformation state, not a generic rule for every character.</div>
+          <span class="anchor" data-anchor="scene3">+</span>
+        </section>
+        <section class="block">
+          <div class="chips"><span class="chip">Transformation Event</span><span class="chip">Physical Comedy</span></div>
+          <p>The transformation completes through the absurd logic established by the active lore node rather than shifting the scene into melodrama.</p>
+          <span class="anchor" data-anchor="scene4">+</span>
+        </section>
+      </div>
+    </article>
+
+    <div class="node" id="lore" style="left:900px;top:160px">
+      <div class="node-head"><span class="dot"></span><span class="node-title">Rainee Transformation Lore</span><span class="node-kind">Lore</span></div>
+      <div class="node-body"><strong>Primary cognition source</strong><br>Transformation states, merchant behavior, comedy rules, persona transition, physical logic.</div>
+      <div class="node-foot">37 evidence · 14 relationships · priority stack</div>
+      <span class="port left"></span><span class="port"></span>
+    </div>
+
+    <div class="node" id="noir" style="left:1090px;top:390px">
+      <div class="node-head"><span class="dot"></span><span class="node-title">Noir · Scene Character Node</span><span class="node-kind">Character</span></div>
+      <div class="node-body"><strong>Embedded behavior model</strong><br>Skeptical observer + willing participant. Reaction timing, recognition, escalation, relationship-specific comedy.</div>
+      <div class="node-foot">12 traits · 8 relationship rules</div>
+      <span class="port left"></span><span class="port"></span>
+    </div>
+
+    <div class="node" id="stewie" style="left:1100px;top:600px">
+      <div class="node-head"><span class="dot"></span><span class="node-title">Stewie Evidence Cluster</span><span class="node-kind">Transcript</span></div>
+      <div class="node-body"><strong>Comedy reference</strong><br>Dialogue rhythm, escalation, physical gag timing, adult vocabulary in a child context, interruption patterns.</div>
+      <div class="node-foot">4 transcripts · confidence: medium</div>
+      <span class="port left"></span><span class="port"></span>
+    </div>
+
+    <div class="node" id="rangiku" style="left:600px;top:670px">
+      <div class="node-head"><span class="dot"></span><span class="node-title">Rangiku Personality</span><span class="node-kind">Reference</span></div>
+      <div class="node-body"><strong>Deep personality layer</strong><br>Merchant confidence, social ease, appetite for teasing, established character habits. High data volume does not override scene focus.</div>
+      <div class="node-foot">8 hours source material · weight 1.0</div>
+      <span class="port"></span>
+    </div>
+
+    <div class="legend">
+      <b>Composer Graph</b>
+      <div><span class="key"></span> Evidence / reference connection</div>
+      <div>Page = writable narrative surface</div>
+      <div>Nodes = cognition sources</div>
+      <div>Anchors = local scene relationships</div>
+    </div>
+
+    <div class="status" id="status">4 active nodes · 14 relationships · 37 evidence items · last compute: just now</div>
+  </div>
+</div>
+</div>
+
+<script>
+const board=document.getElementById('board');
+const page=document.getElementById('page');
+let z=10;
+
+function drag(el, handle=el){
+  let sx,sy,ox,oy,dragging=false;
+  handle.addEventListener('pointerdown',e=>{
+    if(e.button!==0)return;
+    dragging=true; el.setPointerCapture(e.pointerId);
+    sx=e.clientX; sy=e.clientY;
+    const r=el.getBoundingClientRect(), b=board.getBoundingClientRect();
+    ox=r.left-b.left; oy=r.top-b.top; el.style.zIndex=++z;
+    e.preventDefault();
+  });
+  handle.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    const b=board.getBoundingClientRect();
+    el.style.left=(ox+e.clientX-sx)+'px';
+    el.style.top=(oy+e.clientY-sy)+'px';
+    updateLines();
+  });
+  handle.addEventListener('pointerup',()=>dragging=false);
+}
+drag(page,page);
+document.querySelectorAll('.node').forEach(n=>{
+  drag(n,n.querySelector('.node-head'));
+  n.addEventListener('click',()=>n.classList.toggle('selected'));
+});
+
+function center(el, side='right'){
+  const b=board.getBoundingClientRect(), r=el.getBoundingClientRect();
+  return {x:(side==='left'?r.left:r.right)-b.left,y:r.top+r.height/2-b.top};
+}
+function path(a,b){
+  const dx=Math.max(80,Math.abs(b.x-a.x)*.55);
+  return `M ${a.x} ${a.y} C ${a.x+dx} ${a.y}, ${b.x-dx} ${b.y}, ${b.x} ${b.y}`;
+}
+function updateLines(){
+  const svg=document.getElementById('connections');
+  const p1=center(page), p2=center(document.getElementById('lore'),'left');
+  const p3=center(page), p4=center(document.getElementById('noir'),'left');
+  const p5=center(page), p6=center(document.getElementById('stewie'),'left');
+  svg.innerHTML=`<path class="connection active" d="${path(p1,p2)}"/>
+    <path class="connection" d="${path(p3,p4)}"/>
+    <path class="connection" d="${path(p5,p6)}"/>`;
+}
+updateLines();
+window.addEventListener('resize',updateLines);
+
+document.getElementById('addNode').onclick=()=>{
+  const n=document.createElement('div');
+  n.className='node'; n.style.left='820px'; n.style.top='300px'; n.innerHTML=
+  `<div class="node-head"><span class="dot"></span><span class="node-title">New Cognition Node</span><span class="node-kind">Source</span></div>
+   <div class="node-body"><strong>Untitled source</strong><br>Drop transcripts, lore, images, relationships, or rules here.</div>
+   <div class="node-foot">Click to select · drag to position</div>
+   <span class="port left"></span><span class="port"></span>`;
+  board.appendChild(n); drag(n,n.querySelector('.node-head'));
+  n.addEventListener('click',()=>n.classList.toggle('selected')); n.style.zIndex=++z;
+};
+
+document.getElementById('compose').onclick=()=>{
+  const s=document.getElementById('status');
+  s.textContent='Computing cognition graph… comedy → relationships → character behavior → prose';
+  setTimeout(()=>s.textContent='4 active nodes · 14 relationships · 37 evidence items · computed just now',700);
+};
+
+document.querySelectorAll('.anchor').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.stopPropagation();
+    a.style.background='#c99a5d';
+    a.textContent='•';
+    setTimeout(()=>{a.style.background='';a.textContent='+'},500);
+  });
+});
+</script>
+</body>
+</html>

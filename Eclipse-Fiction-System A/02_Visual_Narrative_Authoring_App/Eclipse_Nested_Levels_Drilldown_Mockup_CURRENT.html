@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Eclipse — Visual Authoring / Nested Levels Mockup</title>
+<style>
+  :root{
+    --bg-0:#07080d;
+    --bg-1:#0d0f18;
+    --bg-2:#12141f;
+    --panel:#151827;
+    --line:#242840;
+    --line-soft:#1b1e30;
+    --ink:#e7e9f5;
+    --ink-dim:#8b8fae;
+    --ink-faint:#565a78;
+    --wire-a:#4fd6ff;   /* unreal-ish cyan */
+    --wire-b:#7c6bff;   /* violet */
+    --wire-c:#ff9f4f;   /* amber, for overrides */
+    --node-char:#1a2c3a;
+    --node-char-edge:#3fa7d6;
+    --node-persona:#2a1f3d;
+    --node-persona-edge:#8a6bff;
+    --node-evidence:#1f2a1c;
+    --node-evidence-edge:#7fd66a;
+    --node-rel:#2f1a22;
+    --node-rel-edge:#ff5f7e;
+    --font-ui: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 800px at 15% -10%, #10131f 0%, transparent 60%),
+      radial-gradient(1000px 700px at 110% 10%, #14101f 0%, transparent 55%),
+      var(--bg-0);
+    color:var(--ink);
+    font-family:var(--font-ui);
+    overflow:hidden;
+    height:100vh;
+  }
+
+  /* ---------- Top bar / breadcrumb ---------- */
+  .topbar{
+    height:52px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:0 18px;
+    background:linear-gradient(180deg, var(--bg-1), var(--bg-0));
+    border-bottom:1px solid var(--line);
+    position:relative;
+    z-index:20;
+  }
+  .brand{
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .brand b{color:var(--wire-a); font-weight:700;}
+  .crumbs{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--font-mono);
+    font-size:13px;
+  }
+  .crumb{
+    padding:5px 11px;
+    border-radius:6px;
+    color:var(--ink-dim);
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:.15s;
+    white-space:nowrap;
+  }
+  .crumb:hover{color:var(--ink); background:var(--bg-2);}
+  .crumb.active{
+    color:var(--ink);
+    background:var(--panel);
+    border-color:var(--line);
+  }
+  .crumb-sep{color:var(--ink-faint); font-size:12px;}
+  .topbar-right{
+    margin-left:auto;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .pill{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    border:1px solid var(--line);
+    padding:4px 10px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .pill .dot{width:6px;height:6px;border-radius:50%;}
+
+  /* ---------- Stage ---------- */
+  .stage-wrap{
+    position:relative;
+    height:calc(100vh - 52px);
+    width:100%;
+  }
+  .stage{
+    position:absolute;
+    inset:0;
+    background-image:
+      radial-gradient(var(--line-soft) 1px, transparent 1px);
+    background-size:28px 28px;
+    background-position:-4px -4px;
+    opacity:0;
+    transform:scale(.96);
+    pointer-events:none;
+    transition:opacity .38s cubic-bezier(.2,.8,.2,1), transform .38s cubic-bezier(.2,.8,.2,1);
+  }
+  .stage.active{
+    opacity:1;
+    transform:scale(1);
+    pointer-events:auto;
+  }
+  .stage svg.wires{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+  }
+  .wire{
+    fill:none;
+    stroke-width:2;
+    opacity:.75;
+  }
+  .wire-flow{
+    stroke-dasharray:6 10;
+    animation:flow 1.1s linear infinite;
+  }
+  @keyframes flow{ to{ stroke-dashoffset:-32; } }
+  .wire-glow{
+    stroke-width:6;
+    opacity:.12;
+    filter:blur(1px);
+  }
+
+  /* ---------- Node card ---------- */
+  .node{
+    position:absolute;
+    width:190px;
+    border-radius:10px;
+    background:linear-gradient(180deg, var(--panel), var(--bg-1));
+    border:1px solid var(--line);
+    box-shadow:0 10px 30px -12px rgba(0,0,0,.6);
+    font-size:12px;
+    user-select:none;
+    z-index:2;
+  }
+  .node .hd{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    border-radius:10px 10px 0 0;
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+  .node .hd .tag{
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-left:auto;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .node .bd{
+    padding:9px 10px 10px;
+    color:var(--ink-dim);
+    font-size:11px;
+    line-height:1.45;
+  }
+  .node .row{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding:2px 0;
+  }
+  .node .row .k{color:var(--ink-faint); font-family:var(--font-mono); font-size:10px;}
+  .node .row .v{color:var(--ink); font-family:var(--font-mono); font-size:10px; text-align:right;}
+  .node .row .v.on{color:var(--node-evidence-edge);}
+  .node .row .v.offv{color:var(--ink-faint);}
+  .node .bd .note{
+    margin-top:4px;
+    font-size:10px;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.4;
+  }
+  .node .bar{
+    height:4px;
+    border-radius:3px;
+    background:var(--bg-0);
+    overflow:hidden;
+    margin-top:3px;
+  }
+  .node .bar i{display:block; height:100%; border-radius:3px;}
+  .port{
+    position:absolute;
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--bg-0);
+    border:2px solid var(--ink-faint);
+    z-index:3;
+  }
+  .port.left{left:-6px; top:50%; transform:translateY(-50%);}
+  .port.right{right:-6px; top:50%; transform:translateY(-50%);}
+
+  .node.drillable{cursor:zoom-in;}
+  .node.drillable:hover{
+    border-color:var(--wire-a);
+    box-shadow:0 0 0 1px var(--wire-a) inset, 0 14px 34px -12px rgba(0,0,0,.7);
+    transform:translateY(-1px);
+  }
+  .node.drillable .hd::after{
+    content:"⤢ drill in";
+    margin-left:8px;
+    font-family:var(--font-mono);
+    font-size:9px;
+    color:var(--wire-a);
+    opacity:0;
+    transition:opacity .15s;
+  }
+  .node.drillable:hover .hd::after{opacity:1;}
+
+  .node.off{opacity:.55;}
+  .node.off .hd{filter:saturate(.35);}
+
+  /* node type accents */
+  .node.character{border-color:var(--node-char-edge);}
+  .node.character .hd{background:linear-gradient(90deg, rgba(63,167,214,.14), transparent);}
+  .node.character .hd .dot{background:var(--node-char-edge);}
+
+  .node.relationship{border-color:var(--node-rel-edge);}
+  .node.relationship .hd{background:linear-gradient(90deg, rgba(255,95,126,.14), transparent);}
+  .node.relationship .hd .dot{background:var(--node-rel-edge);}
+
+  .node.relationship-variant{border-color:var(--wire-b);}
+  .node.relationship-variant .hd{background:linear-gradient(90deg, rgba(124,107,255,.16), transparent);}
+  .node.relationship-variant .hd .dot{background:var(--wire-b);}
+
+  .node.persona{border-color:var(--node-persona-edge);}
+  .node.persona .hd{background:linear-gradient(90deg, rgba(138,107,255,.14), transparent);}
+  .node.persona .hd .dot{background:var(--node-persona-edge);}
+
+  .node.evidence{border-color:var(--node-evidence-edge);}
+  .node.evidence .hd{background:linear-gradient(90deg, rgba(127,214,106,.14), transparent);}
+  .node.evidence .hd .dot{background:var(--node-evidence-edge);}
+
+  .node.filter{border-color:var(--wire-c);}
+  .node.filter .hd{background:linear-gradient(90deg, rgba(255,159,79,.18), transparent);}
+  .node.filter .hd .dot{background:var(--wire-c);}
+
+  .node.output{border-color:var(--wire-c); border-style:dashed;}
+  .node.output .hd{background:linear-gradient(90deg, rgba(255,159,79,.16), transparent);}
+  .node.output .hd .dot{background:var(--wire-c);}
+
+  .hd .dot{width:7px;height:7px;border-radius:50%; box-shadow:0 0 8px currentColor;}
+
+  /* ---------- Group frame (level 1 world boundary) ---------- */
+  .group-frame{
+    position:absolute;
+    border:1px dashed var(--line);
+    border-radius:14px;
+    z-index:0;
+  }
+  .group-frame .label{
+    position:absolute;
+    top:-11px; left:14px;
+    background:var(--bg-0);
+    padding:0 8px;
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    white-space:nowrap;
+  }
+
+  /* ---------- Level label watermark ---------- */
+  .level-mark{
+    position:absolute;
+    right:26px;
+    bottom:20px;
+    font-family:var(--font-mono);
+    color:var(--ink-faint);
+    text-align:right;
+    line-height:1.5;
+    font-size:11px;
+    pointer-events:none;
+    z-index:1;
+  }
+  .level-mark b{
+    display:block;
+    font-size:34px;
+    color:var(--line);
+    font-weight:700;
+    line-height:1;
+  }
+
+  /* ---------- Inspector (right panel) ---------- */
+  .inspector{
+    position:absolute;
+    top:16px; right:16px;
+    width:230px;
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    z-index:5;
+  }
+  .inspector h4{
+    margin:0 0 8px;
+    font-family:var(--font-ui);
+    font-size:11.5px;
+    color:var(--ink);
+    letter-spacing:.03em;
+  }
+  .inspector .line{display:flex; justify-content:space-between; padding:3px 0; border-top:1px solid var(--line-soft); gap:8px;}
+  .inspector .hint{
+    margin-top:10px;
+    padding-top:8px;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint);
+    font-size:10.3px;
+    line-height:1.5;
+  }
+
+  .back-fab{
+    position:absolute;
+    top:16px; left:16px;
+    z-index:6;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 12px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--ink-dim);
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    cursor:pointer;
+    opacity:0;
+    transform:translateX(-6px);
+    pointer-events:none;
+    transition:.2s;
+  }
+  .stage.active .back-fab.show{
+    opacity:1; transform:none; pointer-events:auto;
+  }
+  .back-fab:hover{border-color:var(--wire-a); color:var(--ink);}
+
+  .footnote{
+    position:absolute;
+    left:18px; bottom:16px;
+    max-width:420px;
+    font-size:10.6px;
+    color:var(--ink-faint);
+    line-height:1.55;
+    z-index:1;
+  }
+  .footnote b{color:var(--ink-dim);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">ECLIPSE <b>//</b> VISUAL AUTHORING</div>
+  <div class="crumbs" id="crumbs">
+    <span class="crumb active" data-level="1">World</span>
+  </div>
+  <div class="topbar-right">
+    <div class="pill"><span class="dot" style="background:var(--wire-a)"></span>static mockup — no live data</div>
+  </div>
+</div>
+
+<div class="stage-wrap">
+
+  <!-- ============ LEVEL 1 — WORLD / GROUP ============ -->
+  <div class="stage active" id="level-1">
+    <div class="back-fab"></div>
+    <svg class="wires">
+      <!-- MUC group: Akane <-> Relationship <-> Naru -->
+      <path class="wire wire-glow" style="stroke:var(--node-rel-edge)" d="M 250,177 C 290,172 330,168 370,167"/>
+      <path class="wire wire-flow" style="stroke:var(--node-rel-edge)" d="M 250,177 C 290,172 330,168 370,167"/>
+      <path class="wire wire-glow" style="stroke:var(--node-rel-edge)" d="M 560,167 C 600,167 640,167 680,167"/>
+      <path class="wire wire-flow" style="stroke:var(--node-rel-edge)" d="M 560,167 C 600,167 640,167 680,167"/>
+
+      <!-- Akane JP/EN evidence -> Relationship Variant inside a Relationship Node -->
+      <path class="wire wire-glow" style="stroke:var(--wire-b)" d="M 250,330 C 320,330 215,272 155,226"/>
+      <path class="wire wire-flow" style="stroke:var(--wire-b)" d="M 250,330 C 320,330 215,272 155,226"/>
+
+      <!-- Naru -> Fiction Engine handoff -->
+      <path class="wire wire-glow" style="stroke:var(--wire-c)" d="M 705,226 C 745,262 470,322 400,322"/>
+      <path class="wire wire-flow" style="stroke:var(--wire-c)" d="M 705,226 C 745,262 470,322 400,322"/>
+
+      <!-- Beths group: Domestic <-> Twincest <-> Space -->
+      <path class="wire wire-glow" style="stroke:var(--node-rel-edge)" d="M 265,502 C 295,502 300,502 330,502"/>
+      <path class="wire wire-flow" style="stroke:var(--node-rel-edge)" d="M 265,502 C 295,502 300,502 330,502"/>
+      <path class="wire wire-glow" style="stroke:var(--node-rel-edge)" d="M 520,502 C 550,502 555,502 585,502"/>
+      <path class="wire wire-flow" style="stroke:var(--node-rel-edge)" d="M 520,502 C 550,502 555,502 585,502"/>
+
+      <!-- Twincest rel -> Big Butt Beth-Rainee -->
+      <path class="wire wire-glow" style="stroke:var(--node-rel-edge)" d="M 425,552 C 425,566 425,572 425,583"/>
+      <path class="wire wire-flow" style="stroke:var(--node-rel-edge)" d="M 425,552 C 425,566 425,572 425,583"/>
+
+      <!-- forms -> Cook Group -->
+      <path class="wire wire-glow" style="stroke:var(--wire-c)" d="M 680,552 C 680,566 680,574 680,583"/>
+      <path class="wire wire-flow" style="stroke:var(--wire-c)" d="M 680,552 C 680,566 680,574 680,583"/>
+      <path class="wire wire-glow" style="stroke:var(--wire-c)" d="M 520,632 C 550,632 555,622 585,622"/>
+      <path class="wire wire-flow" style="stroke:var(--wire-c)" d="M 520,632 C 550,632 555,622 585,622"/>
+    </svg>
+
+    <!-- Group 1: Magic User's Club cast (original demo) -->
+    <div class="group-frame" style="left:60px; top:80px; width:740px; height:310px;">
+      <div class="label">group · magic user's club — cast</div>
+    </div>
+
+    <div class="node character drillable" style="left:60px; top:130px;" onclick="goTo(2,'akane')">
+      <div class="hd"><span class="dot"></span>Akane Aikawa<span class="tag">character</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">personas</span><span class="v">3</span></div>
+        <div class="row"><span class="k">mode</span><span class="v">normal</span></div>
+        <div class="row"><span class="k">evidence sets</span><span class="v">JP + EN</span></div>
+      </div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node relationship-variant" style="left:60px; top:285px;">
+      <div class="hd"><span class="dot"></span>Relationship Variant<span class="tag">jp ↔ en</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">shared dim</span><span class="v">status tone</span></div>
+        <div class="row"><span class="k">similarity</span><span class="v">72</span></div>
+        <div class="row"><span class="k">confidence</span><span class="v">67</span></div>
+      </div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node relationship" style="left:370px; top:130px;">
+      <div class="hd"><span class="dot"></span>Relationship<span class="tag">rivalry</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">strength</span><span class="v">0.58</span></div>
+        <div class="row"><span class="k">scene cond.</span><span class="v">public</span></div>
+      </div>
+      <div class="port left"></div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node character drillable" style="left:610px; top:130px;" onclick="goTo(2,'naru')">
+      <div class="hd"><span class="dot"></span>Naru Narusegawa<span class="tag">character</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">personas</span><span class="v">1</span></div>
+        <div class="row"><span class="k">mode</span><span class="v">normal</span></div>
+        <div class="row"><span class="k">weight</span><span class="v">55</span></div>
+      </div>
+      <div class="port left"></div>
+    </div>
+
+    <div class="node output" style="left:400px; top:285px;">
+      <div class="hd"><span class="dot"></span>Fiction Engine<span class="tag">handoff</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">consumes</span><span class="v">active state</span></div>
+        <div class="row"><span class="k">app</span><span class="v">#4</span></div>
+      </div>
+      <div class="port left"></div>
+    </div>
+
+    <!-- Group 2: derived characters — same levels, different arrangements -->
+    <div class="group-frame" style="left:60px; top:410px; width:740px; height:300px;">
+      <div class="label">group · bethjamin button — derived characters</div>
+    </div>
+
+    <div class="node character drillable" style="left:75px; top:455px;" onclick="goTo(2,'beth')">
+      <div class="hd"><span class="dot"></span>Domestic Beth<span class="tag">character</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">basis</span><span class="v">independently authored</span></div>
+        <div class="row"><span class="k">stack</span><span class="v">beth · kid(off)</span></div>
+        <div class="row"><span class="k">signal</span><span class="v">guilty-naughty</span></div>
+      </div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node relationship" style="left:330px; top:455px;">
+      <div class="hd"><span class="dot"></span>Twincest<span class="tag">relationship</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">strength</span><span class="v">0.81</span></div>
+        <div class="row"><span class="k">scene cond.</span><span class="v">wine · away</span></div>
+        <div class="row"><span class="k">memory wt</span><span class="v">×2 on rainee</span></div>
+      </div>
+      <div class="port left"></div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node character drillable" style="left:585px; top:455px;" onclick="goTo(2,'spacebeth')">
+      <div class="hd"><span class="dot"></span>Space Beth<span class="tag">character</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">basis</span><span class="v">beth + space Δ</span></div>
+        <div class="row"><span class="k">stack</span><span class="v">beth30 · space70</span></div>
+        <div class="row"><span class="k">signal</span><span class="v">unbothered</span></div>
+      </div>
+      <div class="port left"></div>
+    </div>
+
+    <div class="node character drillable" style="left:330px; top:585px;" onclick="goTo(2,'raineebeth')">
+      <div class="hd"><span class="dot"></span>Beth-Rainee<span class="tag">character</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">basis</span><span class="v">rainee mimic</span></div>
+        <div class="row"><span class="k">stack</span><span class="v">rainee · filtered</span></div>
+        <div class="row"><span class="k">signal</span><span class="v">cringe shiver</span></div>
+      </div>
+      <div class="port left"></div>
+      <div class="port right"></div>
+    </div>
+
+    <div class="node output" style="left:585px; top:585px;">
+      <div class="hd"><span class="dot"></span>Cook Group<span class="tag">out</span></div>
+      <div class="bd">
+        <div class="row"><span class="k">consumes</span><span class="v">ON nodes only</span></div>
+        <div class="row"><span class="k">emits</span><span class="v">json → composer</span></div>
+      </div>
+      <div class="port left"></div>
+      <div class="port top" style="left:50%; top:-6px; transform:translateX(-50%);"></div>
+    </div>
+
+    <div class="inspector">
+      <h4>Level 1 — World</h4>
+      <div class="line"><span>scope</span><span>groups / casts</span></div>
+      <div class="line"><span>groups</span><span>muc cast · the beths</span></div>
+      <div class="line"><span>wiring</span><span>between characters only</span></div>
+      <div class="hint">Character nodes are sealed here — click one to drill into its stack. These are separate derived-character examples with the same level structure and different arrangements. No clone or lineage mechanism is implied.</div>
+    </div>
+
+    <div class="footnote"><b>Level 1</b> — the world/group board. Relationship nodes connect whole characters; nothing internal is visible from here. The Beths group ends in a Cook node — only ON nodes compile to JSON.</div>
+    <div class="level-mark"><b>01</b>WORLD</div>
+  </div>
+
+  <!-- ============ LEVEL 2 — INSIDE A CHARACTER (dynamic) ============ -->
+  <div class="stage" id="level-2">
+    <div class="back-fab show" onclick="goTo(1)">← back to World</div>
+    <svg class="wires" id="l2-wires"></svg>
+
+    <div class="group-frame" style="left:60px; top:70px; width:1000px; height:470px;">
+      <div class="label" id="l2-frame-label">character — internal</div>
+    </div>
+
+    <div id="l2-nodes" style="position:absolute; inset:0;"></div>
+
+    <div class="inspector">
+      <h4>Level 2 — Character</h4>
+      <div class="line"><span>scope</span><span>inside one character</span></div>
+      <div class="line"><span>nodes</span><span>data-stack personas</span></div>
+      <div class="line"><span>controls</span><span>weight · ON/OFF · rules</span></div>
+      <div class="hint">Personas carry a priority weight and an ON/OFF switch. An OFF persona still supplies basic analytical info — but its reactions don't fire and its relationships don't compute. Cook the group to send its JSON onward.</div>
+    </div>
+
+    <div class="footnote"><b>Level 2</b> — inside the sealed character box. The data stack: every layer with its dominance weight and switch. Same three Beths, three different stacks.</div>
+    <div class="level-mark"><b>02</b>CHARACTER</div>
+  </div>
+
+  <!-- ============ LEVEL 3 — INSIDE A PERSONA (dynamic) ============ -->
+  <div class="stage" id="level-3">
+    <div class="back-fab show" onclick="goTo(2)">← back to Character</div>
+    <svg class="wires" id="l3-wires"></svg>
+
+    <div class="group-frame" id="l3-frame" style="left:60px; top:70px; width:1000px; height:420px;">
+      <div class="label" id="l3-frame-label">persona — evidence</div>
+    </div>
+
+    <div id="l3-nodes" style="position:absolute; inset:0;"></div>
+
+    <div class="inspector">
+      <h4>Level 3 — Persona</h4>
+      <div class="line"><span>scope</span><span>inside one stack layer</span></div>
+      <div class="line"><span>nodes</span><span>raw evidence / filters</span></div>
+      <div class="line"><span>resolves to</span><span>persona signal → L2</span></div>
+      <div class="hint">Finest grain — where derived-character examples can differ. Similar ingredients and different arrangements may produce different characters; no inheritance mechanism is implied.</div>
+    </div>
+
+    <div class="footnote"><b>Level 3</b> — the evidence arrangement. Each character's arrangement is authored independently in this draft.</div>
+    <div class="level-mark"><b>03</b>PERSONA</div>
+  </div>
+
+</div>
+
+<script>
+  /* ---------------- data model ---------------- */
+  const CHARS = {
+    akane: {
+      name: 'Akane Aikawa',
+      personas: [
+        { id:'normal',   label:'Persona: Normal',      crumb:'Normal',      weight:70, on:true },
+        { id:'transform',label:'Persona: Transformed', crumb:'Transformed', weight:0,  on:false },
+        { id:'hybrid',   label:'Persona: Hybrid',      crumb:'Hybrid',      weight:30, on:true }
+      ],
+      evidence: {
+        _default: {
+          ev: [
+            { t:'JP Transcript',    c:'0.90', d:'vocal tone' },
+            { t:'EN Transcript',    c:'0.85', d:'vocal tone' },
+            { t:'Reference Frame',  c:'0.95', d:'visual design' }
+          ],
+          conv: [ ['selective transfer','tone only'], ['transfer weight','42'] ],
+          out: { signal:'behavioral_signal', line:'' }
+        }
+      }
+    },
+    naru: {
+      name: 'Naru Narusegawa',
+      personas: [
+        { id:'normal', label:'Persona: Normal', crumb:'Normal', weight:100, on:true }
+      ],
+      evidence: {
+        _default: {
+          ev: [
+            { t:'JP Transcript',   c:'0.88', d:'tsundere cadence' },
+            { t:'Manga Panel Set', c:'0.82', d:'visual design' }
+          ],
+          conv: [ ['selective transfer','reaction frame'], ['transfer weight','50'] ],
+          out: { signal:'behavioral_signal', line:'' }
+        }
+      }
+    },
+    beth: {
+      name: 'Domestic Beth',
+      basis: 'independently authored',
+      personas: [
+        { id:'bethdata', label:'Beth Data',  crumb:'Beth Data', weight:100, on:true,  note:'base stack' },
+        { id:'kid',      label:'Kid Beth',   crumb:'Kid Beth',  weight:0,   on:false, note:'separate authored state example' }
+      ],
+      evidence: {
+        bethdata: {
+          ev: [
+            { t:'Beth source series S1–S7',  c:'0.95', d:'personality base' },
+            { t:'Horse Knowledge',   c:'0.90', d:'expertise', n:'author-prepared extension beyond what the show depicts' },
+            { t:'Jerry Marriage',    c:'0.92', d:'relationship load' },
+            { t:'Mom-Guilt Refs',    c:'0.80', d:'reaction frame' }
+          ],
+          conv: [ ['selective transfer','guilt frame'], ['transfer weight','61'] ],
+          out: { signal:'guilty-naughty', line:'“…we probably shouldn’t tell Jerry we did this again.”' }
+        },
+        kid: {
+          ev: [ { t:'Kid Episode Data', c:'0.94', d:'de-aged behavior' } ],
+          conv: [ ['mode','kid dominant'] ],
+          out: { signal:'kid-state', line:'' }
+        }
+      }
+    },
+    spacebeth: {
+      name: 'Space Beth',
+      basis: 'beth + space Δ',
+      personas: [
+        { id:'bethbase',  label:'Beth Base',       crumb:'Beth Base',   weight:30, on:true,  note:'recessive — full Beth dataset' },
+        { id:'spacedata', label:'Space Beth Data', crumb:'Space Data',  weight:70, on:true,  note:'dominant' },
+        { id:'kid',       label:'Kid Beth',        crumb:'Kid Beth',    weight:0,  on:false, note:'separate authored state example' }
+      ],
+      evidence: {
+        bethbase: {
+          ev: [ { t:'Beth source material', c:'0.95', d:'shared reference example', n:'recessive under space delta' } ],
+          conv: [ ['mode','recessive'] ],
+          out: { signal:'beth base — dominated', line:'' }
+        },
+        spacedata: {
+          ev: [
+            { t:'Space-Life Δ Transcripts', c:'0.90', d:'independence arcs' },
+            { t:'No-Attachment Refs',       c:'0.85', d:'reaction frame' },
+            { t:'Beth source material',      c:'0.95', d:'shared reference example' },
+            { t:'Twincest Episode Memory',  c:'0.88', d:'wine night', n:'vivid for all three' }
+          ],
+          conv: [ ['selective transfer','unbothered frame'], ['transfer weight','69'] ],
+          out: { signal:'unbothered', line:'“fuck Jerry.”' }
+        },
+        kid: {
+          ev: [ { t:'Kid Episode Data', c:'0.94', d:'de-aged behavior' } ],
+          conv: [ ['mode','kid dominant'] ],
+          out: { signal:'kid-state', line:'' }
+        }
+      }
+    },
+    raineebeth: {
+      name: 'Big Butt Beth-Rainee',
+      basis: 'rainee mimic · eidolissa fox',
+      personas: [
+        { id:'raineecore', label:'Rainee Core',      crumb:'Rainee Core', weight:55, on:true,  note:'dominant — fixed absorption rule' },
+        { id:'bethimp',    label:'Beth Impression',  crumb:'Beth Imp.',   weight:35, on:true,  note:'appearance + echo only — everything filtered' },
+        { id:'kid',        label:'Kid Beth / Shin Chan', crumb:'Kid',     weight:10, on:false, note:'kid-Beth dominates; Shin Chan element persists' }
+      ],
+      evidence: {
+        raineecore: {
+          ev: [
+            { t:'Rainee Core Corpus',  c:'0.92', d:'base personality', n:'Rangiku · BBL · Navia · Alice · ear/tail data' },
+            { t:'Eidolissa Species',   c:'0.95', d:'racial memory', n:'“what is an eidolissa fox person?” — answered here' },
+            { t:'Override: Lesbian',   c:'0.99', d:'fixed rule', n:'colors every piece of Beth material she absorbs' }
+          ],
+          conv: [ ['mode','fixed absorption'] ],
+          out: { signal:'distinct mimic — not a copy', line:'' }
+        },
+        bethimp: {
+          ev: [
+            { t:'Jerry Filter',            c:'0.99', d:'routing rule', filter:true, n:'everything Jerry passes through: awful-men shows · “made me a lesbian” joke corpus · men-bad-sex transcripts' },
+            { t:'Twincest Memory — Vivid', c:'0.97', d:'memory weight', n:'lesbian lens: registers stronger + more vivid than in the real Beths — triggered the wine-night repeat' },
+            { t:'Beth Memory Echo',        c:'0.75', d:'appearance + echo only', n:'sleeping-with-Jerry memory = instant cringe' },
+            { t:'Horse Residue',           c:'0.40', d:'impressionistic only', n:'love of horses — not a horse surgeon' },
+            { t:'BBL Appearance Data',     c:'0.90', d:'body layer', n:'the butt persists through every dominance flip' }
+          ],
+          conv: [ ['resolve order','filter-first'], ['transfer weight','77'] ],
+          out: { signal:'cringe shiver', line:'“—ugh. Jerry.” *shivers*' }
+        },
+        kid: {
+          ev: [
+            { t:'Kid Beth (dominant)', c:'0.95', d:'state' },
+            { t:'Shin Chan Element',   c:'0.60', d:'rainee-native antics', n:'persists under kid-Beth' }
+          ],
+          conv: [ ['mode','kid dominant'] ],
+          out: { signal:'de-aged mimic', line:'the kid beths call her Horse Butt Beth' }
+        }
+      }
+    }
+  };
+
+  let currentChar = 'akane';
+  let currentPersona = 'normal';
+
+  /* ---------------- helpers ---------------- */
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function wirePath(x1,y1,x2,y2){
+    const dx = Math.max(40, (x2-x1)/2);
+    return 'M ' + x1 + ',' + y1 + ' C ' + (x1+dx) + ',' + y1 + ' ' + (x2-dx) + ',' + y2 + ' ' + x2 + ',' + y2;
+  }
+  function wirePair(color, d){
+    return '<path class="wire wire-glow" style="stroke:' + color + '" d="' + d + '"/>' +
+           '<path class="wire wire-flow" style="stroke:' + color + '" d="' + d + '"/>';
+  }
+  function nodeHtml(n){
+    let rows = '';
+    (n.rows||[]).forEach(r => {
+      rows += '<div class="row"><span class="k">' + r[0] + '</span><span class="v ' + (r[2]||'') + '">' + r[1] + '</span></div>';
+    });
+    let bar = '';
+    if(n.bar !== undefined){
+      bar = '<div class="bar"><i style="width:' + n.bar + '%; background:var(--node-persona-edge)"></i></div>';
+    }
+    let note = n.n ? '<div class="note">' + esc(n.n) + '</div>' : '';
+    let ports = (n.pr ? '<div class="port right"></div>' : '') + (n.pl ? '<div class="port left"></div>' : '');
+    const off = n.off ? ' off' : '';
+    const click = n.click ? ' onclick="' + n.click + '"' : '';
+    const drill = n.click ? ' drillable' : '';
+    return '<div class="node ' + n.cls + off + drill + '" style="left:' + n.x + 'px; top:' + n.y + 'px;' + (n.w ? 'width:' + n.w + 'px;' : '') + '"' + click + '>' +
+      '<div class="hd"><span class="dot"></span>' + esc(n.t) + '<span class="tag">' + esc(n.tag) + '</span></div>' +
+      '<div class="bd">' + rows + bar + note + '</div>' + ports + '</div>';
+  }
+
+  /* ---------------- level 2 render ---------------- */
+  function renderL2(){
+    const c = CHARS[currentChar];
+    let wires = '';
+    let html = '';
+
+    const dom = c.personas.filter(p=>p.on).sort((a,b)=>b.weight-a.weight)[0];
+
+    html += nodeHtml({
+      x:60, y:120, cls:'character', t:c.name, tag:'self',
+      rows:[
+        ['active mode', dom ? dom.label.replace('Persona: ','') : '—'],
+        ['rule stack', '4 rules'],
+        ['overrides', c.lineage ? 'absorption: fixed' : '1 active']
+      ].concat(c.lineage ? [['lineage', c.lineage]] : []),
+      pr:true
+    });
+
+    c.personas.forEach((p,i) => {
+      const y = 100 + i*155;
+      html += nodeHtml({
+        x:400, y:y, cls:'persona', t:p.label, tag:'state',
+        rows:[
+          ['priority weight', p.weight + '%'],
+          ['state', p.on ? 'ON' : 'OFF', p.on ? 'on' : 'offv'],
+          ['computes', p.on ? 'reactions+rels' : 'analytical only', p.on ? 'on' : 'offv']
+        ],
+        bar:p.weight, n:p.note, off:!p.on, pl:true, pr:true,
+        click:"goTo(3,'" + p.id + "')"
+      });
+      wires += wirePair('var(--node-persona-edge)', wirePath(250, 158, 400, y+42));
+      if(p === dom){
+        wires += wirePair('var(--wire-c)', wirePath(590, y+42, 780, 138));
+      }
+    });
+
+    html += nodeHtml({
+      x:780, y:100, cls:'output', t:'Active State', tag:'out → L1',
+      rows:[ ['resolved mode', dom ? dom.crumb.toLowerCase() : '—'], ['signal','final_behavior'] ],
+      pl:true
+    });
+
+    document.getElementById('l2-wires').innerHTML = wires;
+    document.getElementById('l2-nodes').innerHTML = html;
+    document.getElementById('l2-frame-label').textContent = 'character · ' + c.name.toLowerCase() + ' — internal';
+  }
+
+  /* ---------------- level 3 render ---------------- */
+  function renderL3(){
+    const c = CHARS[currentChar];
+    const set = (c.evidence && (c.evidence[currentPersona] || c.evidence._default)) || { ev:[], conv:[], out:{} };
+    const n = set.ev.length;
+    const spacing = n > 4 ? 112 : 150;
+    let wires = '', html = '';
+
+    let lastY = 90;
+    set.ev.forEach((e,i) => {
+      const y = 90 + i*spacing;
+      lastY = y;
+      html += nodeHtml({
+        x:60, y:y, cls: e.filter ? 'evidence filter' : 'evidence',
+        t:e.t, tag: e.filter ? 'filter' : 'source',
+        rows:[ ['confidence', e.c], ['dimension', e.d] ],
+        n:e.n, pr:true
+      });
+      wires += wirePair('var(--node-evidence-edge)', wirePath(250, y+44, 420, 228));
+    });
+
+    html += nodeHtml({
+      x:420, y:200, cls:'relationship-variant', t:'Relationship Variant', tag:'resolve',
+      rows: set.conv.map(r => [r[0], r[1]]),
+      pl:true, pr:true
+    });
+    wires += wirePair('var(--wire-a)', wirePath(610, 228, 780, 228));
+
+    const outRows = [ ['resolved', set.out.signal || 'behavioral_signal'] ];
+    html += nodeHtml({
+      x:780, y:200, cls:'output', t:'Persona Signal', tag:'out → L2',
+      rows: outRows, n: set.out.line || undefined, pl:true
+    });
+
+    document.getElementById('l3-wires').innerHTML = wires;
+    document.getElementById('l3-nodes').innerHTML = html;
+    document.getElementById('l3-frame').style.height = Math.max(420, lastY + 130 - 70) + 'px';
+    const p = c.personas.find(q => q.id === currentPersona);
+    document.getElementById('l3-frame-label').textContent =
+      'persona · ' + (p ? p.crumb.toLowerCase() : currentPersona) + ' @ ' + c.name.toLowerCase() + ' — evidence';
+  }
+
+  /* ---------------- navigation ---------------- */
+  function setCrumbs(level){
+    const c = CHARS[currentChar];
+    const crumbs = document.getElementById('crumbs');
+    let html = '<span class="crumb ' + (level===1?'active':'') + '" data-level="1" onclick="goTo(1)">World</span>';
+    if(level >= 2){
+      html += '<span class="crumb-sep">›</span><span class="crumb ' + (level===2?'active':'') + '" onclick="goTo(2)">' + c.name + '</span>';
+    }
+    if(level >= 3){
+      const p = c.personas.find(q => q.id === currentPersona);
+      html += '<span class="crumb-sep">›</span><span class="crumb active">' + (p ? p.crumb : currentPersona) + '</span>';
+    }
+    crumbs.innerHTML = html;
+  }
+
+  function goTo(level, arg){
+    if(level === 2 && arg && CHARS[arg]) currentChar = arg;
+    if(level === 3 && arg) currentPersona = arg;
+    if(level === 2) currentPersona = CHARS[currentChar].personas[0].id;
+
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+    document.getElementById('level-'+level).classList.add('active');
+
+    if(level === 2) renderL2();
+    if(level === 3) renderL3();
+    setCrumbs(level);
+  }
+
+  setCrumbs(1);
+</script>
+
+</body>
+</html>

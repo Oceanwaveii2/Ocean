@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eclipse Visual Authoring — UX Mockup</title>
+<style>
+:root{
+  --bg:#0c0e10;--panel:#121518;--panel2:#171a1e;--panel3:#1c2025;
+  --line:#2a2f35;--text:#eeeae2;--muted:#8d949d;--gold:#c8b184;
+  --blue:#8da9bc;--violet:#a995c5;--green:#8fb39b;--orange:#bd907a;
+}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{color:inherit;cursor:pointer}
+.app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.top{height:62px;border-bottom:1px solid var(--line);background:#101214;display:flex;align-items:center;padding:0 22px;gap:20px}
+.brand{font:25px Georgia,serif;letter-spacing:.08em}.project{color:var(--muted);font-size:11px;border-left:1px solid var(--line);padding-left:18px}
+.topnav{display:flex;gap:4px;margin-left:15px}.topnav button{background:transparent;border:0;padding:9px 13px;border-radius:7px;color:var(--muted)}.topnav button.active{background:#20242a;color:#fff}
+.grow{flex:1}.topbtn{background:#171a1e;border:1px solid var(--line);padding:8px 11px;border-radius:7px}.primary{background:#e6ddcd;color:#151515;border:0;padding:9px 15px;border-radius:7px;font-weight:700}
+.layout{flex:1;display:grid;grid-template-columns:230px 1fr 315px;min-height:0}
+.left,.right{background:#111315;overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line);padding:18px}
+.leftsection{padding:16px 13px 5px}.eyebrow{font-size:9px;letter-spacing:.17em;color:#747b84;text-transform:uppercase;margin:8px 9px}
+.navitem{padding:10px 11px;border-radius:7px;color:#c4c8cd;margin:2px 0;display:flex;justify-content:space-between}.navitem:hover,.navitem.active{background:#1e2227;color:#fff}.count{color:#777e87;font-size:11px}
+.main{min-width:0;overflow:auto;background:var(--bg)}
+.header{padding:25px 30px 18px;border-bottom:1px solid var(--line);display:flex;align-items:end;gap:20px}.title{font:34px Georgia,serif;margin:4px 0}.sub{color:var(--muted);max-width:650px;line-height:1.5}.header .grow{flex:1}
+.toolbar{display:flex;gap:7px}.btn{background:#15181b;border:1px solid var(--line);padding:8px 11px;border-radius:7px}.btn:hover{background:#20242a}
+.graph{position:relative;height:calc(100% - 121px);min-height:650px;overflow:auto;background-image:radial-gradient(#292d32 1px,transparent 1px);background-size:22px 22px}
+.graphhead{height:42px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid #252a2f;background:#0f1113aa;position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+.sectiontag{font-size:10px;letter-spacing:.14em;color:var(--gold)}.sectiontag.world{color:var(--blue)}
+.divider{position:absolute;left:3%;right:3%;top:50%;border-top:2px solid #3a3f45;z-index:4}.dividerlabel{position:absolute;left:50%;top:calc(50% - 13px);transform:translateX(-50%);background:#0c0e10;border:1px solid var(--line);padding:5px 12px;border-radius:99px;color:#7d838b;font-size:9px;letter-spacing:.12em}
+.node{position:absolute;width:205px;background:#15181b;border:1px solid #373c43;border-radius:9px;box-shadow:0 15px 35px #0009;z-index:10;user-select:none}.node:hover{border-color:#626973}
+.node.char{border-top:2px solid var(--gold)}.node.rel{border-top:2px solid var(--violet);width:225px}.node.evidence{border-top:2px solid var(--violet);width:175px}.node.world{border-top:2px solid var(--blue)}.node.event{border-top:2px solid var(--orange)}
+.nhead{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.nhead b{font-size:13px}.type{font-size:8px;color:#777e87;letter-spacing:.1em}.nbody{padding:10px 12px;color:#9da3aa;font-size:11px;line-height:1.5}.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #343941;border-radius:5px;padding:3px 6px;color:#aeb3b9;font-size:10px}
+.port{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #15181b;background:#d2c8b1}.port.l{left:-6px;top:50%}.port.r{right:-6px;top:50%}.port.t{top:-6px;left:50%}.port.b{bottom:-6px;left:50%}
+svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}.link{fill:none;stroke:#687079;stroke-width:2}.cross{stroke:#bba87e;stroke-width:2.4}.worldlink{stroke:#7896aa;stroke-width:2.2}.relLink{stroke:#a995c5;stroke-width:2.3}
+.right h3{font:22px Georgia,serif;margin:5px 0}.muted{color:var(--muted)}.panelhead{display:flex;justify-content:space-between;align-items:start;margin-bottom:18px}.close{border:1px solid var(--line);background:#171a1e;border-radius:6px;width:30px;height:30px}
+.field{padding:13px 0;border-top:1px solid var(--line)}.label{font-size:9px;letter-spacing:.14em;color:#747b83;text-transform:uppercase;margin-bottom:7px}.value{background:#171a1e;border:1px solid #2c3137;border-radius:6px;padding:9px;color:#d3d5d8}.minirow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #24282d}.tag{border:1px solid #343940;padding:4px 7px;border-radius:99px;font-size:10px;color:#aeb3ba}.tabs{display:flex;border-bottom:1px solid var(--line);margin:0 -18px 15px;padding:0 18px}.tabs button{border:0;background:none;padding:9px 8px;color:#777e87;border-bottom:2px solid transparent}.tabs button.active{color:#eee;border-color:var(--gold)}
+.drawer{position:fixed;inset:0;background:#0008;display:none;z-index:100}.drawer.show{display:block}.modal{position:absolute;right:0;top:0;height:100%;width:430px;background:#121518;border-left:1px solid var(--line);box-shadow:-25px 0 70px #0008;padding:22px;overflow:auto}.modal h2{font:28px Georgia,serif;margin:4px 0 5px}.modal .sub{font-size:12px}.close2{float:right;background:#1a1e22;border:1px solid var(--line);border-radius:7px;width:34px;height:34px}
+.formrow{display:grid;gap:6px;margin:14px 0}.formrow label{font-size:10px;color:#7d848d;letter-spacing:.1em;text-transform:uppercase}.formrow input,.formrow select,.formrow textarea{width:100%;background:#0f1113;color:#eee;border:1px solid #30353b;border-radius:7px;padding:9px}.formrow textarea{min-height:90px;resize:vertical}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.card{border:1px solid var(--line);background:#171a1e;padding:11px;border-radius:7px}.card b{display:block;font-size:16px;margin-bottom:3px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#e6ddcd;color:#161616;padding:10px 16px;border-radius:7px;display:none;z-index:200;box-shadow:0 10px 30px #0008}.toast.show{display:block}
+@media(max-width:1050px){.layout{grid-template-columns:190px 1fr 275px}.node{width:180px}.node.rel{width:195px}}
+
+.view-panel{min-width:0;min-height:100%;overflow:auto;background:var(--bg)}
+.fiction-layout{padding:24px 30px 50px;display:grid;grid-template-columns:minmax(340px,.8fr) minmax(450px,1.2fr);gap:18px}
+.fiction-column{display:flex;flex-direction:column;gap:14px}.fiction-column.wide{min-width:0}
+.section-card{background:#121518;border:1px solid var(--line);border-radius:9px;padding:16px;box-shadow:0 10px 30px #0004}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.card-head b{font-size:13px}
+.behavior-row{display:grid;grid-template-columns:85px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-top:1px solid #252a2f;color:#aeb3ba}.behavior-row b{color:#ddd;font-weight:500}
+.stream{padding:11px 0;border-top:1px solid #252a2f;color:#aeb3ba}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#8fb39b;margin-right:9px}
+.prose-card{min-height:470px}.prose{font:18px/1.75 Georgia,serif;color:#ddd8cf;padding:15px 20px}.prose p{max-width:760px}.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.library-grid{padding:24px 30px 50px;display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:14px}.library-grid .section-card{min-height:150px;cursor:pointer}.library-grid .section-card:hover{border-color:#626973}
+@media(max-width:900px){.fiction-layout{grid-template-columns:1fr}.library-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">Eclipse</div><div class="project">VISUAL AUTHORING / RAINEE PROJECT</div>
+  <nav class="topnav">
+  <button class="active" data-view="authoring" onclick="switchView('authoring', this)">Authoring</button>
+  <button data-view="fiction" onclick="switchView('fiction', this)">Fiction Engine</button>
+  <button data-view="library" onclick="switchView('library', this)">Data Library</button>
+</nav>
+  <div class="grow"></div><button class="topbtn" id="settings">⚙ Settings</button><button class="topbtn">Export</button><button class="primary" id="run">Run Analysis</button>
+</header>
+<div class="layout">
+<aside class="left">
+  <div class="leftsection"><div class="eyebrow">PROJECT</div><div class="navitem active">Canvas</div><div class="navitem">Relationships <span class="count">6</span></div><div class="navitem" onclick="switchView('library', document.querySelector('[data-view=library]'))">Evidence Library <span class="count">84</span></div></div>
+  <div class="leftsection"><div class="eyebrow">CHARACTERS</div>
+    <div class="navitem" onclick="openCharacter('Rainee')">🦊 Rainee <span class="count">37</span></div>
+    <div class="navitem" onclick="openCharacter('Noir')">◆ Noir <span class="count">21</span></div>
+    <div class="navitem">＋ Add Character</div>
+  </div>
+  <div class="leftsection"><div class="eyebrow">WORLD</div><div class="navitem" onclick="openWorld()">Spirited Away <span class="count">24</span></div><div class="navitem">Bathhouse</div><div class="navitem">＋ Add World</div></div>
+  <div class="leftsection"><div class="eyebrow">EVIDENCE</div><div class="navitem">Transcript <span class="count">42</span></div><div class="navitem">Images <span class="count">28</span></div><div class="navitem">Audio <span class="count">14</span></div></div>
+  <div class="leftsection"><div class="eyebrow">ENGINE</div><div class="navitem">Fiction Behavior</div><div class="navitem">Writing Style</div></div>
+</aside>
+
+<main class="main" id="authoringView">
+  <div class="header">
+    <div><div class="eyebrow">VISUAL AUTHORING</div><div class="title">Relationship & Evidence Graph</div><div class="sub">Author the data visually. Characters, relationship classes, evidence, world entities, and behavior processing remain separate, but can be connected into one narrative graph.</div></div>
+    <div class="grow"></div><div class="toolbar"><button class="btn">＋ Node</button><button class="btn">↗ Connect</button><button class="btn">⌘ Arrange</button><button class="btn">Fit</button></div>
+  </div>
+  <div class="graph" id="graph">
+    <div class="graphhead"><span class="sectiontag">CHARACTER AUTHORING</span><div class="grow"></div><span class="sectiontag world">WORLD AUTHORING</span></div>
+    <div class="divider"></div><div class="dividerlabel">CROSS-SYSTEM CONNECTION</div>
+    <svg viewBox="0 0 1100 900" preserveAspectRatio="none">
+      <path class="link" d="M260 230 C350 230 350 170 455 170"/>
+      <path class="link" d="M260 230 C350 300 355 385 455 385"/>
+      <path class="relLink" d="M570 210 C570 275 570 315 570 345"/>
+      <path class="relLink" d="M690 430 C770 430 760 300 835 300"/>
+      <path class="link" d="M835 300 C900 300 895 220 970 220"/>
+      <path class="link" d="M835 300 C900 300 895 380 970 380"/>
+      <path class="cross" d="M690 430 C775 500 775 575 835 575"/>
+      <path class="worldlink" d="M690 575 C770 575 780 700 835 700"/>
+      <path class="worldlink" d="M1030 600 C1070 600 1070 675 1030 700"/>
+    </svg>
+
+    <div class="node char" style="left:55px;top:155px" onclick="openCharacter('Rainee')">
+      <span class="port r"></span><div class="nhead"><b>Rainee</b><span class="type">CHARACTER</span></div>
+      <div class="nbody">Primary character dataset<div class="chips"><span class="chip">37 evidence</span><span class="chip">3 states</span></div></div>
+    </div>
+    <div class="node evidence" style="left:455px;top:95px" onclick="openEvidence('Rainee • Images')">
+      <span class="port l"></span><div class="nhead"><b>Images</b><span class="type">EVIDENCE</span></div><div class="nbody">Visual behavior frames<div class="chips"><span class="chip">18</span><span class="chip">visual</span></div></div>
+    </div>
+    <div class="node evidence" style="left:455px;top:330px" onclick="openEvidence('Rainee • Audio / Transcript')">
+      <span class="port l"></span><div class="nhead"><b>Audio + Transcript</b><span class="type">EVIDENCE</span></div><div class="nbody">Speech, timing, verbal behavior<div class="chips"><span class="chip">19</span></div></div>
+    </div>
+
+    <div class="node char" style="left:455px;top:170px" onclick="openCharacter('Noir')">
+      <span class="port l"></span><div class="nhead"><b>Noir</b><span class="type">CHARACTER</span></div><div class="nbody">Secondary character dataset<div class="chips"><span class="chip">21 evidence</span><span class="chip">observer</span></div></div>
+    </div>
+
+    <div class="node rel" style="left:455px;top:345px" onclick="openRelationship()">
+      <span class="port t"></span><span class="port r"></span>
+      <div class="nhead"><b>Sister</b><span class="type">RELATIONSHIP CLASS</span></div>
+      <div class="nbody"><b style="color:#ddd">Rainee ↔ Noir</b><br>Relationship reference container<div class="chips"><span class="chip">12 evidence</span><span class="chip">interaction patterns</span><span class="chip">state</span></div></div>
+    </div>
+
+    <div class="node evidence" style="left:835px;top:170px" onclick="openEvidence('Sister • Evidence')">
+      <span class="port l"></span><div class="nhead"><b>Relationship Evidence</b><span class="type">EVIDENCE</span></div><div class="nbody">Evidence specifically about Rainee + Noir<div class="chips"><span class="chip">Images</span><span class="chip">Audio</span><span class="chip">Text</span></div></div>
+    </div>
+    <div class="node behavior" style="left:835px;top:350px;border-top:2px solid var(--green)" onclick="openBehavior()">
+      <span class="port l"></span><div class="nhead"><b>Fiction Behavior</b><span class="type">BEHAVIOR ENGINE</span></div><div class="nbody">Consumes evidence and reference objects to produce behavioral inputs.<div class="chips"><span class="chip">Visual</span><span class="chip">Audio</span><span class="chip">Transcript</span></div></div>
+    </div>
+
+    <div class="node world" style="left:835px;top:540px" onclick="openWorld()">
+      <span class="port l"></span><div class="nhead"><b>Spirited Away</b><span class="type">WORLD</span></div><div class="nbody">World dataset<div class="chips"><span class="chip">24 records</span><span class="chip">rules</span><span class="chip">NPCs</span></div></div>
+    </div>
+    <div class="node world" style="left:1010px;top:660px">
+      <span class="port l"></span><div class="nhead"><b>Bathhouse</b><span class="type">LOCATION</span></div><div class="nbody">Location + world rules<div class="chips"><span class="chip">Witch</span><span class="chip">spirits</span></div></div>
+    </div>
+  </div>
+</main>
+<section class="view-panel" id="fictionView" style="display:none">
+  <div class="header">
+    <div>
+      <div class="eyebrow">FICTION ENGINE</div>
+      <div class="title">Scene Generation Studio</div>
+      <div class="sub">The authoring graph feeds this downstream stage. Behavior is computed first; final fiction is generated last.</div>
+    </div>
+    <div class="grow"></div>
+    <div class="toolbar">
+      <button class="btn" onclick="showToast('Scenario selector opened')">Scenario</button>
+      <button class="btn" onclick="showToast('Behavior inputs inspected')">Inspect Inputs</button>
+      <button class="primary" onclick="showToast('Generation simulated')">Generate Fiction</button>
+    </div>
+  </div>
+  <div class="fiction-layout">
+    <div class="fiction-column">
+      <div class="section-card">
+        <div class="card-head"><b>1 · Scenario</b><span class="tag">READY</span></div>
+        <div class="value">Rainee enters the bathhouse during transformation</div>
+        <div class="minirow"><span>World</span><span>Spirited Away</span></div>
+        <div class="minirow"><span>Characters</span><span>Rainee · Noir</span></div>
+        <div class="minirow"><span>Relationship</span><span>Sister</span></div>
+      </div>
+      <div class="section-card">
+        <div class="card-head"><b>2 · Computed Behavior</b><span class="tag">PROCESSED</span></div>
+        <div class="behavior-row"><span>Rainee</span><b>Transformation pressure</b><span class="tag">HIGH</span></div>
+        <div class="behavior-row"><span>Noir</span><b>Observe → follow → react</b><span class="tag">ACTIVE</span></div>
+        <div class="behavior-row"><span>Sister</span><b>Teasing + protective response</b><span class="tag">ACTIVE</span></div>
+        <div class="behavior-row"><span>World</span><b>Bathhouse rules impose consequences</b><span class="tag">ACTIVE</span></div>
+      </div>
+      <div class="section-card">
+        <div class="card-head"><b>3 · Interaction Stream</b><span class="tag">LIVE INPUT</span></div>
+        <div class="stream"><span class="dot"></span><b>Rainee</b> enters unfamiliar space</div>
+        <div class="stream"><span class="dot"></span><b>World</b> detects an incompatible visitor</div>
+        <div class="stream"><span class="dot"></span><b>Noir</b> follows her into the bathhouse</div>
+        <div class="stream"><span class="dot"></span><b>Witch</b> becomes a world-side actor</div>
+      </div>
+    </div>
+    <div class="fiction-column wide">
+      <div class="section-card prose-card">
+        <div class="card-head"><b>Generated Fiction</b><span class="tag">DRAFT</span></div>
+        <div class="prose">
+          <p><b>RAINEE</b> pushed through the bathhouse door and immediately realized that the building had rules.</p>
+          <p>That would have been fine if she had known what any of them were.</p>
+          <p>Noir appeared behind her, took one look at the spirits staring from the corridor, and quietly decided that following her sister had been an extremely questionable decision.</p>
+          <p class="muted">[ Fiction generation continues from the computed interaction state. ]</p>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="card-head"><b>Generation Controls</b><span class="tag">CONFIGURED</span></div>
+        <div class="controls-grid">
+          <button class="btn" onclick="showToast('Writing style opened')">Writing Style</button>
+          <button class="btn" onclick="showToast('Scene constraints opened')">Scene Constraints</button>
+          <button class="btn" onclick="showToast('Behavior trace opened')">Behavior Trace</button>
+          <button class="btn" onclick="showToast('Regeneration simulated')">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view-panel" id="libraryView" style="display:none">
+  <div class="header">
+    <div><div class="eyebrow">DATA LIBRARY</div><div class="title">Evidence & Reference Library</div><div class="sub">Manage transcripts, images, audio, character references, relationship classes, worlds, and imported datasets.</div></div>
+    <div class="grow"></div>
+    <div class="toolbar"><button class="btn" onclick="showToast('Import dialog opened')">＋ Import</button><button class="primary" onclick="showToast('New dataset created')">New Dataset</button></div>
+  </div>
+  <div class="library-grid">
+    <div class="section-card" onclick="showToast('Character datasets opened')"><div class="card-head"><b>Characters</b><span class="tag">2</span></div><p>Rainee, Noir and transformation states.</p></div>
+    <div class="section-card" onclick="showToast('Relationship classes opened')"><div class="card-head"><b>Relationships</b><span class="tag">6</span></div><p>Sister and other reusable relationship references.</p></div>
+    <div class="section-card" onclick="showToast('Transcript datasets opened')"><div class="card-head"><b>Transcripts</b><span class="tag">42</span></div><p>Episode transcripts and general writing references.</p></div>
+    <div class="section-card" onclick="showToast('Image datasets opened')"><div class="card-head"><b>Images</b><span class="tag">28</span></div><p>Visual evidence and analysis records.</p></div>
+    <div class="section-card" onclick="showToast('Audio datasets opened')"><div class="card-head"><b>Audio</b><span class="tag">14</span></div><p>Speech recognition and timing evidence.</p></div>
+    <div class="section-card" onclick="showToast('World datasets opened')"><div class="card-head"><b>Worlds</b><span class="tag">1</span></div><p>Spirited Away, locations, entities, rules and events.</p></div>
+  </div>
+</section>
+
+
+<aside class="right" id="inspector">
+  <div class="panelhead"><div><div class="eyebrow" style="margin:0">INSPECTOR</div><h3>Selected Node</h3><div class="muted">Click any character, relationship, evidence, or world node.</div></div></div>
+  <div class="tabs"><button class="active">Details</button><button>Evidence</button><button>Connections</button></div>
+  <div class="field"><div class="label">Selection</div><div class="value">Relationship & Evidence Graph</div></div>
+  <div class="field"><div class="label">Canvas rules</div><div class="minirow"><span>Character evidence</span><span class="tag">independent</span></div><div class="minirow"><span>Relationship evidence</span><span class="tag">independent</span></div><div class="minirow"><span>World evidence</span><span class="tag">independent</span></div></div>
+  <div class="field"><div class="label">Tip</div><div class="muted">The relationship node is a real reference object. It can accumulate transcript, image, and audio evidence without turning that evidence into part of either character's identity.</div></div>
+</aside>
+</div>
+</div>
+
+<div class="drawer" id="drawer"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const drawer=document.getElementById('drawer'), modal=document.getElementById('modal'), toast=document.getElementById('toast');
+function showToast(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1600)}
+function openModal(content){modal.innerHTML=content;drawer.classList.add('show')}
+drawer.addEventListener('click',e=>{if(e.target===drawer)drawer.classList.remove('show')});
+
+function openCharacter(name){
+ const rainee=name==='Rainee';
+ openModal(`
+ <button class="close2" onclick="drawer.classList.remove('show')">×</button>
+ <div class="eyebrow">CHARACTER</div><h2>${name}</h2><div class="sub">${rainee?'Primary character / shapeshifter':'Secondary character / observer'}</div>
+ <div class="tabs"><button class="active">Overview</button><button>States</button><button>Evidence</button><button>Relations</button></div>
+ <div class="field"><div class="label">Identity</div><div class="value">${name} · ${rainee?'merchant / transformation character':'outsider / teaser'}</div></div>
+ <div class="field"><div class="label">Transformation States</div><div class="cards"><div class="card"><b>${rainee?'Pre-Transformation':'Baseline'}</b><span class="muted">Active reference state</span></div><div class="card"><b>${rainee?'State 2':'Interaction State'}</b><span class="muted">Available</span></div></div></div>
+ <div class="field"><div class="label">Evidence Channels</div><div class="cards"><div class="card"><b>${rainee?'18':'9'}</b><span class="muted">Images</span></div><div class="card"><b>${rainee?'7':'4'}</b><span class="muted">Audio</span></div><div class="card"><b>${rainee?'12':'8'}</b><span class="muted">Transcripts</span></div><div class="card"><b>${rainee?'3':'2'}</b><span class="muted">States</span></div></div></div>
+ <div class="field"><div class="label">Actions</div><button class="btn" onclick="showToast('Add evidence opened')">＋ Add Evidence</button> <button class="btn" onclick="showToast('Character export prepared')">Export Character</button></div>`);
+}
+function openRelationship(){
+ openModal(`<button class="close2" onclick="drawer.classList.remove('show')">×</button><div class="eyebrow">REFERENCE OBJECT</div><h2>Sister</h2><div class="sub">Rainee ↔ Noir · Relationship Class</div>
+ <div class="field"><div class="label">Participants</div><div class="value">Rainee ↔ Noir</div></div>
+ <div class="field"><div class="label">Relationship Evidence</div><div class="cards"><div class="card"><b>6</b><span class="muted">Transcript records</span></div><div class="card"><b>4</b><span class="muted">Images</span></div><div class="card"><b>2</b><span class="muted">Audio</span></div></div></div>
+ <div class="field"><div class="label">Computed interaction references</div><div class="minirow"><span>Teasing</span><span class="tag">frequent</span></div><div class="minirow"><span>Loyalty</span><span class="tag">high</span></div><div class="minirow"><span>Conflict</span><span class="tag">situational</span></div></div>
+ <div class="field"><div class="label">Actions</div><button class="btn" onclick="showToast('Relationship evidence opened')">＋ Add Evidence</button> <button class="btn" onclick="showToast('Relationship class duplicated')">Duplicate Class</button></div>`);
+}
+function openEvidence(title){
+ openModal(`<button class="close2" onclick="drawer.classList.remove('show')">×</button><div class="eyebrow">EVIDENCE</div><h2>${title}</h2><div class="sub">Evidence is stored against the selected reference object, not dumped into a giant character description.</div>
+ <div class="field"><div class="label">Channels</div><div class="cards"><div class="card"><b>18</b><span class="muted">Image frames</span></div><div class="card"><b>7</b><span class="muted">Audio clips</span></div><div class="card"><b>12</b><span class="muted">Transcript chunks</span></div></div></div>
+ <div class="field"><div class="label">Import</div><button class="btn" onclick="showToast('Transcript picker opened')">＋ Transcript</button> <button class="btn" onclick="showToast('Image picker opened')">＋ Images</button> <button class="btn" onclick="showToast('Audio picker opened')">＋ Audio</button></div>
+ <div class="field"><div class="label">Processing</div><div class="minirow"><span>Behavior extraction</span><span class="tag">Ready</span></div><div class="minirow"><span>Visual evidence</span><span class="tag">Indexed</span></div><div class="minirow"><span>Relationship mapping</span><span class="tag">Available</span></div></div>`);
+}
+function openBehavior(){
+ openModal(`<button class="close2" onclick="drawer.classList.remove('show')">×</button><div class="eyebrow">ENGINE NODE</div><h2>Fiction Behavior</h2><div class="sub">The authoring-side behavior processor. It does not write final prose here.</div>
+ <div class="field"><div class="label">Consumes</div><div class="minirow"><span>Character evidence</span><span class="tag">Connected</span></div><div class="minirow"><span>Relationship classes</span><span class="tag">Connected</span></div><div class="minirow"><span>World evidence</span><span class="tag">Connected</span></div><div class="minirow"><span>Image / audio / transcript</span><span class="tag">Supported</span></div></div>
+ <div class="field"><div class="label">Outputs</div><div class="value">Behavior observations → state / relationship inputs → downstream Fiction Engine</div></div>
+ <div class="field"><div class="label">Run</div><button class="primary" onclick="showToast('Behavior analysis simulated')">Run Behavior Analysis</button></div>`);
+}
+function openWorld(){
+ openModal(`<button class="close2" onclick="drawer.classList.remove('show')">×</button><div class="eyebrow">WORLD</div><h2>Spirited Away</h2><div class="sub">World dataset with locations, entities, rules, events, and world-side evidence.</div>
+ <div class="field"><div class="label">World Contents</div><div class="minirow"><span>Locations</span><span class="tag">8</span></div><div class="minirow"><span>World entities</span><span class="tag">11</span></div><div class="minirow"><span>Rules</span><span class="tag">17</span></div><div class="minirow"><span>Events</span><span class="tag">9</span></div></div>
+ <div class="field"><div class="label">Connected Characters</div><div class="minirow"><span>Rainee</span><span class="tag">enters</span></div><div class="minirow"><span>Noir</span><span class="tag">follows</span></div></div>
+ <div class="field"><button class="btn" onclick="showToast('World entity browser opened')">Browse World Entities</button> <button class="btn" onclick="showToast('World evidence opened')">Add Evidence</button></div>`);
+}
+function settings(){
+ openModal(`<button class="close2" onclick="drawer.classList.remove('show')">×</button><div class="eyebrow">PROJECT SETTINGS</div><h2>Engine Configuration</h2><div class="sub">API credentials belong here, away from the authoring canvas.</div>
+ <div class="formrow"><label>Provider</label><select><option>OpenRouter</option><option>Qwen Cloud</option><option>OpenAI API</option><option>DeepSeek</option></select></div>
+ <div class="formrow"><label>API Key</label><input type="password" placeholder="••••••••••••••••"></div>
+ <div class="formrow"><label>Model</label><input value="Select provider model"></div>
+ <div class="formrow"><label>Key storage</label><select><option>Session only</option><option>Remember on this device</option></select></div>
+ <div class="field"><div class="label">API usage</div><div class="minirow"><span>Connection</span><span class="tag">Not tested</span></div><div class="minirow"><span>Generation backend</span><span class="tag">Configurable</span></div></div>
+ <button class="primary" onclick="showToast('Settings saved for mockup');drawer.classList.remove('show')">Save Settings</button>`);
+}
+
+function setActiveTopButton(view){
+  document.querySelectorAll('.topnav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+}
+function switchView(view, button){
+  // Explicitly hide every top-level application surface first.
+  const surfaces = [
+    document.getElementById('authoringView'),
+    document.getElementById('fictionView'),
+    document.getElementById('libraryView')
+  ];
+  surfaces.forEach(s=>{ if(s) s.style.display='none'; });
+  const target = document.getElementById(view==='authoring'?'authoringView':view==='fiction'?'fictionView':'libraryView');
+  if(target) target.style.display = 'block';
+  setActiveTopButton(view);
+  showToast(view==='authoring'?'Visual Authoring':view==='fiction'?'Fiction Engine':'Data Library');
+}
+document.getElementById('settings').onclick=settings;
+
+document.getElementById('run').onclick=()=>showToast('Mock analysis started → behavior → simulation → fiction');
+</script>
+</body>
+</html>
+<script>
+document.querySelectorAll('.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const group=btn.parentElement;
+    group.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast(btn.textContent+' tab selected');
+  });
+});
+</script>

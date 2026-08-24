@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eclipse Architecture & Schema • 2026-08-15</title>
+<style>
+:root{
+  --bg:#0a0d10;--panel:#11161a;--panel2:#171d22;--line:#303941;
+  --text:#ebe8e1;--muted:#87909a;--gold:#c9aa78;--teal:#57b5bc;
+  --violet:#a995c5;--blue:#7898af;--green:#79a995;--orange:#c18a6d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:32px 40px;border-bottom:1px solid var(--line);background:#0f1317}
+h1,h2{font-family:Georgia,serif;font-weight:400}
+h1{font-size:36px;margin:0 0 8px}.subtitle{color:var(--muted);font-size:12px}
+main{max-width:1500px;margin:auto;padding:30px 40px}
+section{margin:0 0 34px}
+h2{font-size:26px;margin:0 0 12px}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+pre{background:#0c1014;border:1px solid #252e35;border-radius:8px;padding:16px;overflow:auto;color:#d9d5cb}
+.note{border-left:3px solid var(--gold);padding:12px 15px;background:#15191d}
+.good{border-left-color:var(--green)}.warn{border-left-color:var(--orange)}.info{border-left-color:var(--teal)}
+.badge{display:inline-block;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:10px;margin:3px;color:#c7cdd2}
+.gold{border-color:var(--gold);color:#eadbbb}.teal{border-color:var(--teal);color:#b2e5e7}.violet{border-color:var(--violet);color:#dccdf1}
+table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #273038;padding:10px;text-align:left;vertical-align:top}th{font-size:10px;color:#aab3bb;text-transform:uppercase;letter-spacing:.1em}
+.flow{font-family:ui-monospace,monospace}
+footer{border-top:1px solid var(--line);padding:22px 40px;color:var(--muted);font-size:11px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div style="background:#fff3cd;border:2px solid #b8860b;padding:12px 16px;margin:12px 0;border-radius:6px;font-family:sans-serif;font-size:14px;"><b>SUPERSEDED NOTE (2026-08-21):</b> "Convergence Node" as a standalone node type is RETIRED (Phase 2 decision). Wherever this document describes a separate Convergence Node, read it as a <i>branching variant / interaction mode inside a Relationship Node</i>. See START_HERE.md &sect;2. Newer architecture authority: <code>Eclipse_System_Architecture_CANON.md</code>.</div>
+<header>
+  <h1>Eclipse Architecture & Schema</h1>
+  <div class="subtitle">Working architecture document • 2026-08-15 • conceptual/UX schema, not a locked implementation specification</div>
+  <div class="note info"><b>Guiding concept — Pseudo-cognition:</b> convert media-derived observable behavior, social responses, context, and relationships into editable nodes that can support fictional simulation and, conceptually, narrative decomposition and recomposition.</div>
+  <div class="note warn"><b>Terminology migration:</b> “Relationship Variant” is the former convergence behavior represented inside a Relationship Node. There is no standalone Convergence Node. This older conceptual document is retained as background; see <code>Documentation_Migration_and_Authority.md</code> for current decisions.</div>
+</header>
+
+<main>
+
+<section>
+<h2>1. Scope and status</h2>
+<div class="note">
+This document records the architecture and schema discussed during the Eclipse UX/UI iterations. It is intentionally a <b>working conceptual schema</b>. The final technical foundation, exact node taxonomy, and exact node count remain open decisions.
+</div>
+<p>The immediate goal is to make the UX/UI authoring model coherent enough that another AI can build the interface correctly. Implementation details can be formalized later after the accumulated HTML design documents are consolidated.</p>
+</section>
+
+<section>
+<h2>2. Core idea</h2>
+<div class="card">
+<pre>CHARACTER BRAIN
+      |
+      +-----------------------------+
+      |                             |
+DIRECT / CHARACTER DATA      SUPPORT / REFERENCE DATA
+      |                             |
+      +-------------+---------------+
+                    |
+                    v
+            COMPUTED COGNITION
+                    |
+          +---------+---------+
+          |         |         |
+       BEHAVIOR   DIALOGUE  REACTION
+                    |
+                    v
+                  LLM</pre>
+</div>
+<p>The system is intended to function as an active cognition layer for fictional characters, rather than merely a prompt library or character-description database. Evidence describes what was observed; relationships, RELATIONSHIP VARIANT, rules, weights, priorities, biases, and overrides control how that evidence interacts.</p>
+</section>
+
+<section>
+<h2>3. The visual graph hierarchy</h2>
+<pre>CHARACTER BRAIN
+│
+├── GLOBAL RULES / PRIORITIES / OVERRIDES
+│
+├── GROUP NODE
+│   │
+│   ├── CHARACTER NODE
+│   │   │
+│   │   ├── Character Image / Representation
+│   │   ├── Internal Data Nodes
+│   │   ├── Internal Relationships
+│   │   └── Hidden Sublevels
+│   │
+│   ├── CHARACTER NODE
+│   │
+│   └── CHARACTER NODE
+│
+│        ↓ internal graph aggregation
+│
+│   GROUP OUTPUT / AGGREGATE SIGNAL
+│
+├── RELATIONSHIP NODE
+│   ├── relationship type
+│   ├── participants
+│   ├── priority
+│   ├── persona weights
+│   ├── state conditions
+│   ├── rules
+│   ├── biases
+│   └── overrides
+│
+├── RELATIONSHIP VARIANT
+│   ├── source datasets
+│   ├── shared dimensions
+│   ├── similarity
+│   ├── contrast
+│   ├── transfer weights
+│   ├── confidence
+│   ├── filters
+│   └── selective transfer
+│
+└── COMPUTATION
+    ├── active context
+    ├── active scene
+    ├── active character state
+    ├── evidence resolution
+    ├── conflict resolution
+    └── final behavior signal</pre>
+
+<div class="note good">
+<b>Critical UX interpretation:</b> the large Group Node is a giant first-class graph node, not a passive background container. The group contains a nested graph and exposes an aggregate/output boundary to the external relationship graph.
+</div>
+</section>
+
+<section>
+<h2>4. Group Node</h2>
+<div class="card">
+<h3>Purpose</h3>
+<p>A Group Node represents a large graph object containing related Character Nodes and their internal structures.</p>
+<h3>Conceptual fields</h3>
+<pre>{
+  id,
+  type: "group",
+  name,
+  children: [characterNodeId...],
+  group_rules: [],
+  group_priority,
+  group_overrides: [],
+  output_signal
+}</pre>
+</div>
+<p>The exact number of group subtypes is intentionally not fixed.</p>
+</section>
+
+<section>
+<h2>5. Character Node</h2>
+<div class="card">
+<h3>Purpose</h3>
+<p>A Character Node represents a character-specific graph inside a Group. The node visually carries a character image/representation and exposes an internal graph.</p>
+<pre>{
+  id,
+  type: "character",
+  character_id,
+  representation,
+  image,
+  persona_state,
+  children: [internalNodeId...],
+  hidden_sublevels: [sublevelId...],
+  internal_relationships: [relationshipId...]
+}</pre>
+</div>
+<div class="note info">
+The image is not merely decoration. It identifies the character/representation associated with that graph segment, especially when multiple persona or state representations are present.
+</div>
+</section>
+
+<section>
+<h2>6. Internal Data Nodes</h2>
+<div class="card">
+<p>An internal data node represents a particular evidence/data dimension inside a character graph. The final taxonomy is still open.</p>
+<div>
+<span class="badge teal">Transcript</span>
+<span class="badge teal">Image</span>
+<span class="badge teal">Audio</span>
+<span class="badge teal">Video Analysis</span>
+<span class="badge">Social / Cultural Reference</span>
+<span class="badge">Character Reference</span>
+<span class="badge violet">Relationship Evidence</span>
+<span class="badge">General Writing Reference</span>
+</div>
+<pre>{
+  id,
+  type: "evidence",
+  data_type,
+  source,
+  target,
+  scope,
+  global_weight,
+  priority,
+  confidence,
+  evidence,
+  extracted_signals,
+  node_rules: [],
+  node_biases: [],
+  node_overrides: []
+}</pre>
+</div>
+</section>
+
+<section>
+<h2>7. Hidden Sublevels</h2>
+<div class="card">
+<p>A Character Node may expose a hidden sublevel containing deeper topology. This is not simply a hidden text field; it is an expandable graph layer.</p>
+<pre>Character Node
+   |
+   +-- visible data
+   |
+   +-- [Hidden Sublevel]
+           |
+           +-- deeper Data Nodes
+           +-- Sub-Relationships
+           +-- state-specific nodes
+           +-- additional graph structure</pre>
+</div>
+</section>
+
+<section>
+<h2>8. Internal graph aggregation</h2>
+<div class="card">
+<pre>[Data Node] ──┐
+[Data Node] ──┼──→ internal graph ──→ Group Output
+[Data Node] ──┤
+[Relationship]┘</pre>
+<p>For the UX, the Group Output/Data Bus is a clear aggregation boundary. It is currently safest to treat that as a <b>visual/interaction mechanism</b> rather than permanently defining it as a separate semantic node until the technical foundation is finalized.</p>
+</div>
+</section>
+
+<section>
+<h2>9. Relationship Node</h2>
+<div class="card">
+<p>A Relationship Node represents an actual story/character relationship and is distinct from a RELATIONSHIP VARIANT.</p>
+<pre>{
+  id,
+  type: "relationship",
+  source_character,
+  target_character,
+  relationship_type,
+  relationship_strength,
+  scene_conditions,
+  behavior_rules: [],
+  priorities: {},
+  persona_weights: {},
+  biases: [],
+  overrides: []
+}</pre>
+</div>
+<div class="note warn">
+<b>Do not collapse Relationship and RELATIONSHIP VARIANT.</b> A Relationship means the characters/datasets participate in an actual story relationship. A RELATIONSHIP VARIANT means evidence sources overlap on a behavioral dimension.
+</div>
+</section>
+
+<section>
+<h2>10. RELATIONSHIP VARIANT</h2>
+<div class="card">
+<pre>{
+  id,
+  type: "RELATIONSHIP VARIANT",
+  source_node_ids: [],
+  shared_dimensions: [],
+  similarity,
+  contrast,
+  transfer_weights: {},
+  confidence,
+  priority,
+  filters: [],
+  rules: [],
+  biases: [],
+  overrides: [],
+  selective_transfer: {}
+}</pre>
+</div>
+<p>Selective transfer allows a reference dataset to contribute only chosen dimensions, such as comedy, dialogue, social reaction, visual design, or other explicitly allowed signals, rather than becoming a personality transplant.</p>
+</section>
+
+<section>
+<h2>11. Relationship state and persona priority</h2>
+<div class="card">
+<pre>NORMAL MODE
+Sally     70%
+Fujiko    30%
+
+TRANSFORMATION MODE
+Sally    100%
+Fujiko     0%
+
+HYBRID MODE
+Sally     50%
+Fujiko    50%</pre>
+</div>
+<p>The relationship layer needs to be able to hold mode-dependent state and priority. The exact UI controls can evolve, but the concept should remain accessible from the relationship inspector.</p>
+</section>
+
+<section>
+<h2>12. Rules, biases, priorities, overrides</h2>
+<pre>GLOBAL
+  ↓
+GROUP
+  ↓
+CHARACTER
+  ↓
+INTERNAL NODE
+  ↓
+CONNECTION / RELATIONSHIP
+  ↓
+ACTIVE STATE OVERRIDE</pre>
+<p>Controls should remain hierarchical rather than being flattened into a single giant prompt. Connection rules may have different authority from ordinary evidence. Overrides can take precedence when the story explicitly requires a transformation, temporary condition, scene-specific behavior, or other deliberate exception.</p>
+</section>
+
+<section>
+<h2>13. Computation model</h2>
+<pre>RAW DATA
+  ↓
+EXTRACTION
+  ├─ dialogue signals
+  ├─ reaction signals
+  ├─ visual signals
+  ├─ audio signals
+  └─ interaction signals
+  ↓
+EVIDENCE NORMALIZATION
+  ↓
+NODE WEIGHTING
+  ↓
+RELATIONSHIP VARIANT / RELATIONSHIP RESOLUTION
+  ↓
+PRIORITY / BIAS / OVERRIDE RESOLUTION
+  ↓
+ACTIVE CHARACTER STATE
+  ↓
+LLM GENERATION</pre>
+<p>The visual animation of data moving through the graph should communicate this pipeline when the author runs/updates computation.</p>
+</section>
+
+<section>
+<h2>14. Active Cognition</h2>
+<div class="card">
+<pre>{
+  character,
+  persona_state,
+  relationship_state,
+  current_mode,
+  active_experience,
+  behavioral_signals,
+  confidence,
+  resolved_rules,
+  final_behavior_signal
+}</pre>
+</div>
+<p>This is the bridge between graph authoring and generation. The graph is not the final story. It is the structured state resolver that produces what should be true for the character in the current context.</p>
+</section>
+
+<section>
+<h2>15. Board interaction contract</h2>
+<table>
+<tr><th>Interaction</th><th>Required behavior</th></tr>
+<tr><td>Select</td><td>Select node or connection and expose inspector.</td></tr>
+<tr><td>Move</td><td>Move groups, character nodes, relationships and author-created nodes.</td></tr>
+<tr><td>Connect</td><td>Drag from a connection dot to another compatible dot.</td></tr>
+<tr><td>Disconnect</td><td>Select edge and delete/disconnect without deleting nodes.</td></tr>
+<tr><td>Expand / Collapse</td><td>Expand groups, characters and hidden sublevels.</td></tr>
+<tr><td>Pan / Zoom</td><td>Navigate a large whiteboard.</td></tr>
+<tr><td>Fit Board</td><td>Fit authored graph to the viewport without making it unreadably small.</td></tr>
+<tr><td>Undo / Redo</td><td>Restore graph edits and node layout.</td></tr>
+<tr><td>Duplicate</td><td>Copy a node while preserving reusable structure and allowing retargeting.</td></tr>
+<tr><td>Disable Edge</td><td>Temporarily suppress a connection without deleting it.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>16. UI responsibilities</h2>
+<div class="grid">
+<div class="card"><h3>Whiteboard</h3><p>Show topology, hierarchy, relationships and data flow.</p></div>
+<div class="card"><h3>Node</h3><p>Show identity and the minimum information needed to understand what it is.</p></div>
+<div class="card"><h3>Connection</h3><p>Show how information/relationship/state moves through the graph.</p></div>
+<div class="card"><h3>Inspector</h3><p>Hold detailed weights, confidence, rules, biases, priorities, overrides, filters and state controls.</p></div>
+</div>
+</section>
+
+<section>
+<h2>17. Style direction</h2>
+<p>Use the existing V2 and V3 HTML prototypes as visual references. V2 is the stronger reference for the polished Eclipse shell, inspector, navigation and board presentation. V3 is the stronger reference for the nested Group → Character → Hidden Sublevel → internal graph topology. The Sally/Mallory mockups are visual reference material for relationship-oriented authoring.</p>
+<div class="note"><b>Important:</b> style references are references, not implementation constraints. Preserve the architecture and interaction language while improving visual quality.</div>
+</section>
+
+<section>
+<h2>18. Open questions</h2>
+<ul>
+<li>Exact node count and final node taxonomy.</li>
+<li>Whether every visual aggregation helper should exist in the semantic schema.</li>
+<li>Exact rules for compatible port connections.</li>
+<li>Exact relationship-state model.</li>
+<li>Exact RELATIONSHIP VARIANT authoring workflow.</li>
+<li>Exact active-cognition presentation.</li>
+</ul>
+</section>
+
+<section>
+<h2>19. Implementation boundary for the current phase</h2>
+<div class="note">
+For the current UX/UI phase, build the visual authoring interactions first. The technical schema, deterministic resolver, persistence model, and LLM integration can be formalized later from this working architecture.
+</div>
+</section>
+
+</main>
+<footer>Eclipse Architecture & Schema • Working design document • 2026-08-15</footer>
+</body>
+</html>

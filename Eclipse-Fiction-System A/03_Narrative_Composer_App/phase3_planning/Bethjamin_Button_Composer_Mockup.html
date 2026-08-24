@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<!-- Historical worked-example mockup. Its clone-and-dominate labels are not a locked architecture; current derived-character policy is in Documentation_Migration_and_Authority.md. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse Narrative Composer — Bethjamin Button (UI Mockup)</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101113;color:#eee}
+  :root{
+    --paper:#f4f0e6; --ink:#262522; --muted:#77736b;
+    --gold:#c99a5d; --line:#34383f; --bg:#101113; --bg2:#16181b;
+    --edge-lore:#c99a5d;
+    --edge-beth:#ff5f7e;
+    --edge-space:#7c6bff;
+    --edge-rainee:#4fd6ff;
+    --edge-comedy:#ff9f4f;
+    --edge-filter:#ff4a6e;
+    --edge-horse:#7fd66a;
+    --edge-kid:#e0d45a;
+    --edge-canon:#8888cc;
+  }
+  button,input,textarea{font:inherit}
+  .app{height:100vh;display:grid;grid-template-rows:58px 1fr}
+  header{
+    height:58px;background:#0d0e10;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:20px;padding:0 20px;z-index:30
+  }
+  .brand{font-family:Georgia,serif;font-size:21px;letter-spacing:.02em}
+  .brand small{display:block;font:8px Inter,sans-serif;letter-spacing:.24em;color:#999;margin-top:-2px}
+  .crumb{color:#999;font-size:12px;border-left:1px solid #333;padding-left:18px}
+  .spacer{flex:1}
+  .btn{border:1px solid #3b3f45;background:#191b1e;color:#ddd;border-radius:5px;padding:8px 12px;cursor:pointer;font-size:12px}
+  .btn:hover{background:#22252a}
+  .btn.primary{border-color:#d0aa78;background:#b78d5d;color:#131313;font-weight:700}
+
+  .workspace{display:grid;grid-template-columns:52px 1fr 320px;min-height:0}
+
+  .tools{background:#131418;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;z-index:15}
+  .tools button{width:34px;height:34px;padding:0;font-size:15px;border:1px solid #333;background:#1a1c20;color:#ccc;border-radius:6px;cursor:pointer}
+  .tools button:hover{background:#25282e}
+  .tools button.on{border-color:var(--gold);color:var(--gold)}
+
+  .stage{position:relative;overflow:hidden;background:#1c1d20;cursor:grab}
+  .stage.panning{cursor:grabbing}
+  .board-label{position:absolute;top:16px;left:20px;color:#8b8f96;font-size:10px;letter-spacing:.18em;text-transform:uppercase;z-index:12}
+  .minimap{position:absolute;right:16px;top:16px;width:170px;height:96px;border:1px solid #3a3e45;background:#17191c;border-radius:6px;opacity:.9;z-index:12}
+  .status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#17191c;border:1px solid #3a3e45;border-radius:16px;padding:7px 13px;font-size:10.5px;color:#9fa4ab;z-index:12}
+  .legend{position:absolute;right:16px;bottom:16px;background:#17191c;border:1px solid #3a3e45;border-radius:6px;padding:9px 11px;width:196px;font-size:9.5px;color:#9da2a8;z-index:12}
+  .legend b{color:#eee;display:block;margin-bottom:6px;font-size:10px;letter-spacing:.06em}
+  .legend div{margin:4px 0;display:flex;align-items:center;gap:6px}
+  .legend .sw{width:10px;height:3px;border-radius:2px;flex:none}
+
+  .world{position:absolute;left:0;top:0;width:2400px;height:3400px;transform-origin:0 0;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:32px 32px;background-color:#1c1d20}
+
+  svg.wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:3}
+  .wire{fill:none;stroke-width:2;opacity:.8}
+  .wire-flow{stroke-dasharray:6 10;animation:flow 1.1s linear infinite}
+  @keyframes flow{ to{ stroke-dashoffset:-32; } }
+  .wire-glow{stroke-width:7;opacity:.14;filter:blur(1.5px)}
+  .wire-socket{fill:#17191c;stroke-width:2}
+
+  .block-node{
+    position:absolute;width:400px;background:var(--paper);color:var(--ink);
+    border:1px solid #cfc8b9;border-radius:4px;box-shadow:0 16px 40px rgba(0,0,0,.4);z-index:5
+  }
+  .block-node.selected{box-shadow:0 0 0 2px var(--gold),0 16px 40px rgba(0,0,0,.4)}
+  .block-drag{padding:8px 14px;border-bottom:1px solid #e0dbd1;display:flex;align-items:center;justify-content:space-between;cursor:grab;background:#efe9db}
+  .block-kind{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b846f}
+  .block-grip{color:#b3a98f;font-size:11px}
+  .block-body{padding:14px 18px 18px;cursor:pointer}
+  .chips{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+  .chip{font-size:8px;border:1px solid #cfc7b8;border-radius:10px;padding:3px 7px;text-transform:uppercase;letter-spacing:.07em;color:#756f64}
+  .chip.rainee{border-color:#b8dde8;color:#3a7a8a}
+  .chip.beth{border-color:#e8b8b8;color:#8a3a3a}
+  .chip.space{border-color:#c8b8e8;color:#5a3a8a}
+  .chip.comedy{border-color:#e8d4a8;color:#8a6a2a}
+  .block-body p{font:14.5px/1.55 Georgia,serif;margin:6px 0}
+  .dialogue{font-family:Inter,sans-serif;font-size:11.5px;line-height:1.55;margin:6px 0}
+  .dialogue b{font-size:9px;letter-spacing:.12em}
+  .dialogue em{color:#999;font-size:10px}
+  .composer-note{background:#e6e0d2;border:1px solid #d3cabb;padding:9px 11px;font:10.5px/1.45 Inter,sans-serif;color:#635e55;margin:10px 0}
+  .port{position:absolute;width:12px;height:12px;border:2px solid var(--gold);background:var(--paper);border-radius:50%;top:26px;cursor:crosshair;z-index:6}
+  .port.left{left:-7px}.port.right{right:-7px}
+
+  .node{position:absolute;width:236px;background:#17191c;border:1px solid #3d4249;border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.4);z-index:6;user-select:none}
+  .node.selected{box-shadow:0 0 0 2px var(--gold),0 12px 28px rgba(0,0,0,.4)}
+  .node-head{padding:9px 12px;border-bottom:1px solid #2c2f34;display:flex;align-items:center;gap:8px;cursor:grab}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .node-title{font-size:11.5px;font-weight:650;flex:1}
+  .node-kind{font-size:7.5px;color:#8d9096;text-transform:uppercase;letter-spacing:.11em}
+  .node-body{padding:10px 12px;cursor:pointer;color:#aeb2b9;font-size:10px;line-height:1.5}
+  .node-body strong{color:#eee}
+  .node-foot{padding:7px 12px;border-top:1px solid #26282c;color:#777d85;font-size:8.5px}
+  .npt{position:absolute;width:11px;height:11px;border-radius:50%;top:24px;border:2px solid #666;background:#17191c;z-index:6}
+  .npt.left{left:-6px}.npt.right{right:-6px}
+  /* static port dots hidden — wires now land on their own computed socket per side */
+  .port,.npt{display:none}
+
+  .inspector{background:#131518;border-left:1px solid var(--line);overflow:auto}
+  .section{padding:16px;border-bottom:1px solid var(--line)}
+  .section h4{font-size:9px;letter-spacing:.16em;color:#858a91;text-transform:uppercase;margin:0 0 11px}
+  .title{font:17px Georgia,serif}
+  .pill{float:right;border:1px solid #3d4249;border-radius:10px;padding:3px 7px;font-size:8.5px;color:#9fa4ab}
+  .layer{margin-top:10px;border:1px solid #2c2f34;border-radius:5px;overflow:hidden}
+  .layer-head{padding:7px 10px;background:#1b1e22;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#c3c7cd;display:flex;justify-content:space-between}
+  .layer-head span.tag{font-size:7.5px;letter-spacing:.06em;color:#777d85;border:none;padding:0}
+  .layer-body{padding:9px 10px;font-size:10.5px;color:#b8bbc0;line-height:1.5}
+  .layer-body .kv{display:flex;justify-content:space-between;gap:8px;margin:3px 0}
+  .layer-body .kv span:first-child{color:#8b909a}
+  .check{display:block;font-size:10px;color:#aaa;margin:8px 0}
+  .w{display:grid;grid-template-columns:1fr 34px;gap:6px;margin:9px 0;font-size:9.5px}
+  .mini{height:4px;background:#292d32;margin-top:5px;border-radius:2px}
+  .mini i{display:block;height:100%;background:var(--gold);border-radius:2px}
+  .evidence{background:#17191c;border:1px solid #2c2f34;padding:9px;margin-top:7px;font-size:9.5px;color:#9da2a8;line-height:1.5}
+  .field{margin-top:11px}
+  .field label{display:block;font-size:8.5px;color:#858a92;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+  .field input,.field textarea{width:100%;background:#101215;border:1px solid #34383f;color:#eee;border-radius:3px;padding:7px;font-size:11px}
+  .empty-hint{color:#7c828a;font-size:11px;line-height:1.6;padding:4px 0}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">Eclipse <small>NARRATIVE COMPOSER</small></div>
+  <div class="crumb">Project / Rick &amp; Morticia / Bethjamin Button — UI mockup</div>
+  <div class="spacer"></div>
+  <button class="btn">Undo</button><button class="btn">Redo</button><button class="btn" id="fit">Fit Board</button>
+  <button class="btn primary" id="compute">RECOMPUTE</button>
+</header>
+
+<div class="workspace">
+  <div class="tools">
+    <button class="on" title="Select">↖</button>
+    <button title="Add node" id="addNode">＋</button>
+    <button title="Connect">⌁</button>
+    <button title="Zoom in" id="zoomIn">⊕</button>
+    <button title="Zoom out" id="zoomOut">⊖</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="board-label">SINGLE CANVAS · BETHJAMIN BUTTON — MOCKUP DATA, NOT GENERATED</div>
+    <div class="minimap"></div>
+
+    <div class="world" id="world">
+      <svg class="wires" id="wires"></svg>
+
+      <!-- ===== SCENE 1: Arrival + Interview ===== -->
+      <div class="block-node" id="s1" data-node="s1" style="left:520px;top:60px">
+        <div class="block-drag"><span class="block-kind">Narrator Block · Scene 1</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip rainee">Rainee / Shapeshifter</span><span class="chip">Rick Trade</span></div>
+          <p>Rainee — "American Foxy Momma" — arrived through the finite curve carrying technology samples and an attitude that suggested she'd been burned by worse than Rick Sanchez. Rick flaked mid-deal, muttering something about Earth, and left her standing in the Smith living room with the two Beths staring at her like she'd fallen out of a bad vending machine.</p>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <div class="block-node" id="s2" data-node="s2" style="left:520px;top:340px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 3 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">Domestic Beth</span><span class="chip space">Space Beth</span><span class="chip rainee">Rainee</span><span class="chip">Lore</span></div>
+          <p>The Beths circled her. Domestic Beth folded her arms. Space Beth tilted her head like a predator sizing up something that might be interesting.</p>
+          <div class="dialogue"><b>BETH</b><br>"So. Are you one of Rick's girlfriends?"</div>
+          <div class="dialogue"><b>RAINEE</b><br>"No. I only like women. My species is mostly monogender — into women."</div>
+          <div class="dialogue"><b>SPACE BETH</b><br>"Huh. So you're, what — a lesbian space fox?"</div>
+          <div class="dialogue"><b>RAINEE</b><br>"Eidolissa. And yes."</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 2: The Challenge ===== -->
+      <div class="block-node" id="s3" data-node="s3" style="left:520px;top:680px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 2 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">Domestic Beth</span><span class="chip rainee">Rainee</span><span class="chip">Challenge</span></div>
+          <div class="dialogue"><b>BETH</b><br>"Okay. You want to hang with us? Turn into me. Let's see what you've got."</div>
+          <p>Rainee studied her. The eidolissa fox ears flattened slightly — not fear, calculation. She closed her eyes.</p>
+          <div class="dialogue"><b>RAINEE</b><br>"Fine. But I should warn you — when I do this, I'm going to experience your memories. And your personality. As an impression."</div>
+          <div class="composer-note">Shapeshift rule: absorption is impressionistic — appearance + memory echo + personality filtered through Rainee's own core. She does not become a copy. (Fixed absorption depth, per character rule.)</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 3: The Transformation ===== -->
+      <div class="block-node" id="s4" data-node="s4" style="left:520px;top:1020px">
+        <div class="block-drag"><span class="block-kind">Narrator Block · Transformation</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip rainee">Rainee → Beth</span><span class="chip">Physical Comedy</span><span class="chip comedy">Butt Joke</span></div>
+          <p>The shift rippled through her. Red streak appeared in her hair. Her body settled into Beth's proportions — almost. The butt was bigger. Noticeably, structurally bigger. Her eidolissa ears and tail persisted, fox-red, framing the otherwise-Beth silhouette.</p>
+          <p>Beth-Rainee opened her eyes and immediately grimaced.</p>
+          <div class="dialogue"><b>BETH-RAINEE</b><br>"Oh. Oh no. I can feel — did you — <em>you slept with Jerry.</em>"</div>
+          <div class="dialogue"><b>BETH-RAINEE</b><br>"I need to go wash my brain. With fire."</div>
+          <p>The Jerry Filter activated: every memory of Jerry routed through Rainee's corpus of awful-men transcripts and "made me a lesbian" joke references. The cringe was structural.</p>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 4: Horse Butt ===== -->
+      <div class="block-node" id="s5" data-node="s5" style="left:520px;top:1420px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 3 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">Domestic Beth</span><span class="chip space">Space Beth</span><span class="chip rainee">Beth-Rainee</span><span class="chip comedy">Horse Butt</span></div>
+          <div class="dialogue"><b>SPACE BETH</b><br>"Did we always have a butt that big?"</div>
+          <div class="dialogue"><b>BETH</b><br>"Her ass is as big as one of my horses."</div>
+          <div class="dialogue"><b>BETH-RAINEE</b><br>"That's — that's a Rainee thing. The fox form does that."</div>
+          <div class="composer-note">Horse knowledge: both Beths carry deliberately expanded horse data beyond canon. Beth-Rainee carries only an impressionistic residue — she loves horses, but she is not a horse surgeon. The joke emerges from the asymmetry: two experts and one enthusiast.</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 5: Wine Night ===== -->
+      <div class="block-node" id="s6" data-node="s6" style="left:520px;top:1780px">
+        <div class="block-drag"><span class="block-kind">Narrator Block · Twincest</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">All Beths</span><span class="chip space">Space Beth</span><span class="chip rainee">Beth-Rainee</span><span class="chip">Twincest</span><span class="chip comedy">Wine</span></div>
+          <p>The wine came out. Everyone was away — Jerry at work, Rick wherever Rick goes when he's not ruining people's evenings. The three Beths sat on the couch, and the alcohol did what alcohol does to people who already share too much DNA and one of them is wearing the other one's face with a bigger ass and fox ears.</p>
+          <p>The twincest memory hit Beth-Rainee harder than the other two. For the real Beths, it was a thing that happened. For her — filtered through a lesbian eidolissa's impressionistic absorption — it was vivid. It registered as <em>the</em> defining Beth memory. The wine made it happen again.</p>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 6: Morning After ===== -->
+      <div class="block-node" id="s7" data-node="s7" style="left:520px;top:2160px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 3 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">Domestic Beth</span><span class="chip space">Space Beth</span><span class="chip rainee">Beth-Rainee</span><span class="chip">Jerry</span></div>
+          <div class="dialogue"><b>BETH</b><br>"…We probably shouldn't mention this to Jerry. Again."</div>
+          <div class="dialogue"><b>SPACE BETH</b><br>"Fuck Jerry."</div>
+          <div class="dialogue"><b>BETH-RAINEE</b><br>"—ugh. <em>Jerry.</em>" <em>*full-body shiver*</em></div>
+          <div class="composer-note">Three different characters, same event, computed by arrangement: Domestic Beth = guilt + naughty (full Jerry marriage load, mom-guilt frame). Space Beth = indifference (space delta dominant, no-attachment frame overrides guilt). Beth-Rainee = visceral cringe (Jerry Filter routes everything through awful-men corpus — structural, not a choice).</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 7: Verdict + Twerking ===== -->
+      <div class="block-node" id="s8" data-node="s8" style="left:520px;top:2520px">
+        <div class="block-drag"><span class="block-kind">Dialogue Block · 3 speakers</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">All Beths</span><span class="chip comedy">Big Butt Jokes</span><span class="chip rainee">Twerking</span></div>
+          <div class="dialogue"><b>SPACE BETH</b><br>"You know what? You damn sure can hang with us."</div>
+          <div class="dialogue"><b>BETH</b><br>"She can hang. She can definitely hang."</div>
+          <p>Space Beth egged Beth-Rainee into demonstrating what Rainee's body could do. The tail whipped. The big butt moved. The two real Beths lost it — a mixture of "Horse Butt Beth" taunting and genuine delight that someone had finally matched their particular brand of chaos.</p>
+          <div class="composer-note">White-girl big-butt joke node (Composer-only, attached to data port). Plausibility: a Beth of her generation in 2026 plausibly took a twerking class. Evidence: Speed (One Piece) — half-horse woman — as precedent. Dynamic: two experts with full horse knowledge + one enthusiast = the joke writes itself from the delta.</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== SCENE 8: De-Aged ===== -->
+      <div class="block-node" id="s9" data-node="s9" style="left:520px;top:2900px">
+        <div class="block-drag"><span class="block-kind">Narrator Block · Ending</span><span class="block-grip">⠿</span></div>
+        <div class="block-body">
+          <div class="chips"><span class="chip beth">All Beths</span><span class="chip">Kid State</span><span class="chip rainee">Horse Butt Beth</span></div>
+          <p>The rest of the episode ran as canon — until the de-aging. Both Beths turned into kids. Then the two kid-Beths cornered Beth-Rainee and turned her into a kid too.</p>
+          <p>Kid-Beth-Rainee kept a little more of herself than the others — she was a fake Beth to begin with, and even her kid state carried a flicker of something fox-shaped. The butt, somehow, persisted. The kid Beths immediately dubbed her <b>"Horse Butt Beth."</b></p>
+          <div class="composer-note">Clone-and-dominate: kid-Beth data dominates in all three stacks. Domestic Beth's adult personality is overwhelmed but retained. Space Beth's space delta is overwhelmed but retained. Beth-Rainee retains the most because she had the least Beth to overwhelm — but even she gets dominated. Physical data (the butt) survives the dominance flip — appearance layer ≠ personality layer.</div>
+        </div>
+        <span class="port left"></span><span class="port right"></span>
+      </div>
+
+      <!-- ===== COGNITION NODES ===== -->
+
+      <!-- Character nodes — one per Beth, wired to their blocks -->
+      <div class="node" id="n-beth" data-node="n-beth" style="left:1060px;top:280px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-beth)"></span><span class="node-title">Domestic Beth</span><span class="node-kind">Character</span></div>
+        <div class="node-body"><strong>Stack:</strong> Beth Data (100%) → Kid Beth (OFF)<br><strong>Compute:</strong> guilty-naughty, mom-guilt frame, Jerry marriage load, horse expertise (full)</div>
+        <div class="node-foot">4 evidence sets · 6 rules · ON</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <div class="node" id="n-space" data-node="n-space" style="left:1060px;top:600px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-space)"></span><span class="node-title">Space Beth</span><span class="node-kind">Character</span></div>
+        <div class="node-body"><strong>Stack:</strong> Beth Base (30% recessive) + Space Data (70% dominant) → Kid (OFF)<br><strong>Compute:</strong> unbothered, no-attachment frame, "fuck Jerry," horse expertise (full)</div>
+        <div class="node-foot">5 evidence sets · 7 rules · ON</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <div class="node" id="n-rainee" data-node="n-rainee" style="left:1060px;top:920px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-rainee)"></span><span class="node-title">Beth-Rainee</span><span class="node-kind">Character</span></div>
+        <div class="node-body"><strong>Stack:</strong> Rainee Core (55%) + Beth Impression (35%) → Kid/Shin Chan (OFF)<br><strong>Compute:</strong> cringe shiver, Jerry Filter active, impressionistic horse love (not surgeon), BBL appearance persists</div>
+        <div class="node-foot">8 evidence sets · 9 rules · ON</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Jerry Filter — Rainee's unique L3 node, shown here as a cognition node -->
+      <div class="node" id="n-filter" data-node="n-filter" style="left:1060px;top:1220px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-filter)"></span><span class="node-title">Jerry Filter</span><span class="node-kind">Filter · L3</span></div>
+        <div class="node-body"><strong>Rainee-only routing node</strong><br>Everything Jerry-related passes through: awful-men transcripts, "made me a lesbian" jokes, men-bad-sex references. <strong>Structural cringe</strong> — not a performance choice.</div>
+        <div class="node-foot">3 corpora · fixed routing rule · always ON for Rainee</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Twincest memory — different weight per Beth -->
+      <div class="node" id="n-twincest" data-node="n-twincest" style="left:1060px;top:1580px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-comedy)"></span><span class="node-title">Twincest Memory</span><span class="node-kind">Episode Ref</span></div>
+        <div class="node-body"><strong>Same episode, different weight:</strong><br>Domestic Beth: standard<br>Space Beth: standard<br>Beth-Rainee: <strong>amplified</strong> — lesbian override makes it register as the defining Beth memory. Triggered the wine-night repeat.</div>
+        <div class="node-foot">1 episode · weight varies per character</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Horse data — shared Beths, residue in Rainee -->
+      <div class="node" id="n-horse" data-node="n-horse" style="left:1060px;top:1920px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-horse)"></span><span class="node-title">Horse Knowledge</span><span class="node-kind">Expertise</span></div>
+        <div class="node-body"><strong>Deliberate canon expansion.</strong><br>Beths: full expanded horse-surgeon data (beyond what the show depicts).<br>Beth-Rainee: impressionistic residue only — <strong>loves horses, not a surgeon.</strong></div>
+        <div class="node-foot">expanded dataset · asymmetry drives jokes</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Composer-only joke node -->
+      <div class="node" id="n-jokes" data-node="n-jokes" style="left:1060px;top:2260px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-comedy)"></span><span class="node-title">White-Girl Big-Butt Jokes</span><span class="node-kind">Composer</span></div>
+        <div class="node-body"><strong>Composer-only node</strong> — never crosses app boundary.<br>Data: twerking-class/Cardi-B plausibility, Speed (One Piece) half-horse precedent.<br>Attached to Beths' data port. Minor material, scene-specific.</div>
+        <div class="node-foot">author choice · 2 evidence inputs · composer-only</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Kid state — clone-and-dominate -->
+      <div class="node" id="n-kid" data-node="n-kid" style="left:1060px;top:2620px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-kid)"></span><span class="node-title">Kid Beth State</span><span class="node-kind">State</span></div>
+        <div class="node-body"><strong>Clone-and-dominate</strong> applied to all three Beth stacks.<br>Adult personalities retained but overwhelmed. Physical data (butt) survives dominance flip. Beth-Rainee retains the most Rainee. Kid Beths nickname her "Horse Butt Beth."</div>
+        <div class="node-foot">3 character stacks · kid dominant · episode-end</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Shapeshift rule -->
+      <div class="node" id="n-shift" data-node="n-shift" style="left:1060px;top:80px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-lore)"></span><span class="node-title">Shapeshift Absorption Rule</span><span class="node-kind">Lore</span></div>
+        <div class="node-body"><strong>Fixed per character.</strong> Rainee absorbs appearance + memory echo only. Personality mimic generated from Rainee's own core — produces a <strong>distinct mimic, not a copy</strong>. Depth is not adjustable per transformation.</div>
+        <div class="node-foot">fixed rule · eidolissa species · lesbian override</div>
+        <span class="npt left"></span><span class="npt right"></span>
+      </div>
+
+      <!-- Rainee core (left side) -->
+      <div class="node" id="n-raineecore" data-node="n-raineecore" style="left:80px;top:400px">
+        <div class="node-head"><span class="dot" style="background:var(--edge-rainee)"></span><span class="node-title">Rainee Core Corpus</span><span class="node-kind">Reference</span></div>
+        <div class="node-body"><strong>Base personality:</strong> Rangiku · BBL · Navia · Alice · ear/tail data. Merchant confidence, teasing appetite, eidolissa racial memory.</div>
+        <div class="node-foot">multiple sources · weight 1.0 · dominant layer</div>
+        <span class="npt right"></span>
+      </div>
+
+    </div>
+
+    <div class="legend">
+      <b>Edge Key</b>
+      <div><span class="sw" style="background:var(--edge-beth)"></span>Domestic Beth</div>
+      <div><span class="sw" style="background:var(--edge-space)"></span>Space Beth</div>
+      <div><span class="sw" style="background:var(--edge-rainee)"></span>Rainee / Beth-Rainee</div>
+      <div><span class="sw" style="background:var(--edge-filter)"></span>Jerry Filter (Rainee only)</div>
+      <div><span class="sw" style="background:var(--edge-horse)"></span>Horse Knowledge</div>
+      <div><span class="sw" style="background:var(--edge-comedy)"></span>Comedy / Joke / Episode</div>
+      <div><span class="sw" style="background:var(--edge-lore)"></span>Lore / Rules</div>
+      <div><span class="sw" style="background:var(--edge-kid)"></span>Kid State</div>
+    </div>
+    <div class="status" id="status">10 cognition nodes · 9 manuscript blocks · mockup data — no AI generation</div>
+  </div>
+
+  <aside class="inspector" id="inspector">
+    <div class="section" id="insp-empty">
+      <h4>Inspector</h4>
+      <div class="empty-hint">Select a manuscript block or a cognition node on the canvas to inspect its Parameter / Attribute / Channel data and recompute controls.<br><br><strong>This is a mockup.</strong> All manuscript text is placeholder — the real power comes from curated data driving AI generation. Nothing here was generated by an LLM; it's Rain's scenario typed into the UI to demonstrate the data architecture.</div>
+    </div>
+  </aside>
+</div>
+</div>
+
+<script>
+const GRAPH = {
+  s1:{title:'Narrator Block · Arrival',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Narrator','Tagged characters':'Rainee','Manuscript position':'Scene 1 · Beat 1'},
+    attribute:{'Inferred tone':'Dry setup','Co-occurring blocks':'s2'},
+    channel:{'Transformation state':'Base Rainee','Scene time':'Opening'}},
+  s2:{title:'Dialogue Block · Interview',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Dialogue (3 speakers)','Tagged characters':'Beth, Space Beth, Rainee','Manuscript position':'Scene 1 · Beat 2'},
+    attribute:{'Inferred tone':'Circumspect sizing-up','Relationship shift':'Stranger → curiosity'},
+    channel:{'Active character nodes':'n-beth, n-space, n-rainee','Scene time':'Continuous'}},
+  s3:{title:'Dialogue Block · Challenge',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Dialogue (2 speakers)','Tagged characters':'Beth, Rainee','Manuscript position':'Scene 2'},
+    attribute:{'Inferred tone':'Testing / dare','Evidence match':'Shapeshift rule · 1.0'},
+    channel:{'Triggering node':'n-shift','Scene time':'Pre-transform'}},
+  s4:{title:'Narrator Block · Transformation',kind:'Manuscript Block',dotColor:'var(--edge-rainee)',
+    parameter:{'Segment type':'Narrator + Dialogue','Tagged characters':'Beth-Rainee','Manuscript position':'Scene 3'},
+    attribute:{'Inferred tone':'Body comedy → instant cringe','Jerry Filter':'ACTIVE'},
+    channel:{'Transformation state':'Base → Beth-Rainee','Filter':'n-filter'}},
+  s5:{title:'Dialogue Block · Horse Butt',kind:'Manuscript Block',dotColor:'var(--edge-comedy)',
+    parameter:{'Segment type':'Dialogue (3 speakers)','Tagged characters':'Beth, Space Beth, Beth-Rainee','Manuscript position':'Scene 4'},
+    attribute:{'Inferred tone':'Comedy — expertise asymmetry','Horse data delta':'expert vs enthusiast'},
+    channel:{'Cognition node':'n-horse','Joke dynamics':'2 experts + 1 enthusiast'}},
+  s6:{title:'Narrator Block · Wine Night',kind:'Manuscript Block',dotColor:'var(--edge-comedy)',
+    parameter:{'Segment type':'Narrator','Tagged characters':'All Beths','Manuscript position':'Scene 5'},
+    attribute:{'Inferred tone':'Twincest repeat','Memory weight':'amplified for Rainee'},
+    channel:{'Cognition node':'n-twincest','Trigger':'alcohol + amplified memory'}},
+  s7:{title:'Dialogue Block · Morning After',kind:'Manuscript Block',dotColor:'var(--edge-lore)',
+    parameter:{'Segment type':'Dialogue (3 speakers)','Tagged characters':'Beth, Space Beth, Beth-Rainee','Manuscript position':'Scene 6'},
+    attribute:{'Inferred tone':'Three different reactions, one event','Jerry routes':'filter vs guilt vs indifference'},
+    channel:{'Active character nodes':'n-beth, n-space, n-rainee','Filter':'n-filter'}},
+  s8:{title:'Dialogue Block · Verdict + Twerking',kind:'Manuscript Block',dotColor:'var(--edge-comedy)',
+    parameter:{'Segment type':'Dialogue (3 speakers)','Tagged characters':'All Beths','Manuscript position':'Scene 7'},
+    attribute:{'Inferred tone':'Celebration + body comedy','Nickname coined':'Horse Butt Beth'},
+    channel:{'Cognition node':'n-jokes','Joke format':'white-girl big-butt jokes'}},
+  s9:{title:'Narrator Block · De-Aged',kind:'Manuscript Block',dotColor:'var(--edge-kid)',
+    parameter:{'Segment type':'Narrator','Tagged characters':'All Beths (kid state)','Manuscript position':'Scene 8 · Ending'},
+    attribute:{'Inferred tone':'Canon extension','State change':'clone-and-dominate'},
+    channel:{'Cognition node':'n-kid','Dominance':'kid-Beth dominates all stacks'}},
+  'n-beth':{title:'Domestic Beth',kind:'Character Node',dotColor:'var(--edge-beth)',
+    parameter:{'Node type':'Character','Stack':'Beth Data (100%) → Kid (OFF)','Lineage':'Beth Prime'},
+    attribute:{'Computed signal':'guilty-naughty','Jerry weight':'full (no filter)'},
+    channel:{'Wired blocks':'s2, s5, s6, s7, s8, s9'}},
+  'n-space':{title:'Space Beth',kind:'Character Node',dotColor:'var(--edge-space)',
+    parameter:{'Node type':'Character','Stack':'Beth Base 30% + Space 70% → Kid (OFF)','Lineage':'Beth clone + space delta'},
+    attribute:{'Computed signal':'unbothered','Jerry weight':'zero (no-attachment frame)'},
+    channel:{'Wired blocks':'s2, s5, s6, s7, s8, s9'}},
+  'n-rainee':{title:'Beth-Rainee',kind:'Character Node',dotColor:'var(--edge-rainee)',
+    parameter:{'Node type':'Character','Stack':'Rainee 55% + Beth Imp 35% → Kid (OFF)','Lineage':'Rainee mimic · eidolissa'},
+    attribute:{'Computed signal':'cringe shiver','Jerry weight':'routed through filter'},
+    channel:{'Wired blocks':'s2, s3, s4, s5, s6, s7, s8, s9'}},
+  'n-filter':{title:'Jerry Filter',kind:'Filter Node · L3',dotColor:'var(--edge-filter)',
+    parameter:{'Node type':'Routing filter','Scope':'Jerry-related content only','Rule':'fixed — always ON for Rainee'},
+    attribute:{'Corpus':'awful-men shows · lesbian jokes · men-bad-sex','Effect':'structural cringe'},
+    channel:{'Active for':'Beth-Rainee only','Blocks affected':'s4, s7'}},
+  'n-twincest':{title:'Twincest Memory',kind:'Episode Reference',dotColor:'var(--edge-comedy)',
+    parameter:{'Node type':'Episode data','Source':'1 episode (twincest)','Weight mode':'varies per character'},
+    attribute:{'Domestic Beth':'standard','Space Beth':'standard','Beth-Rainee':'amplified (lesbian override)'},
+    channel:{'Active for':'s6, s7','Trigger':'wine + proximity'}},
+  'n-horse':{title:'Horse Knowledge',kind:'Expertise Node',dotColor:'var(--edge-horse)',
+    parameter:{'Node type':'Canon expansion','Scope':'beyond what the show depicts','Data':'full expanded horse-surgeon corpus'},
+    attribute:{'Beths':'full expertise','Beth-Rainee':'impressionistic residue (love only)'},
+    channel:{'Active for':'s5, s8, s9','Asymmetry':'drives horse-butt jokes'}},
+  'n-jokes':{title:'White-Girl Big-Butt Jokes',kind:'Composer-Only Node',dotColor:'var(--edge-comedy)',
+    parameter:{'Node type':'Composer data (no app boundary)','Evidence':'Speed (One Piece) · Cardi-B twerking','Rule':'minor, scene-specific'},
+    attribute:{'Attached to':'Beths data port','Plausibility':'2026 Beth demographic'},
+    channel:{'Active for':'s8 only','Node type':'composer-only'}},
+  'n-kid':{title:'Kid Beth State',kind:'State Node',dotColor:'var(--edge-kid)',
+    parameter:{'Node type':'Clone-and-dominate','Applied to':'all three Beth stacks','Dominance':'kid-Beth set to dominate'},
+    attribute:{'Adult data':'retained but overwhelmed','Physical data':'survives (butt persists)'},
+    channel:{'Active for':'s9','Nickname':'Horse Butt Beth'}},
+  'n-shift':{title:'Shapeshift Absorption Rule',kind:'Lore Node',dotColor:'var(--edge-lore)',
+    parameter:{'Node type':'Fixed character rule','Depth':'appearance + memory echo','Adjustable':'no — fixed per character'},
+    attribute:{'Produces':'distinct mimic, not a copy','Override':'lesbian (colors all Beth material)'},
+    channel:{'Active for':'s3, s4','Species':'eidolissa fox'}},
+  'n-raineecore':{title:'Rainee Core Corpus',kind:'Deep Reference',dotColor:'var(--edge-rainee)',
+    parameter:{'Node type':'Base personality','Sources':'Rangiku · BBL · Navia · Alice · ear/tail','Weight':'1.0 (dominant)'},
+    attribute:{'Derived traits':'Merchant confidence, teasing, eidolissa racial memory'},
+    channel:{'Active for':'All Rainee blocks','Feeds':'n-rainee'}},
+};
+
+const EDGES = [
+  {a:'n-shift',     b:'s3', color:'var(--edge-lore)'},
+  {a:'n-shift',     b:'s4', color:'var(--edge-lore)'},
+  {a:'n-beth',      b:'s2', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s2', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s2', color:'var(--edge-rainee)'},
+  {a:'n-rainee',    b:'s3', color:'var(--edge-rainee)'},
+  {a:'n-rainee',    b:'s4', color:'var(--edge-rainee)'},
+  {a:'n-filter',    b:'s4', color:'var(--edge-filter)'},
+  {a:'n-beth',      b:'s5', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s5', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s5', color:'var(--edge-rainee)'},
+  {a:'n-horse',     b:'s5', color:'var(--edge-horse)'},
+  {a:'n-twincest',  b:'s6', color:'var(--edge-comedy)'},
+  {a:'n-beth',      b:'s6', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s6', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s6', color:'var(--edge-rainee)'},
+  {a:'n-beth',      b:'s7', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s7', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s7', color:'var(--edge-rainee)'},
+  {a:'n-filter',    b:'s7', color:'var(--edge-filter)'},
+  {a:'n-beth',      b:'s8', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s8', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s8', color:'var(--edge-rainee)'},
+  {a:'n-jokes',     b:'s8', color:'var(--edge-comedy)'},
+  {a:'n-horse',     b:'s8', color:'var(--edge-horse)'},
+  {a:'n-beth',      b:'s9', color:'var(--edge-beth)'},
+  {a:'n-space',     b:'s9', color:'var(--edge-space)'},
+  {a:'n-rainee',    b:'s9', color:'var(--edge-rainee)'},
+  {a:'n-kid',       b:'s9', color:'var(--edge-kid)'},
+  {a:'n-raineecore',b:'n-rainee', color:'var(--edge-rainee)'},
+];
+
+const stage=document.getElementById('stage'), world=document.getElementById('world');
+let scale=0.52, tx=-320, ty=-20;
+applyTransform();
+function applyTransform(){ world.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`; }
+
+let panning=false, psx=0, psy=0, ptx=0, pty=0;
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.block-node,.node')) return;
+  panning=true; stage.classList.add('panning'); stage.setPointerCapture(e.pointerId);
+  psx=e.clientX; psy=e.clientY; ptx=tx; pty=ty;
+});
+stage.addEventListener('pointermove',e=>{
+  if(!panning) return;
+  tx=ptx+(e.clientX-psx); ty=pty+(e.clientY-psy); applyTransform();
+});
+stage.addEventListener('pointerup',()=>{panning=false; stage.classList.remove('panning');});
+
+function zoomAt(factor, cx, cy){
+  const ns=Math.min(2.2,Math.max(0.28,scale*factor));
+  const wx=(cx-tx)/scale, wy=(cy-ty)/scale;
+  tx=cx-ns*wx; ty=cy-ns*wy; scale=ns; applyTransform(); updateWires();
+}
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=stage.getBoundingClientRect();
+  zoomAt(e.deltaY<0?1.08:0.93, e.clientX-r.left, e.clientY-r.top);
+},{passive:false});
+document.getElementById('zoomIn').onclick=()=>zoomAt(1.15, stage.clientWidth/2, stage.clientHeight/2);
+document.getElementById('zoomOut').onclick=()=>zoomAt(0.87, stage.clientWidth/2, stage.clientHeight/2);
+document.getElementById('fit').onclick=()=>{ scale=0.52; tx=-320; ty=-20; applyTransform(); updateWires(); };
+
+function makeDraggable(el, handle){
+  let dragging=false, sx=0, sy=0, ox=0, oy=0;
+  handle.addEventListener('pointerdown',e=>{
+    if(e.button!==0) return;
+    dragging=true; handle.setPointerCapture(e.pointerId);
+    sx=e.clientX; sy=e.clientY;
+    ox=parseFloat(el.style.left)||0; oy=parseFloat(el.style.top)||0;
+    el.style.zIndex=++zTop;
+    e.stopPropagation();
+  });
+  handle.addEventListener('pointermove',e=>{
+    if(!dragging) return;
+    el.style.left=(ox+(e.clientX-sx)/scale)+'px';
+    el.style.top=(oy+(e.clientY-sy)/scale)+'px';
+    updateWires();
+  });
+  handle.addEventListener('pointerup',()=>dragging=false);
+}
+let zTop=10;
+document.querySelectorAll('.block-node').forEach(b=>{
+  makeDraggable(b, b.querySelector('.block-drag'));
+  b.querySelector('.block-body').addEventListener('click',()=>select(b.dataset.node));
+});
+document.querySelectorAll('.node').forEach(n=>{
+  makeDraggable(n, n.querySelector('.node-head'));
+  n.querySelector('.node-body').addEventListener('click',()=>select(n.dataset.node));
+});
+
+/* Side-aware routing: each wire attaches to the side of a node that FACES the
+   other node (source left of target → out source's RIGHT into target's LEFT;
+   mirrored otherwise), and every (node, side) spreads its connections evenly
+   down that side — one port slot per wire, ordered by the other endpoint, so
+   no two wires share an anchor point and fans stay parallel instead of random. */
+function rectOf(el){
+  return {left:parseFloat(el.style.left)||0, top:parseFloat(el.style.top)||0, w:el.offsetWidth, h:el.offsetHeight};
+}
+function centerY(id){ const r=rectOf(document.getElementById(id)); return r.top+r.h/2; }
+function pathD(a,b,dir){
+  const dx=Math.max(60,Math.abs(b.x-a.x)*.45)*dir;
+  return `M ${a.x} ${a.y} C ${a.x+dx} ${a.y}, ${b.x-dx} ${b.y}, ${b.x} ${b.y}`;
+}
+function updateWires(){
+  const svg=document.getElementById('wires');
+  const routed=EDGES.map(edge=>{
+    const ra=rectOf(document.getElementById(edge.a)), rb=rectOf(document.getElementById(edge.b));
+    const srcLeft=ra.left+ra.w/2 < rb.left+rb.w/2;
+    return {edge, aSide:srcLeft?'right':'left', bSide:srcLeft?'left':'right'};
+  });
+  const groups={};
+  routed.forEach(rt=>{
+    const push=(id,side,otherId)=>((groups[id+'::'+side] ??= {id,side,list:[]}).list.push({rt,otherY:centerY(otherId)}));
+    push(rt.edge.a,rt.aSide,rt.edge.b);
+    push(rt.edge.b,rt.bSide,rt.edge.a);
+  });
+  const slots=new Map();
+  Object.values(groups).forEach(g=>{
+    g.list.sort((p,q)=>p.otherY-q.otherY);
+    const el=document.getElementById(g.id), r=rectOf(el);
+    const topPad=el.classList.contains('block-node')?36:26;
+    const usable=Math.max(r.h-topPad-12,20);
+    g.list.forEach((p,i)=>{
+      const y=r.top+topPad+(g.list.length===1?usable/2:usable*i/(g.list.length-1));
+      const x=g.side==='left'?r.left:r.left+r.w;
+      const s=slots.get(p.rt) ?? {};
+      s[g.id===p.rt.edge.a?'a':'b']={x,y,paper:el.classList.contains('block-node')};
+      slots.set(p.rt,s);
+    });
+  });
+  svg.innerHTML=routed.map(rt=>{
+    const s=slots.get(rt), dir=rt.aSide==='right'?1:-1, d=pathD(s.a,s.b,dir);
+    const sock=p=>`<circle class="wire-socket" cx="${p.x}" cy="${p.y}" r="4" fill="${p.paper?'#f4f0e6':'#17191c'}" style="stroke:${rt.edge.color}"/>`;
+    return sock(s.a)+sock(s.b)+
+      `<path class="wire wire-glow" style="stroke:${rt.edge.color}" d="${d}"/>`+
+      `<path class="wire wire-flow" style="stroke:${rt.edge.color}" d="${d}"/>`;
+  }).join('');
+}
+updateWires();
+
+let selected=null;
+function select(id){
+  selected=id;
+  document.querySelectorAll('.block-node,.node').forEach(el=>el.classList.toggle('selected', el.dataset.node===id));
+  renderInspector(id);
+}
+function layerRows(obj){
+  return Object.entries(obj).map(([k,v])=>`<div class="kv"><span>${k}</span><span>${v}</span></div>`).join('');
+}
+function renderInspector(id){
+  const d=GRAPH[id];
+  if(!d) return;
+  const isBlock=id.startsWith('s');
+  const insp=document.getElementById('inspector');
+  insp.innerHTML=`
+    <div class="section">
+      <span class="pill">${isBlock?'MANUSCRIPT':'COGNITION NODE'}</span>
+      <div class="title">${d.title}</div>
+      <div class="field"><label>Node kind</label><input value="${d.kind}"></div>
+    </div>
+    <div class="section">
+      <h4>Three-Layer Data</h4>
+      <div class="layer"><div class="layer-head">Parameter<span class="tag">author-set</span></div><div class="layer-body">${layerRows(d.parameter)}</div></div>
+      <div class="layer"><div class="layer-head">Attribute<span class="tag">computed / derived</span></div><div class="layer-body">${layerRows(d.attribute)}</div></div>
+      <div class="layer"><div class="layer-head">Channel<span class="tag">varies over timeline</span></div><div class="layer-body">${layerRows(d.channel)}</div></div>
+    </div>
+    ${isBlock? `
+    <div class="section">
+      <h4>Recompute Scope</h4>
+      <label class="check"><input type="checkbox" checked> Attached character nodes</label>
+      <label class="check"><input type="checkbox" checked> Relationship dynamics</label>
+      <label class="check"><input type="checkbox" checked> Comedy behavior</label>
+      <label class="check"><input type="checkbox"> Existing prose</label>
+      <label class="check"><input type="checkbox" checked> Transformation state</label>
+    </div>
+    <div class="section">
+      <h4>Evidence Influence</h4>
+      <div class="w">Domestic Beth <span>0.72</span><div class="mini"><i style="width:72%;background:var(--edge-beth)"></i></div></div>
+      <div class="w">Space Beth <span>0.68</span><div class="mini"><i style="width:68%;background:var(--edge-space)"></i></div></div>
+      <div class="w">Beth-Rainee <span>0.91</span><div class="mini"><i style="width:91%;background:var(--edge-rainee)"></i></div></div>
+      <div class="w">Jerry Filter <span>0.85</span><div class="mini"><i style="width:85%;background:var(--edge-filter)"></i></div></div>
+    </div>` : ''}
+    <div class="section">
+      <h4>Trace / Why</h4>
+      <div class="evidence"><b>Must see mockup data</b><br>All text is placeholder — no AI generation. The real output requires curated data from the Rick and Morty episode feeding through the Fiction Engine.</div>
+    </div>
+    <div class="section">
+      <h4>Output</h4>
+      <button class="btn primary" style="width:100%" onclick="alert('Mock export — no real data compiled.')">COMPILE TO JSON TRANSCRIPT</button>
+    </div>`;
+}
+
+document.getElementById('compute').onclick=()=>{
+  const s=document.getElementById('status');
+  s.textContent='Computing… beth stacks → filter routing → twincest weight → horse asymmetry → comedy dynamics';
+  setTimeout(()=>s.textContent=`10 cognition nodes · 9 manuscript blocks · ${EDGES.length} connections · mockup — no real compute`,700);
+};
+document.getElementById('addNode').onclick=()=>{
+  const id='node'+(++zTop);
+  const n=document.createElement('div');
+  n.className='node'; n.dataset.node=id; n.style.left='700px'; n.style.top='3150px'; n.style.zIndex=++zTop;
+  n.innerHTML=`<div class="node-head"><span class="dot" style="background:#888"></span><span class="node-title">New Cognition Node</span><span class="node-kind">Source</span></div>
+   <div class="node-body"><strong>Untitled source</strong><br>Drop transcripts, lore, images, relationships, or rules here.</div>
+   <div class="node-foot">Click to select · drag to position</div>
+   <span class="npt left"></span><span class="npt right"></span>`;
+  world.appendChild(n);
+  GRAPH[id]={title:'New Cognition Node',kind:'Source Node',parameter:{'Node type':'Unset'},attribute:{'Evidence count':'0'},channel:{'Active for':'Not yet wired'}};
+  makeDraggable(n, n.querySelector('.node-head'));
+  n.querySelector('.node-body').addEventListener('click',()=>select(id));
+};
+</script>
+</body>
+</html>
