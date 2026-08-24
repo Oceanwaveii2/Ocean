@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+<title>Worksheet</title>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg: #000000;
+    --card: rgba(28,28,30,0.78);
+    --card-border: rgba(255,255,255,0.08);
+    --field: rgba(255,255,255,0.06);
+    --field-border: rgba(255,255,255,0.10);
+    --text: #f5f5f7;
+    --text-secondary: #98989d;
+    --text-tertiary: #636366;
+    --accent: #0A84FF;
+    --accent-press: #0060c7;
+    --green: #32D74B;
+    --red: #FF453A;
+    --divider: rgba(255,255,255,0.08);
+  }
+  * { scrollbar-color: var(--field-border) var(--card); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width:12px; height:12px; }
+  ::-webkit-scrollbar-track { background:var(--card); }
+  ::-webkit-scrollbar-thumb { background-color:var(--field-border); border-radius:8px; border:3px solid var(--card); }
+  ::-webkit-scrollbar-thumb:hover { background-color:var(--text-tertiary); }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px 64px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(70,70,80,0.35), transparent 55%),
+      #000000;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 780px;
+  }
+
+  /* ---------- Time header ---------- */
+  .time-header {
+    text-align: center;
+    padding: 28px 20px 24px;
+    margin-bottom: 20px;
+  }
+
+  .time-numeric {
+    font-size: 60px;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .time-numeric .colon {
+    animation: blink 1.6s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  .time-text {
+    margin-top: 8px;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .time-caption {
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1px;
+  }
+
+  .time-caption .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 5px;
+    vertical-align: 1px;
+  }
+  .time-caption.offline .dot { background: var(--text-tertiary); }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 24px 26px 26px;
+    margin-bottom: 18px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 2px 4px 14px;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .task-count {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Task rows ---------- */
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .task-row:last-child { border-bottom: none; }
+
+  .checkbox-wrap {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    cursor: pointer;
+  }
+  .checkbox-wrap input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+
+  .checkbox-custom {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid #48484a;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .checkbox-custom::after {
+    content: "";
+    position: absolute;
+    left: 6.5px;
+    top: 2.5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+  .checkbox-wrap input:checked + .checkbox-custom {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .checkbox-wrap input:checked + .checkbox-custom::after { opacity: 1; }
+  .checkbox-wrap input:active + .checkbox-custom { transform: scale(0.9); }
+
+  .task-index {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    width: 14px;
+    flex: 0 0 14px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .drag-handle {
+    width: 18px;
+    flex: 0 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    background: transparent;
+    border: none;
+    padding: 4px 0;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .drag-handle svg { width: 12px; height: 18px; pointer-events: none; }
+
+  .task-row.task-row-dragging {
+    position: fixed;
+    z-index: 1000;
+    background: #1c1c1e;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+    pointer-events: none;
+  }
+  .task-row.drag-placeholder {
+    border-bottom: 1px solid var(--divider);
+    border-radius: 8px;
+    background: var(--field);
+    outline: 1px dashed var(--field-border);
+    outline-offset: -1px;
+  }
+
+  .priority-dot {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    border-radius: 50%;
+    border: 2px solid var(--divider);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .priority-dot:active { transform: scale(0.85); }
+  .priority-dot[data-priority="red"] { background: #ff453a; border-color: #ff453a; }
+  .priority-dot[data-priority="orange"] { background: #ff9f0a; border-color: #ff9f0a; }
+  .priority-dot[data-priority="yellow"] { background: #ffd60a; border-color: #ffd60a; }
+  .priority-dot[data-priority="green"] { background: #30d158; border-color: #30d158; }
+  .priority-dot[data-priority="blue"] { background: #0a84ff; border-color: #0a84ff; }
+
+  .task-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 17.5px;
+    font-family: inherit;
+    padding: 8px 2px;
+  }
+  .task-input::placeholder { color: var(--text-tertiary); }
+  .task-row.done .task-input { color: var(--text-tertiary); text-decoration: line-through; }
+
+  /* ---------- Notes: rich text toolbar ---------- */
+  .notes-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 2px 2px 12px;
+  }
+
+  .tb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    background: var(--field);
+    border: 1px solid var(--field-border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+    user-select: none;
+  }
+  .tb-btn:active { transform: scale(0.94); }
+  .tb-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .tb-btn.tb-bold { font-weight: 700; }
+  .tb-btn.tb-italic { font-style: italic; font-family: Georgia, serif; }
+  .tb-btn.tb-underline { text-decoration: underline; }
+  .tb-sep {
+    width: 1px;
+    align-self: stretch;
+    background: var(--divider);
+    margin: 4px 2px;
+  }
+  .tb-font-input {
+    width: 130px; height: 34px; padding: 0 10px; background: var(--field);
+    border: 1px solid var(--field-border); border-radius: 10px; color: var(--text);
+    font-family: inherit; font-size: 13px;
+  }
+  select.tb-font-input option, select.tb-font-input optgroup {
+    background: #1c1c1e; color: var(--text);
+  }
+  .tb-size-input {
+    width: 58px; height: 34px; padding: 0 6px; background: var(--field);
+    border: 1px solid var(--field-border); border-radius: 10px; color: var(--text);
+    font-family: inherit; font-size: 13px; text-align: center;
+  }
+  .tb-color-input { width: 34px; height: 34px; padding: 2px; border: 1px solid var(--field-border); border-radius: 10px; background: var(--field); cursor: pointer; }
+
+  .notes-editor {
+    width: 100%;
+    min-height: 300px;
+    background: var(--field);
+    border: 1px solid var(--field-border);
+    border-radius: 20px;
+    color: var(--text);
+    font-size: 18px;
+    font-family: inherit;
+    line-height: 1.7;
+    padding: 22px 26px;
+    outline: none;
+    overflow-wrap: anywhere;
+  }
+  .notes-editor:focus { border-color: var(--accent); }
+  .notes-editor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-tertiary);
+    pointer-events: none;
+  }
+  .notes-editor h1, .notes-editor h2, .notes-editor h3 {
+    margin: 0.6em 0 0.3em;
+    line-height: 1.3;
+  }
+  .notes-editor h1 { font-size: 1.5em; }
+  .notes-editor h2 { font-size: 1.25em; }
+  .notes-editor h3 { font-size: 1.1em; }
+  .notes-editor p { margin: 0 0 0.6em; }
+  .notes-editor ul, .notes-editor ol {
+    margin: 0.3em 0 0.6em;
+    padding-left: 1.4em;
+  }
+  .notes-editor li { margin: 0.2em 0; }
+  .notes-editor ul { list-style-type: disc; }
+  .notes-editor ul ul { list-style-type: circle; }
+  .notes-editor blockquote {
+    margin: 0.4em 0 0.6em;
+    padding: 4px 0 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+  .notes-editor b, .notes-editor strong { font-weight: 700; }
+
+  /* ---------- Footer actions ---------- */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  button.action-btn {
+    flex: 1;
+    border: none;
+    border-radius: 14px;
+    padding: 15px 12px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.08s ease, opacity 0.15s ease;
+  }
+  button.action-btn:active { transform: scale(0.97); }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:active { background: var(--accent-press); }
+
+  .btn-secondary {
+    background: var(--field);
+    border: 1px solid var(--field-border);
+    color: var(--text);
+  }
+
+  .status-msg {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 18px;
+    margin-top: 12px;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    margin-top: 18px;
+    letter-spacing: 0.1px;
+  }
+  .project-context { margin:0 0 18px; color:var(--text-secondary); text-align:center; font-size:13px; }
+  .project-context b { color:var(--text); }
+
+  dialog.prompt-dialog { width:min(420px,92vw); margin:auto; padding:20px; border:1px solid var(--card-border); border-radius:16px; background:var(--card); color:var(--text); box-shadow:0 30px 90px rgba(0,0,0,0.6); }
+  dialog.prompt-dialog::backdrop { background:rgba(0,0,0,0.6); }
+  dialog.prompt-dialog h2 { margin:0 0 5px; font-size:17px; font-weight:600; }
+  dialog.prompt-dialog p { margin:0 0 14px; color:var(--text-secondary); font-size:13px; }
+  dialog.prompt-dialog input { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:10px; border:1px solid var(--field-border); background:var(--field); color:var(--text); font-size:15px; font-family:inherit; margin-bottom:14px; }
+  dialog.prompt-dialog .modal-actions { display:flex; justify-content:flex-end; gap:8px; }
+  dialog.prompt-dialog .modal-actions button { border:none; border-radius:10px; padding:9px 16px; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; }
+  dialog.prompt-dialog .modal-actions button[type="submit"] { background:var(--accent); color:#fff; }
+  dialog.prompt-dialog .modal-actions button.cancel-btn { background:var(--field); border:1px solid var(--field-border); color:var(--text); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="project-context">Project: <b id="projectName">Untitled Project</b> · <span id="worksheetDay">Today</span></div>
+
+  <header class="time-header">
+    <div class="time-numeric" id="timeNumeric">--<span class="colon">:</span>--</div>
+    <div class="time-text" id="timeText">Fetching time&hellip;</div>
+    <div class="time-caption" id="timeCaption"><span class="dot"></span>Contacting internet time server</div>
+  </header>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Today</div>
+        <div class="card-subtitle">What to do today</div>
+      </div>
+      <div class="task-count" id="taskCount">0 / 10</div>
+    </div>
+    <div id="taskList"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Notes</div>
+        <div class="card-subtitle">Musings &amp; ideas</div>
+      </div>
+    </div>
+
+    <div class="notes-toolbar" id="notesToolbar" role="toolbar" aria-label="Note formatting controls">
+      <select id="noteFontSelect" class="tb-font-input" title="Font family — pick a font, or choose Other… to type a custom name" aria-label="Font family"></select>
+      <input id="noteFontCustom" class="tb-font-input" placeholder="Custom font name…" title="Type any font name (system font or one loaded from Google Fonts)" aria-label="Custom font name" hidden>
+      <input id="noteSizeInput" type="number" class="tb-size-input" min="6" max="200" step="1" value="18" title="Font size in px — type any number" aria-label="Font size in pixels">
+      <button type="button" class="tb-btn" id="noteWebFontBtn" title="Load a font by name from Google Fonts and apply it">+ Web Font</button>
+      <input id="noteColorInput" type="color" class="tb-color-input" value="#f1ede7" title="Text color" aria-label="Text color">
+      <input id="noteHighlightInput" type="color" class="tb-color-input" value="#f6d98b" title="Highlight color" aria-label="Highlight color">
+      <div class="tb-sep"></div>
+      <button type="button" class="tb-btn tb-bold" data-cmd="bold" title="Bold" aria-label="Bold">B</button>
+      <button type="button" class="tb-btn tb-italic" data-cmd="italic" title="Italic" aria-label="Italic">I</button>
+      <button type="button" class="tb-btn tb-underline" data-cmd="underline" title="Underline" aria-label="Underline">U</button>
+      <div class="tb-sep"></div>
+      <button type="button" class="tb-btn" data-cmd="formatBlock" data-value="H2" title="Heading" aria-label="Heading">H</button>
+      <button type="button" class="tb-btn" data-cmd="formatBlock" data-value="BLOCKQUOTE" title="Quote" aria-label="Quote">&ldquo;&rdquo;</button>
+      <div class="tb-sep"></div>
+      <button type="button" class="tb-btn" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">&#8226; List</button>
+      <button type="button" class="tb-btn" data-cmd="insertOrderedList" title="Numbered list" aria-label="Numbered list">1. List</button>
+      <div class="tb-sep"></div>
+      <button type="button" class="tb-btn" data-cmd="removeFormat" data-plain="true" title="Clear formatting" aria-label="Clear formatting">Clear</button>
+    </div>
+
+    <div class="notes-editor" id="notes" contenteditable="true" data-placeholder="Write a thought while it's fresh&hellip;"></div>
+  </section>
+
+  <div class="actions">
+    <button class="action-btn btn-secondary" id="backToCalendarBtn">Project Calendar</button>
+    <button class="action-btn btn-secondary" id="saveWorksheetBtn">Save Worksheet</button>
+    <button class="action-btn btn-primary" id="exportPdfBtn">Export PDF</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+  <div class="footer-note">This task list is saved separately for this project and date</div>
+
+</div>
+
+<script>
+function promptDialog(title, defaultValue = '', message = '') {
+  return new Promise(resolve => {
+    const dlg = document.getElementById('prompt-dialog');
+    document.getElementById('prompt-dialog-title').textContent = title;
+    const messageEl = document.getElementById('prompt-dialog-message');
+    messageEl.textContent = message;
+    messageEl.hidden = !message;
+    const input = document.getElementById('prompt-dialog-input');
+    input.value = defaultValue;
+    const form = document.getElementById('prompt-dialog-form');
+    const cancelBtn = document.getElementById('prompt-dialog-cancel');
+    let settled = false;
+    const finish = result => { if (settled) return; settled = true; form.removeEventListener('submit', onSubmit); cancelBtn.removeEventListener('click', onCancel); dlg.removeEventListener('close', onClose); resolve(result); };
+    const onSubmit = event => { event.preventDefault(); settled = true; form.removeEventListener('submit', onSubmit); cancelBtn.removeEventListener('click', onCancel); dlg.removeEventListener('close', onClose); dlg.close(); resolve(input.value); };
+    const onCancel = () => { dlg.close(); finish(null); };
+    const onClose = () => finish(null);
+    form.addEventListener('submit', onSubmit);
+    cancelBtn.addEventListener('click', onCancel);
+    dlg.addEventListener('close', onClose);
+    dlg.showModal();
+    input.focus();
+    input.select();
+  });
+}
+  // ---------------- Time (fetched from the internet) ----------------
+  const numericEl  = document.getElementById('timeNumeric');
+  const textEl     = document.getElementById('timeText');
+  const captionEl  = document.getElementById('timeCaption');
+  const query = new URLSearchParams(location.search);
+  const projectId = query.get('project') || 'unassigned';
+  const projectTitle = query.get('title') || 'Untitled Project';
+  const requestedDate = query.get('date');
+  const dateFromKey = key => { const [y,m,d]=(key||'').split('-').map(Number); return y&&m&&d ? new Date(y,m-1,d) : new Date(); };
+  const selectedDate = dateFromKey(requestedDate);
+  const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const worksheetKey = () => `art-equation-daily:${projectId}:${dateKey(selectedDate)}`;
+  let worksheetDate = selectedDate.toISOString();
+  document.title = `${projectTitle} · Daily Worksheet`;
+  document.getElementById('projectName').textContent = projectTitle;
+  document.getElementById('worksheetDay').textContent = selectedDate.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  function greetingFor(hour){
+    if (hour < 5)  return 'Good Night';
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    if (hour < 21) return 'Good Evening';
+    return 'Good Night';
+  }
+
+  function renderTime(dt, online){
+    const hh = String(dt.getHours()).padStart(2, '0');
+    const mm = String(dt.getMinutes()).padStart(2, '0');
+    numericEl.innerHTML = `${hh}<span class="colon">:</span>${mm}`;
+    textEl.textContent = greetingFor(dt.getHours());
+    const dateStr = dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    captionEl.innerHTML = `<span class="dot"></span>${online ? 'Synced with internet time server' : 'Offline — using device time'} · ${dateStr}`;
+    captionEl.classList.toggle('offline', !online);
+  }
+
+  async function fetchNetworkTime(){
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch('https://worldtimeapi.org/api/ip', { signal: controller.signal, cache: 'no-store' });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('Bad response');
+      const data = await res.json();
+      renderTime(new Date(data.datetime), true);
+    } catch (err) {
+      renderTime(new Date(), false);
+    }
+  }
+
+  // ---------------- Task list (10 items) ----------------
+  const taskListEl = document.getElementById('taskList');
+  const taskCountEl = document.getElementById('taskCount');
+
+  for (let i = 1; i <= 10; i++) {
+    const row = document.createElement('div');
+    row.className = 'task-row';
+    row.innerHTML = `
+      <button type="button" class="drag-handle" aria-label="Drag to reorder task ${i}" title="Drag to reorder">
+        <svg viewBox="0 0 12 18" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="3" cy="3" r="1.5" fill="currentColor"/><circle cx="9" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="3" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/>
+          <circle cx="3" cy="15" r="1.5" fill="currentColor"/><circle cx="9" cy="15" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+      <span class="task-index">${i}</span>
+      <label class="checkbox-wrap">
+        <input type="checkbox" class="task-check" data-index="${i - 1}" aria-label="Mark task ${i} done">
+        <span class="checkbox-custom"></span>
+      </label>
+      <button type="button" class="priority-dot" data-index="${i - 1}" data-priority="none" aria-label="Task ${i} priority: none. Click to change." title="Click to cycle priority color"></button>
+      <input type="text" class="task-input" data-index="${i - 1}" placeholder="Task ${i}" aria-label="Task ${i} description">
+    `;
+    taskListEl.appendChild(row);
+  }
+
+  const taskInputs = () => Array.from(document.querySelectorAll('.task-input'));
+  const taskChecks = () => Array.from(document.querySelectorAll('.task-check'));
+  const taskPriorityDots = () => Array.from(document.querySelectorAll('.priority-dot'));
+  const PRIORITY_CYCLE = ['none', 'red', 'orange', 'yellow', 'green', 'blue'];
+  const PRIORITY_LABELS = { none: 'none', red: 'red', orange: 'orange', yellow: 'yellow', green: 'green', blue: 'blue' };
+
+  function setPriorityDot(dot, value){
+    const priority = PRIORITY_CYCLE.includes(value) ? value : 'none';
+    dot.dataset.priority = priority;
+    dot.setAttribute('aria-label', `Task priority: ${PRIORITY_LABELS[priority]}. Click to change.`);
+  }
+
+  function updateTaskCount(){
+    const done = taskChecks().filter(c => c.checked).length;
+    taskCountEl.textContent = `${done} / 10`;
+  }
+
+  taskListEl.addEventListener('change', (e) => {
+    if (e.target.classList.contains('task-check')) {
+      e.target.closest('.task-row').classList.toggle('done', e.target.checked);
+      updateTaskCount();
+    }
+  });
+
+  taskListEl.addEventListener('click', (e) => {
+    const dot = e.target.closest('.priority-dot');
+    if (!dot) return;
+    const current = PRIORITY_CYCLE.includes(dot.dataset.priority) ? dot.dataset.priority : 'none';
+    const next = PRIORITY_CYCLE[(PRIORITY_CYCLE.indexOf(current) + 1) % PRIORITY_CYCLE.length];
+    setPriorityDot(dot, next);
+  });
+
+  // ---------------- Task list: drag-reorder ----------------
+  // Positional data model (see saveWorksheet/loadWorksheet): reordering the
+  // .task-row DOM nodes and relabeling their index/data-index/aria-labels is
+  // sufficient, no separate id or migration needed.
+  function renumberTaskRows(){
+    Array.from(taskListEl.querySelectorAll('.task-row')).forEach((row, idx) => {
+      const n = idx + 1;
+      row.querySelector('.task-index').textContent = n;
+      const check = row.querySelector('.task-check');
+      check.dataset.index = idx;
+      check.setAttribute('aria-label', `Mark task ${n} done`);
+      const dot = row.querySelector('.priority-dot');
+      dot.dataset.index = idx;
+      const priority = PRIORITY_CYCLE.includes(dot.dataset.priority) ? dot.dataset.priority : 'none';
+      dot.setAttribute('aria-label', `Task ${n} priority: ${PRIORITY_LABELS[priority]}. Click to change.`);
+      const input = row.querySelector('.task-input');
+      input.dataset.index = idx;
+      input.placeholder = `Task ${n}`;
+      input.setAttribute('aria-label', `Task ${n} description`);
+      const handle = row.querySelector('.drag-handle');
+      handle.setAttribute('aria-label', `Drag to reorder task ${n}`);
+    });
+  }
+
+  let dragState = null;
+
+  function startTaskDrag(e){
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+    const row = handle.closest('.task-row');
+    if (!row) return;
+    e.preventDefault();
+    const rect = row.getBoundingClientRect();
+    const placeholder = document.createElement('div');
+    placeholder.className = 'task-row drag-placeholder';
+    placeholder.style.height = `${rect.height}px`;
+    row.parentNode.insertBefore(placeholder, row);
+    dragState = { row, placeholder, offsetY: e.clientY - rect.top, pointerId: e.pointerId };
+    row.classList.add('task-row-dragging');
+    row.style.width = `${rect.width}px`;
+    row.style.left = `${rect.left}px`;
+    row.style.top = `${rect.top}px`;
+    handle.setPointerCapture(e.pointerId);
+    document.addEventListener('pointermove', moveTaskDrag);
+    document.addEventListener('pointerup', endTaskDrag);
+    document.addEventListener('pointercancel', endTaskDrag);
+  }
+
+  function moveTaskDrag(e){
+    if (!dragState || e.pointerId !== dragState.pointerId) return;
+    const { row, placeholder, offsetY } = dragState;
+    row.style.top = `${e.clientY - offsetY}px`;
+    const siblings = Array.from(taskListEl.querySelectorAll('.task-row')).filter(r => r !== row && r !== placeholder);
+    let target = null;
+    for (const sib of siblings) {
+      const r = sib.getBoundingClientRect();
+      if (e.clientY < r.top + r.height / 2) { target = sib; break; }
+    }
+    if (target) {
+      if (placeholder.nextSibling !== target) taskListEl.insertBefore(placeholder, target);
+    } else if (placeholder.nextSibling !== null) {
+      taskListEl.appendChild(placeholder);
+    }
+  }
+
+  function endTaskDrag(e){
+    if (!dragState || e.pointerId !== dragState.pointerId) return;
+    const { row, placeholder } = dragState;
+    placeholder.parentNode.replaceChild(row, placeholder);
+    row.classList.remove('task-row-dragging');
+    row.style.position = '';
+    row.style.top = '';
+    row.style.left = '';
+    row.style.width = '';
+    row.style.zIndex = '';
+    document.removeEventListener('pointermove', moveTaskDrag);
+    document.removeEventListener('pointerup', endTaskDrag);
+    document.removeEventListener('pointercancel', endTaskDrag);
+    dragState = null;
+    renumberTaskRows();
+  }
+
+  taskListEl.addEventListener('pointerdown', startTaskDrag);
+
+  // ---------------- Notes: rich text editor ----------------
+  const notesEl = document.getElementById('notes');
+  const toolbarEl = document.getElementById('notesToolbar');
+  let notesSelection = null;
+  function rememberNotesSelection(){
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    if (notesEl.contains(range.commonAncestorContainer)) notesSelection = range.cloneRange();
+  }
+  function restoreNotesSelection(){
+    notesEl.focus();
+    if (!notesSelection) return;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(notesSelection);
+  }
+  notesEl.addEventListener('keyup', rememberNotesSelection);
+  notesEl.addEventListener('mouseup', rememberNotesSelection);
+
+  toolbarEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tb-btn');
+    if (!btn) return;
+    restoreNotesSelection();
+    const cmd = btn.dataset.cmd;
+    if (btn.dataset.plain) {
+      document.execCommand('removeFormat');
+      document.execCommand('formatBlock', false, 'P');
+    } else if (cmd === 'formatBlock') {
+      // toggle: if current block already matches, revert to paragraph
+      const current = document.queryCommandValue('formatBlock');
+      const target = btn.dataset.value;
+      document.execCommand('formatBlock', false, current.toUpperCase() === target ? 'P' : target);
+    } else {
+      document.execCommand(cmd, false, null);
+    }
+    rememberNotesSelection();
+    syncToolbarState();
+  });
+
+  // execCommand can't do arbitrary px font sizes or custom font names — wrap the live selection
+  // in a styled <span> ourselves instead of relying on the legacy fontName/fontSize commands.
+  function wrapNotesSelectionWithStyle(styleProp, value){
+    restoreNotesSelection();
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || sel.isCollapsed) { notesEl.style[styleProp] = value; return; }
+    const range = sel.getRangeAt(0);
+    if (!notesEl.contains(range.commonAncestorContainer)) return;
+    const span = document.createElement('span');
+    span.style[styleProp] = value;
+    try { range.surroundContents(span); }
+    catch { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
+    sel.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.selectNodeContents(span);
+    sel.addRange(newRange);
+    notesSelection = newRange.cloneRange();
+  }
+
+  const loadedNoteWebFonts = new Set();
+  const NOTE_SYSTEM_FONT_NAMES = ['Georgia','Times New Roman','Garamond','Baskerville','Palatino','Arial','Helvetica','Verdana','Tahoma','Trebuchet MS','Segoe UI','Calibri','Courier New','Consolas','Comic Sans MS','Impact'];
+  const NOTE_SYSTEM_SAFE_FONTS = new Set([...NOTE_SYSTEM_FONT_NAMES.map(name => name.toLowerCase()), 'inherit', 'serif', 'sans-serif', 'monospace']);
+  const NOTE_OTHER_FONT_VALUE = '__other__';
+  function populateNoteFontSelect(select){
+    const webFonts = [...loadedNoteWebFonts.values()];
+    select.innerHTML = `<optgroup label="System fonts">${NOTE_SYSTEM_FONT_NAMES.map(name => `<option value="${name}">${name}</option>`).join('')}</optgroup>` +
+      (webFonts.length ? `<optgroup label="Google Fonts (this session)">${webFonts.map(name => `<option value="${name.replace(/"/g, '&quot;')}">${name}</option>`).join('')}</optgroup>` : '') +
+      `<option value="${NOTE_OTHER_FONT_VALUE}">Other…</option>`;
+  }
+  function setNoteFontControlValue(select, customInput, name){
+    const clean = (name || '').trim();
+    const match = Array.from(select.options).some(opt => opt.value === clean);
+    if (match) { select.value = clean; customInput.hidden = true; }
+    else { select.value = NOTE_OTHER_FONT_VALUE; customInput.hidden = false; customInput.value = clean; }
+  }
+  function injectNoteGoogleFont(name){
+    const clean = (name || '').trim();
+    if (!clean || loadedNoteWebFonts.has(clean)) return;
+    const family = clean.replace(/\s+/g, '+');
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@400;700&display=swap`;
+    document.head.appendChild(link);
+    loadedNoteWebFonts.add(clean);
+    populateNoteFontSelect(document.getElementById('noteFontSelect'));
+  }
+  function scanAndLoadFontsUsedIn(html){
+    if (!html) return;
+    for (const match of html.matchAll(/font-family:\s*["']?([^;"']+)["']?/gi)) {
+      const first = (match[1] || '').split(',')[0].trim();
+      if (first && !NOTE_SYSTEM_SAFE_FONTS.has(first.toLowerCase())) injectNoteGoogleFont(first);
+    }
+  }
+
+  const noteFontSelect = document.getElementById('noteFontSelect');
+  const noteFontCustom = document.getElementById('noteFontCustom');
+  const noteSizeInput = document.getElementById('noteSizeInput');
+  populateNoteFontSelect(noteFontSelect);
+  noteFontSelect.onchange = () => {
+    const value = noteFontSelect.value;
+    if (value === NOTE_OTHER_FONT_VALUE) { noteFontCustom.hidden = false; noteFontCustom.focus(); noteFontCustom.select(); return; }
+    noteFontCustom.hidden = true;
+    wrapNotesSelectionWithStyle('fontFamily', `"${value}", serif`);
+  };
+  noteFontCustom.onchange = () => { const v = noteFontCustom.value.trim(); if (v) wrapNotesSelectionWithStyle('fontFamily', `"${v}", serif`); };
+  noteSizeInput.onchange = () => { const n = parseInt(noteSizeInput.value, 10); if (n > 0) wrapNotesSelectionWithStyle('fontSize', `${n}px`); };
+  document.getElementById('noteWebFontBtn').onmousedown = (e) => e.preventDefault();
+  document.getElementById('noteWebFontBtn').onclick = async () => {
+    const current = noteFontCustom.hidden ? noteFontSelect.value : noteFontCustom.value;
+    const name = await promptDialog('Load Google Font', current === NOTE_OTHER_FONT_VALUE ? '' : (current || ''), 'Google Fonts family name (e.g. "Inter", "Playfair Display", "JetBrains Mono"):');
+    if (!name) return;
+    injectNoteGoogleFont(name);
+    setNoteFontControlValue(noteFontSelect, noteFontCustom, name);
+    wrapNotesSelectionWithStyle('fontFamily', `"${name.trim()}", serif`);
+  };
+  document.getElementById('noteColorInput').onchange = (e) => wrapNotesSelectionWithStyle('color', e.target.value);
+  document.getElementById('noteHighlightInput').onchange = (e) => wrapNotesSelectionWithStyle('backgroundColor', e.target.value);
+
+  function syncToolbarState(){
+    const map = { bold: 'bold', italic: 'italic', underline: 'underline',
+                  insertUnorderedList: 'insertUnorderedList', insertOrderedList: 'insertOrderedList' };
+    Array.from(toolbarEl.querySelectorAll('.tb-btn[data-cmd]')).forEach(btn => {
+      const cmd = btn.dataset.cmd;
+      let isActive = false;
+      try {
+        if (map[cmd]) isActive = document.queryCommandState(map[cmd]);
+        if (cmd === 'formatBlock' && btn.dataset.value) {
+          isActive = document.queryCommandValue('formatBlock').toUpperCase() === btn.dataset.value;
+        }
+      } catch (err) { /* ignore */ }
+      btn.classList.toggle('active', !!isActive);
+    });
+  }
+
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === notesEl) syncToolbarState();
+  });
+
+  // ---------------- Status message ----------------
+  const statusEl = document.getElementById('statusMsg');
+  let statusTimer = null;
+  function showStatus(msg, isError){
+    statusEl.textContent = msg;
+    statusEl.style.color = isError ? 'var(--red)' : 'var(--green)';
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => { statusEl.textContent = ''; }, 4000);
+  }
+
+  // ---------------- Save worksheet (persisted per project + date) ----------------
+  async function saveWorksheet(){
+    const payload = {
+      tasks: taskInputs().map((inp, idx) => ({ text: inp.value, done: taskChecks()[idx].checked, priority: taskPriorityDots()[idx]?.dataset.priority || 'none' })),
+      notesHtml: notesEl.innerHTML,
+      date: worksheetDate, projectId, projectTitle
+    };
+    try {
+      localStorage.setItem(worksheetKey(), JSON.stringify(payload));
+      showStatus('Saved · ' + dateKey(selectedDate));
+    } catch (err) {
+      showStatus('Could not save — browser storage is unavailable', true);
+    }
+  }
+
+  async function loadWorksheet(){
+    try {
+      const saved = localStorage.getItem(worksheetKey());
+      if (saved) {
+        const data = JSON.parse(saved);
+        const inputs = taskInputs();
+        const checks = taskChecks();
+        const dots = taskPriorityDots();
+        (data.tasks || []).forEach((t, idx) => {
+          if (inputs[idx]) inputs[idx].value = t.text || '';
+          if (checks[idx]) {
+            checks[idx].checked = !!t.done;
+            checks[idx].closest('.task-row').classList.toggle('done', !!t.done);
+          }
+          if (dots[idx]) setPriorityDot(dots[idx], t.priority || 'none');
+        });
+        notesEl.innerHTML = data.notesHtml || data.notes || '';
+        scanAndLoadFontsUsedIn(notesEl.innerHTML);
+        updateTaskCount();
+      }
+    } catch (err) {
+      // nothing saved yet — start fresh
+    }
+  }
+
+  // ---------------- Rich text -> structured blocks (for PDF export) ----------------
+  function getRuns(node, style) {
+    let runs = [];
+    node.childNodes.forEach(child => {
+      if (child.nodeType === 3) {
+        if (child.textContent) runs.push({ text: child.textContent, ...style });
+      } else if (child.nodeType === 1) {
+        const tag = child.tagName;
+        if (tag === 'BR') { runs.push({ text: '\n', ...style }); return; }
+        const s = { ...style };
+        if (tag === 'B' || tag === 'STRONG') s.bold = true;
+        if (tag === 'I' || tag === 'EM') s.italic = true;
+        if (tag === 'U') s.underline = true;
+        runs = runs.concat(getRuns(child, s));
+      }
+    });
+    return runs;
+  }
+
+  function getBlocks(root) {
+    const blocks = [];
+    const baseStyle = { bold: false, italic: false, underline: false };
+    Array.from(root.childNodes).forEach(child => {
+      if (child.nodeType === 3) {
+        if (child.textContent.trim()) blocks.push({ type: 'p', runs: [{ text: child.textContent, ...baseStyle }] });
+        return;
+      }
+      if (child.nodeType !== 1) return;
+      const tag = child.tagName;
+      if (tag === 'UL' || tag === 'OL') {
+        let idx = 0;
+        Array.from(child.children).forEach(li => {
+          idx++;
+          blocks.push({ type: 'li', listType: tag === 'OL' ? 'ol' : 'ul', index: idx, runs: getRuns(li, baseStyle) });
+        });
+      } else if (tag === 'P' || tag === 'DIV') {
+        const runs = getRuns(child, baseStyle);
+        blocks.push({ type: 'p', runs: runs.length ? runs : [{ text: '', ...baseStyle }] });
+      } else if (/^H[1-3]$/.test(tag)) {
+        blocks.push({ type: tag.toLowerCase(), runs: getRuns(child, baseStyle) });
+      } else if (tag === 'BLOCKQUOTE') {
+        blocks.push({ type: 'blockquote', runs: getRuns(child, baseStyle) });
+      } else {
+        const runs = getRuns(child, baseStyle);
+        if (runs.length) blocks.push({ type: 'p', runs });
+      }
+    });
+    return blocks;
+  }
+
+  // ---------------- Export as PDF (dark mode) ----------------
+  function exportPdf(){
+    if(!window.jspdf){ alert('PDF export library is still loading — please try again in a moment.'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const marginX = 20;
+    const contentW = pageW - marginX * 2;
+    const bottomLimit = pageH - 20;
+
+    // dark palette (rgb)
+    const bg = [10, 10, 12];
+    const panel = [22, 22, 25];
+    const textMain = [235, 235, 240];
+    const textSecondary = [150, 150, 158];
+    const accent = [10, 132, 255];
+    const green = [50, 215, 75];
+    const divider = [50, 50, 55];
+
+    function paintPage(){
+      doc.setFillColor(...bg);
+      doc.rect(0, 0, pageW, pageH, 'F');
+    }
+    paintPage();
+
+    let y = 0;
+
+    function ensureSpace(nextHeight){
+      if (y + nextHeight > bottomLimit) {
+        doc.addPage();
+        paintPage();
+        y = 24;
+      }
+    }
+
+    function fontFor(bold, italic){
+      if (bold && italic) return 'bolditalic';
+      if (bold) return 'bold';
+      if (italic) return 'italic';
+      return 'normal';
+    }
+
+    function renderRuns(runs, x0, startY, maxWidth, size, color, lineHeight){
+      let x = x0;
+      let cy = startY;
+      doc.setFontSize(size);
+      doc.setTextColor(...color);
+      const flush = () => { x = x0; cy += lineHeight; };
+      runs.forEach(run => {
+        if (run.text === '\n') { flush(); return; }
+        const words = run.text.split(/(\s+)/);
+        words.forEach(raw => {
+          if (raw === '') return;
+          const style = fontFor(run.bold, run.italic);
+          doc.setFont('helvetica', style);
+          const w = doc.getTextWidth(raw);
+          const isSpace = /^\s+$/.test(raw);
+          if (!isSpace && x + w > x0 + maxWidth) flush();
+          if (cy > bottomLimit) { doc.addPage(); paintPage(); cy = 24; x = x0; }
+          if (!(isSpace && x === x0)) {
+            doc.text(raw, x, cy);
+            if (run.underline && !isSpace) {
+              doc.setDrawColor(...color);
+              doc.setLineWidth(0.25);
+              doc.line(x, cy + 1.1, x + w, cy + 1.1);
+            }
+            x += w;
+          }
+        });
+      });
+      return cy + lineHeight;
+    }
+
+    // ----- Header -----
+    doc.setFillColor(...accent);
+    doc.roundedRect(marginX, 20, 4, 16, 1.5, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(...textMain);
+    doc.text('Daily Worksheet', marginX + 10, 32);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10.5);
+    doc.setTextColor(...textSecondary);
+    const exportDate = new Date();
+    doc.text(exportDate.toLocaleString([], { dateStyle: 'full', timeStyle: 'short' }), marginX + 10, 39);
+
+    y = 52;
+    doc.setDrawColor(...divider);
+    doc.setLineWidth(0.4);
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 12;
+
+    // ----- Tasks panel -----
+    const PRIORITY_RGB = { red: [255, 69, 58], orange: [255, 159, 10], yellow: [255, 214, 10], green: [48, 209, 88], blue: [10, 132, 255] };
+    const tasks = taskInputs().map((inp, idx) => ({ text: inp.value.trim() || `Task ${idx + 1}`, done: taskChecks()[idx].checked, priority: taskPriorityDots()[idx]?.dataset.priority || 'none' }));
+    const doneCount = tasks.filter(t => t.done).length;
+    const taskRowH = 9;
+    const panelPad = 8;
+    const panelH = panelPad * 2 + 12 + tasks.length * taskRowH;
+    ensureSpace(panelH + 10);
+
+    doc.setFillColor(...panel);
+    doc.roundedRect(marginX, y, contentW, panelH, 4, 4, 'F');
+
+    let ty = y + panelPad + 6;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...textMain);
+    doc.text('Tasks', marginX + panelPad, ty);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...textSecondary);
+    doc.text(`${doneCount} / ${tasks.length} complete`, pageW - marginX - panelPad, ty, { align: 'right' });
+
+    ty += 8;
+    tasks.forEach(t => {
+      const boxX = marginX + panelPad;
+      const boxY = ty - 3.6;
+      if (t.done) {
+        doc.setFillColor(...green);
+        doc.roundedRect(boxX, boxY, 4.6, 4.6, 1, 1, 'F');
+        doc.setDrawColor(...green);
+        doc.setLineWidth(0.5);
+        doc.line(boxX + 1, boxY + 2.4, boxX + 1.9, boxY + 3.4);
+        doc.line(boxX + 1.9, boxY + 3.4, boxX + 3.7, boxY + 1.1);
+      } else {
+        doc.setDrawColor(...textSecondary);
+        doc.setLineWidth(0.4);
+        doc.roundedRect(boxX, boxY, 4.6, 4.6, 1, 1, 'S');
+      }
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(...(t.done ? textSecondary : textMain));
+      const label = t.text;
+      let textX = boxX + 8;
+      if (t.priority !== 'none' && PRIORITY_RGB[t.priority]) {
+        doc.setFillColor(...PRIORITY_RGB[t.priority]);
+        doc.circle(boxX + 9.5, boxY + 2.3, 1.5, 'F');
+        textX = boxX + 14;
+      }
+      doc.text(label, textX, ty);
+      if (t.done) {
+        const w = doc.getTextWidth(label);
+        doc.setDrawColor(...textSecondary);
+        doc.setLineWidth(0.3);
+        doc.line(textX, ty - 1.4, textX + w, ty - 1.4);
+      }
+      ty += taskRowH;
+    });
+
+    y += panelH + 12;
+
+    // ----- Notes panel -----
+    const blocks = getBlocks(notesEl);
+    ensureSpace(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...textMain);
+    doc.text('Notes', marginX, y);
+    y += 9;
+
+    if (!blocks.length) {
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(11);
+      doc.setTextColor(...textSecondary);
+      doc.text('—', marginX, y);
+      y += 8;
+    }
+
+    blocks.forEach(block => {
+      let size = 11, color = textMain, lh = 6, indent = 0, prefixText = '';
+      if (block.type === 'h1') { size = 15; lh = 8; }
+      else if (block.type === 'h2') { size = 13; lh = 7.2; }
+      else if (block.type === 'h3') { size = 11.5; lh = 6.5; }
+      else if (block.type === 'blockquote') { color = textSecondary; }
+      else if (block.type === 'li') {
+        indent = 6;
+        prefixText = block.listType === 'ol' ? `${block.index}.` : '\u2022';
+      }
+
+      ensureSpace(lh + 2);
+
+      if (block.type === 'blockquote') {
+        const barX = marginX;
+        const startY = y;
+        y = renderRuns(block.runs, marginX + 6, y, contentW - 6, size, color, lh);
+        doc.setDrawColor(...accent);
+        doc.setLineWidth(0.8);
+        doc.line(barX, startY - 4, barX, y - lh + 2);
+        y += 2;
+        return;
+      }
+
+      if (indent) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(size);
+        doc.setTextColor(...textSecondary);
+        doc.text(prefixText, marginX, y);
+      }
+      y = renderRuns(block.runs, marginX + indent, y, contentW - indent, size, color, lh);
+    });
+
+    const fileDate = exportDate.toISOString().slice(0, 10);
+    doc.save(`worksheet-${fileDate}.pdf`);
+    showStatus('PDF exported');
+  }
+
+  // ---------------- Wire up ----------------
+  document.getElementById('saveWorksheetBtn').addEventListener('click', saveWorksheet);
+  document.getElementById('exportPdfBtn').addEventListener('click', exportPdf);
+  document.getElementById('backToCalendarBtn').addEventListener('click', () => {
+    location.href = `project-calendar.html?project=${encodeURIComponent(projectId)}&title=${encodeURIComponent(projectTitle)}`;
+  });
+
+  fetchNetworkTime();
+  loadWorksheet();
+</script>
+
+<dialog class="prompt-dialog" id="prompt-dialog"><form id="prompt-dialog-form"><h2 id="prompt-dialog-title">Rename</h2><p id="prompt-dialog-message"></p><input type="text" id="prompt-dialog-input" aria-labelledby="prompt-dialog-title"><div class="modal-actions"><button type="button" class="cancel-btn" id="prompt-dialog-cancel">Cancel</button><button type="submit" id="prompt-dialog-ok">Save</button></div></form></dialog>
+</body>
+</html>

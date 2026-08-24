@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101215">
+<title>Project Calendar · Art Equation</title>
+<style>
+  :root{--bg:#101215;--panel:#171a1e;--panel2:#1d2025;--line:#343940;--text:#f1ede7;--muted:#9c9a96;--gold:#d0a064;--teal:#46adbb;--done:#4eae78;}
+  * { scrollbar-color: var(--line) var(--panel2); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width:12px; height:12px; }
+  ::-webkit-scrollbar-track { background:var(--panel2); }
+  ::-webkit-scrollbar-thumb { background-color:var(--line); border-radius:8px; border:3px solid var(--panel2); }
+  ::-webkit-scrollbar-thumb:hover { background-color:var(--muted); }
+  *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#1c2228 0,var(--bg) 48%);color:var(--text);font:15px/1.45 Georgia,serif}
+  .top{display:flex;align-items:center;gap:16px;padding:17px 26px;border-bottom:1px solid var(--line);background:#121417}.brand{font-size:25px}.brand small{display:block;color:var(--gold);font:9px/1 monospace;letter-spacing:.2em;margin-top:5px}.spacer{flex:1}.btn{padding:10px 13px;border:1px solid var(--line);border-radius:3px;background:var(--panel2);color:var(--text);font:12px monospace;letter-spacing:.04em;cursor:pointer}.btn:hover{border-color:var(--gold);color:#fff}.btn.primary{background:var(--gold);border-color:var(--gold);color:#17120c;font-weight:bold}
+  main{max-width:1120px;margin:0 auto;padding:42px 24px 70px}.eyebrow{color:var(--teal);font:11px monospace;letter-spacing:.18em;text-transform:uppercase}.title-row{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:10px 0 28px}h1{margin:0;font-size:40px;line-height:1.05}.subtitle{margin:9px 0 0;color:var(--muted)}.month-controls{display:flex;align-items:center;gap:9px}.month-label{min-width:190px;text-align:center;font-size:19px}.calendar{border:1px solid var(--line);background:var(--panel);display:grid;grid-template-columns:repeat(7,1fr)}.weekday{padding:12px;color:var(--gold);border-bottom:1px solid var(--line);font:10px monospace;letter-spacing:.1em;text-align:center}.day{position:relative;min-height:125px;padding:10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#15181c;cursor:pointer}.day:nth-child(7n){border-right:0}.day:hover{background:#21252a;outline:1px solid var(--gold);z-index:1}.day.outside{background:#111316;color:#585c61}.day.today .day-number{color:#19130c;background:var(--gold)}.day-number{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;font:12px monospace}.day-status{position:absolute;left:10px;right:10px;bottom:9px;color:var(--muted);font:11px monospace}.progress{height:5px;margin-top:8px;background:#2c3138}.progress i{display:block;height:100%;background:var(--done)}.empty{color:#70757a;font-style:italic}.legend{display:flex;gap:18px;margin-top:15px;color:var(--muted);font:12px monospace}.legend i{display:inline-block;width:9px;height:9px;margin-right:5px;background:var(--done)}.hint{margin-top:28px;padding:15px 17px;border-left:2px solid var(--gold);background:#17191d;color:var(--muted)}
+  @media(max-width:720px){.top{padding:14px}.brand{font-size:20px}.top .btn{padding:8px}.title-row{align-items:flex-start;flex-direction:column}h1{font-size:31px}.day{min-height:92px;padding:7px}.day-status{left:7px;right:7px;bottom:7px;font-size:9px}.weekday{padding:9px 2px;font-size:8px}.month-label{min-width:150px;font-size:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Art Equation<small>PROJECT DAILY WORK</small></div><div class="spacer"></div><button class="btn" id="back">← Project</button><button class="btn primary" id="today">Today</button></header>
+<main>
+  <div class="eyebrow">Per-project task calendar</div>
+  <div class="title-row"><div><h1 id="projectTitle">Untitled Project</h1><p class="subtitle">Click any day to open that project’s daily task list and notes.</p></div><div class="month-controls"><button class="btn" id="previous" aria-label="Previous month">←</button><div class="month-label" id="monthLabel"></div><button class="btn" id="next" aria-label="Next month">→</button></div></div>
+  <section class="calendar" id="calendar" aria-label="Project calendar"></section>
+  <div class="legend"><span><i></i>Completed task progress</span><span>Blank days have no saved worksheet yet</span></div>
+  <div class="hint">Each project has its own separate daily worksheets. Changing projects does not mix task lists or notes.</div>
+</main>
+<script>
+(() => {
+  const params=new URLSearchParams(location.search); const projectId=params.get('project')||'unassigned';
+  const stored=(()=>{try{return JSON.parse(localStorage.getItem('art-equation-studio-v1'))}catch{return null}})();
+  const matching=stored?.projects?.find(p=>p.id===projectId); const projectTitle=matching?.title||params.get('title')||'Untitled Project';
+  document.title=`${projectTitle} · Calendar`; document.querySelector('#projectTitle').textContent=projectTitle;
+  let cursor=new Date(); cursor=new Date(cursor.getFullYear(),cursor.getMonth(),1);
+  const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const escapeHtml=s=>{const e=document.createElement('div');e.textContent=s||'';return e.innerHTML};
+  function entries(){const prefix=`art-equation-daily:${projectId}:`;const result={};for(let i=0;i<localStorage.length;i++){const storageKey=localStorage.key(i);if(!storageKey?.startsWith(prefix))continue;try{result[storageKey.slice(prefix.length)]=JSON.parse(localStorage.getItem(storageKey));}catch{}}return result;}
+  function openDay(day){location.href=`daily-worksheet.html?project=${encodeURIComponent(projectId)}&title=${encodeURIComponent(projectTitle)}&date=${key(day)}`;}
+  function render(){const data=entries();const calendar=document.querySelector('#calendar');calendar.innerHTML=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(day=>`<div class="weekday">${day}</div>`).join('');document.querySelector('#monthLabel').textContent=cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'});const start=new Date(cursor);start.setDate(1-start.getDay());for(let index=0;index<42;index++){const day=new Date(start);day.setDate(start.getDate()+index);const dayKey=key(day);const saved=data[dayKey];const tasks=saved?.tasks||[];const total=tasks.filter(task=>String(task.text||'').trim()).length;const done=tasks.filter(task=>task.done).length;const current=day.getMonth()===cursor.getMonth();const isToday=dayKey===key(new Date());const el=document.createElement('button');el.className=`day ${current?'':'outside'} ${isToday?'today':''}`;el.type='button';el.title=`Open ${day.toLocaleDateString()}`;el.innerHTML=`<span class="day-number">${day.getDate()}</span>${saved?`<div class="day-status">${total?`${done} / ${total} tasks`:'Notes saved'}${total?`<div class="progress"><i style="width:${Math.round(done/total*100)}%"></i></div>`:''}</div>`:'<div class="day-status empty">Open task list</div>'}`;el.onclick=()=>openDay(day);calendar.appendChild(el);}}
+  document.querySelector('#previous').onclick=()=>{cursor=new Date(cursor.getFullYear(),cursor.getMonth()-1,1);render();};
+  document.querySelector('#next').onclick=()=>{cursor=new Date(cursor.getFullYear(),cursor.getMonth()+1,1);render();};
+  document.querySelector('#today').onclick=()=>{cursor=new Date();cursor=new Date(cursor.getFullYear(),cursor.getMonth(),1);render();};
+  document.querySelector('#back').onclick=()=>{location.href=`art-equation-studio.html?project=${encodeURIComponent(projectId)}`;};
+  render();
+})();
+</script>
+</body>
+</html>
