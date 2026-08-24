@@ -1,0 +1,1883 @@
+{
+  "schema": {
+    "name": "Eclipse Narrative Reinterpretation Schema",
+    "version": "2.1",
+    "purpose": "Represent an existing story as narrative structure that can be reinterpreted by a character behavior engine, with explicit bindings into character behavior master datasets.",
+    "principle": "Preserve narrative events, causality, relationships, transformation state, and scene functions while dialogue, reactions, action performance, comedy timing, SFX, and character behavior are regenerated from bound character-data datasets.",
+    "source_policy": {
+      "source_text_is_reference": true,
+      "literal_dialogue_reuse": false,
+      "behavioral_reinterpretation": true,
+      "preserve_plot_skeleton": true,
+      "literary_sfx_only": true,
+      "abstract_patterns_not_transcripts": true
+    },
+    "automation_design": {
+      "goal": "This file is the intermediate representation of a fiction engine: a scenario is compiled INTO this shape, character behavior masters are plugged INTO it, and a rewritten story is generated FROM it.",
+      "machine_readable_guarantees": [
+        "every behavioral binding references a dataset id that exists in a declared behavior master",
+        "every scene lists participants, performance slots, bindings, duet patterns, persona dials, and sfx slots in a fixed shape",
+        "every duet pattern names its participant roles and source dataset ids",
+        "persona intensity is numeric and monotonic along the transformation timeline",
+        "archetype_role_map is the join key between story roles and the generic_archetypes stored in the behavior masters",
+        "dataset filters are enumerable so excluded material is data, not judgment calls buried in prose"
+      ]
+    }
+  },
+  "source": {
+    "filename": "Pasted markdown(20260820-144003).md",
+    "story_title": "The Diaper Incident — Part II: The Explanation",
+    "source_section": "## 📖 Original Story: The Diaper Incident — Part II: The Explanation",
+    "source_length_characters": 35077,
+    "note": "Narrative structure extracted from the supplied original story. The original prose is not reproduced as the generation target. v2.0 enriches the v1.0 skeleton with behavioral bindings; removing all v2.0 additive fields (bindings, dials, duets, sfx, filters, pipeline) yields the original v1.0 skeleton."
+  },
+  "compilation_pipeline": {
+    "description": "How this file was produced and how any new scenario can be processed the same way. Each stage consumes structured data and emits structured data; an LLM is only needed at stage 2 (extraction) and at final prose generation.",
+    "inputs_required": [
+      "raw scenario text (markdown or transcript)",
+      "one or more character behavior masters (JSON with datasets, generic_archetypes, behavioral_mapping_abstract, application_mapping)"
+    ],
+    "stages": [
+      {
+        "stage": 1,
+        "name": "scenario_intake",
+        "does": "accept raw story text or an existing skeleton json"
+      },
+      {
+        "stage": 2,
+        "name": "skeleton_extraction",
+        "does": "extract scenes, events, causal chains, participants, narrative functions, performance slots (produced the v1.0 version of this file)"
+      },
+      {
+        "stage": 3,
+        "name": "role_assignment",
+        "does": "map extracted participants onto character roles declared by the masters (application_mapping.target_character and header override rules)"
+      },
+      {
+        "stage": 4,
+        "name": "archetype_slotting",
+        "does": "join each master's generic_archetypes to story roles via archetype_role_map; unmatched archetypes are marked unused or sequenced as sequel hooks"
+      },
+      {
+        "stage": 5,
+        "name": "dataset_retrieval",
+        "does": "for each scene, score datasets by (a) archetype match through scene participants and (b) pattern satisfies a listed narrative_function or performance_slot need; apply dataset_filters"
+      },
+      {
+        "stage": 6,
+        "name": "binding",
+        "does": "emit behavioral_bindings per scene with use_pattern, apply_at event ids, and delivery notes"
+      },
+      {
+        "stage": 7,
+        "name": "dial_assignment",
+        "does": "assign persona_dial per scene from the transformation_timeline stage; assign sfx_slots from sfx_palette by cue type"
+      },
+      {
+        "stage": 8,
+        "name": "duet_assignment",
+        "does": "for every scene with two or more bound characters, activate duet patterns whose source datasets are already bound in that scene (compositionality rule)"
+      },
+      {
+        "stage": 9,
+        "name": "validation",
+        "does": "run validation_tests; fail on unresolved dataset ids, literal-line reuse, dial violations, or filter breaches"
+      }
+    ],
+    "binding_algorithm": {
+      "join_keys": [
+        "generic_archetype -> story role (via archetype_role_map)",
+        "behavioral pattern -> narrative_function or performance_slot need",
+        "special_rules_override -> arc checkpoints (via persona_emergence_track)"
+      ],
+      "precedence": [
+        "Rainee identity and story state",
+        "explicit story overrides",
+        "Rainee core traits",
+        "relationship rules",
+        "Stewie-derived behavioral mechanisms",
+        "source-specific surface details"
+      ],
+      "conflict_resolution": "When two datasets compete for one slot, prefer the one whose archetype maps to a scene participant over one mapped to an absent role; prefer special overrides over generic patterns; identity preservation always wins.",
+      "reversibility": "Bindings are additive metadata layered on the plot skeleton and can be stripped or regenerated independently."
+    }
+  },
+  "inputs": {
+    "narrative_json": "this file",
+    "behavior_masters": [
+      {
+        "file": "Rainee_data.json",
+        "id_prefix": "stewie",
+        "target_character": "rainee",
+        "target_state": "toddler_regression",
+        "required": true,
+        "dataset_count": 9,
+        "special": "stewie08 carries three special role overrides (surrender arc, Noir-teasing register, Future Rainee persona) mapped to persona_emergence_track checkpoints",
+        "identity_rule": "Stewie material is a behavioral layer. Rainee is never replaced by, identified as, or given the memories of Stewie Griffin."
+      },
+      {
+        "file": "Nori_Jillian_data.json",
+        "id_prefix": "clip",
+        "target_character": "noir",
+        "required": true,
+        "dataset_count": 13,
+        "special": "header lore override: Noir is a fox person, shape-shifter like her sister; Family Guy material is generic archetypes only",
+        "identity_rule": "Jillian material supplies abstract behavioral patterns only. Noir is never written as literal Jillian and never speaks transcript lines."
+      }
+    ]
+  },
+  "archetype_role_map": {
+    "description": "Join table between the generic_archetypes stored in the behavior masters and the roles that exist in this story. This is the primary automation bridge: a dataset can bind to a scene only through a role present in that scene.",
+    "mappings": [
+      {
+        "archetype": "child_genius",
+        "source_master": "Rainee_data.json",
+        "story_role": "rainee",
+        "note": "behavioral layer only: theatrical reasoning, chain logic, imperious direction, boast patterns"
+      },
+      {
+        "archetype": "child_genius_shape_shifter / child_genius_shape_shifter_as_girl",
+        "source_master": "Rainee_data.json",
+        "story_role": "rainee",
+        "note": "her glamour and performed personas survive the regression and get repurposed at merchant scale"
+      },
+      {
+        "archetype": "external_recognizer",
+        "source_master": "Rainee_data.json",
+        "story_role": "noir",
+        "note": "Noir is the one who recognizes the performed self (S01 recognition, S11 naming the choice)"
+      },
+      {
+        "archetype": "family_matriarch",
+        "source_master": "Rainee_data.json",
+        "story_role": "cosmic_infant",
+        "note": "external pressure to conform, abstracted: 'simple, like everyone else'"
+      },
+      {
+        "archetype": "nursery_setting",
+        "source_master": "Rainee_data.json",
+        "story_role": "rainee_stall",
+        "note": "Rainee's merchant cart/stall re-styled toddler-scale while keeping luxury standards"
+      },
+      {
+        "archetype": "unfiltered_discloser (incl. literal interpreter, literal empathy)",
+        "source_master": "Nori_Jillian_data.json",
+        "story_role": "noir",
+        "note": "Noir's core comic register: unfiltered literal disclosure, folk-etymology empathy, proud bodily claims with medical reframes"
+      },
+      {
+        "archetype": "external_community_complainer",
+        "source_master": "Nori_Jillian_data.json",
+        "story_role": "market_onlookers",
+        "note": "nearby merchants and customers supply the public-judgment pressure in S03"
+      },
+      {
+        "archetype": "quiet_companion / shopkeeper",
+        "source_master": "both",
+        "story_role": "shopkeeper",
+        "note": "reactive straight role for Rainee's negotiation patterns"
+      },
+      {
+        "archetype": "stability_seeker",
+        "source_master": "Nori_Jillian_data.json",
+        "story_role": "noir",
+        "note": "partial mapping: Noir's grounded normalcy against Rainee's escalation"
+      },
+      {
+        "archetype": "family_patriarch, rival_male, peripheral_ex_partner_faded, community_mourners",
+        "source_master": "both",
+        "story_role": null,
+        "note": "no matching role in this story; left unmapped"
+      }
+    ]
+  },
+  "dataset_filters": {
+    "description": "Context filters applied at retrieval time. Filtering is data so the automation never has to guess.",
+    "excluded_for_this_story": [
+      {
+        "dataset": "clip06_federal_boob_inspector",
+        "reason": "fake-authority/father-seeking specifics do not fit the sister-comedy context"
+      },
+      {
+        "dataset": "clip07_respect_boundary_boys_face_away",
+        "reason": "sexual-disclosure specifics excluded; only the abstract firm-boundary frame may be used, via clip05"
+      },
+      {
+        "dataset": "clip08_retaliation_pawn_dated_just_to_hurt_you",
+        "reason": "requires a rival-male role that does not exist in this story"
+      },
+      {
+        "dataset": "clip10_brians_funeral_peripheral_faded",
+        "reason": "funeral/grief tonal mismatch"
+      },
+      {
+        "dataset": "clip12_restaurant_double_date_L_Espece_D_Andouille",
+        "reason": "double-date retaliation structure has no counterpart here"
+      },
+      {
+        "dataset": "clip13_sad_yank_time_machine_guilt",
+        "reason": "private-ritual specifics excluded from the sister dynamic"
+      }
+    ],
+    "abstract_only": [
+      {
+        "dataset": "clip05_wedding_soul_train",
+        "use": "firm boundary plus malaprop chain with self-repair; never the literal relationship content"
+      },
+      {
+        "dataset": "stewie01_Desiree",
+        "use": "performed sophistication misfires publicly and gets recognized; never the literal topic"
+      },
+      {
+        "dataset": "stewie02_Karina_Smirnoff",
+        "use": "persona performance and shape-shifter register only; the romance subplot is not imported"
+      },
+      {
+        "dataset": "clip11_stewie_yusuf_titanium_capacitor_quest",
+        "use": "not bound; flagged as sequel hook (a quest for a rare component to reverse the transformation)"
+      }
+    ]
+  },
+  "world_and_character_context": {
+    "rainee": {
+      "id": "rainee",
+      "name": "Rainee",
+      "species": "glamorous fox person",
+      "species_context": "female fox-person species; the supplied project lore establishes this as a lesbian species",
+      "baseline_presentation": [
+        "glamorous",
+        "red hair",
+        "black eyelashes",
+        "fox ears",
+        "fox tail",
+        "merchant identity",
+        "high standards for luxury goods"
+      ],
+      "post_transformation_identity": "Rainee remains Rainee",
+      "transformation": {
+        "type": "progressive_regression",
+        "state": "toddler",
+        "physical_scale": "toddler-sized",
+        "behavioral_source": "Stewie-derived behavioral reference via Rainee_data.json",
+        "important_rule": "Stewie is not Rainee's identity. Stewie-derived behavior is a performance/reference layer applied to transformed Rainee, throttled by per-scene persona_dial values."
+      },
+      "retained_traits": [
+        "merchant identity",
+        "haggling",
+        "record keeping",
+        "profit orientation",
+        "taste for premium goods",
+        "fox traits",
+        "memories",
+        "ability to speak",
+        "ability to reason",
+        "spiritual/metaphysical power"
+      ],
+      "transformation_effects_established_by_story": [
+        "progressive physical shrinking",
+        "clothing becoming too large",
+        "increasing dependence on toddler-scale supplies",
+        "bowel-control problems",
+        "increasingly simple and direct wants",
+        "more theatrical and demanding behavior",
+        "less layered social presentation",
+        "greater behavioral directness"
+      ],
+      "behavioral_layer": {
+        "master": "Rainee_data.json",
+        "registers": [
+          "chain-logic rationalization delivered with total confidence",
+          "hyperbolic multi-talent boast and rival-labeling",
+          "imperious direction of adults through her own emergencies",
+          "theatrical overstrain and public mortification",
+          "shame-to-pride arc on the diaper-surrender material",
+          "folk theories about mundane devices stated as expertise"
+        ],
+        "dial_names": [
+          "stewie_behavior_layer",
+          "future_rainee_persona"
+        ]
+      }
+    },
+    "noir": {
+      "id": "noir",
+      "name": "Noir",
+      "relationship_to_rainee": "younger sister",
+      "species": "fox person, fox ears, tail, whiskers; shape-shifter like her sister",
+      "presentation": [
+        "bubbly blonde",
+        "highly expressive",
+        "laughs easily",
+        "genuinely curious",
+        "judgmental in a sisterly way",
+        "takes absurd situations literally enough to interrogate them"
+      ],
+      "narrative_role": [
+        "observer",
+        "audience surrogate",
+        "comic reactor",
+        "sisterly challenger",
+        "questioner who extracts exposition"
+      ],
+      "behavioral_layer": {
+        "master": "Nori_Jillian_data.json",
+        "registers": [
+          "unfiltered literal disclosure of embarrassing facts without shame, often with a teaching tone",
+          "literal interpretation of vague or figurative statements, translated to something absurdly concrete",
+          "literal empathy for idioms and metaphors (folk-etymology compassion)",
+          "proud claims about bodily functions backed by confident folk-medical reframes",
+          "firm boundary-setting delivered with a malaprop chain that self-repairs",
+          "reframing insults and bossiness as affection"
+        ],
+        "identity_rule": "Patterns are Jillian-derived abstractions. Noir never becomes Jillian, never speaks transcript lines, and never imports the excluded adult-specific clip content (see dataset_filters)."
+      }
+    },
+    "cosmic_infant": {
+      "id": "cosmic_infant",
+      "name": "Cosmic Infant",
+      "role": "supernatural customer/god",
+      "function": "initiates the contract that produces Rainee's regression",
+      "established_desire": "simpler, more basic, uncompromised want",
+      "narrative_function": "inciting supernatural transaction",
+      "behavioral_layer": {
+        "archetype_source": "family_matriarch (abstracted, Rainee_data.json)",
+        "register": "external pressure to conform: the demand that service become simple 'like everyone else', delivered with the weight of law"
+      }
+    },
+    "shopkeeper": {
+      "id": "shopkeeper",
+      "role": "pacifier stall owner",
+      "narrative_function": "straight role for Rainee's negotiation patterns; recognizes her repeat business",
+      "behavioral_layer": {
+        "archetype_source": "shopkeeper / quiet_companion",
+        "register": "reactive, boundary-drawing, occasionally the reluctant witness to absurdity"
+      }
+    },
+    "market_onlookers": {
+      "id": "market_onlookers",
+      "role": "nearby merchants and customers",
+      "narrative_function": "public-judgment chorus in S03; supply the community-complaint pressure and the cooing counter-pressure",
+      "behavioral_layer": {
+        "archetype_source": "external_community_complainer (Nori_Jillian_data.json)",
+        "register": "one voice protests decorum ('this is a nice market'), another coos over the toddler merchant; the eww-versus-cute collision"
+      }
+    }
+  },
+  "story_arc": {
+    "arc_id": "diaper_incident_part_ii",
+    "central_premise": "Noir discovers that Rainee has regressed into a toddler while retaining her identity and merchant personality, then forces an explanation of how the transformation happened.",
+    "core_conflict": "Rainee's pride and former glamorous adult identity collide with the practical reality of her toddler regression and her refusal to abandon the profitable supernatural contract.",
+    "comic_engine": [
+      "contrast between Rainee's former glamorous identity and current toddler state",
+      "Rainee treating absurd circumstances as business problems",
+      "Noir reacting with escalating disbelief and laughter",
+      "Rainee applying adult merchant logic to toddler-scale needs",
+      "dignity versus practicality",
+      "supernatural consequences treated as contractual/business consequences",
+      "Noir's literal questions puncturing Rainee's theatrical rationalizations (duet engine)",
+      "Noir proudly disclosing what Rainee would rather conceal (duet engine)"
+    ],
+    "emotional_arc": [
+      "Noir observes from hiding",
+      "Noir recognizes Rainee",
+      "Noir confronts Rainee",
+      "Rainee becomes mortified and defensive",
+      "physical embarrassment becomes comic escalation",
+      "Rainee regains composure through merchant behavior",
+      "Noir demands an explanation",
+      "Rainee explains the gradual regression",
+      "flashback reveals the supernatural contract",
+      "Noir recognizes Rainee knowingly continued because of the profits",
+      "Rainee reframes the transformation as a merchant success despite its cost",
+      "Future-Rainee persona closes the story holding the pride frame outright"
+    ],
+    "interaction_arc": "Ownership of the pride frame transfers from Noir to Rainee across the story: Noir celebrates the embarrassing bodily reality in S03, coaches and teases in S04, and by S11 Rainee has fully absorbed that register as her own confident persona."
+  },
+  "persona_emergence_track": {
+    "description": "Throttle for how much Stewie-derived register and Future-Rainee persona each scene carries, anchored to the transformation timeline and the stewie08 special overrides.",
+    "dials": {
+      "stewie_behavior_layer": "0.0 = adult Rainee baseline, 1.0 = full theatrical/demanding/direct register",
+      "future_rainee_persona": "0.0 = absent, 1.0 = the confident post-acceptance persona that emerged after regular diaper use"
+    },
+    "checkpoints": [
+      {
+        "checkpoint": "surrender_checkpoint",
+        "timeline_stage": "4 to 5",
+        "source": "stewie08 special override role 1 (Brian in diaper = Rainee surrendering transformation progress)",
+        "scene": "S06E02",
+        "meaning": "first diaper purchase as acceptance beat; shame begins converting to practicality"
+      },
+      {
+        "checkpoint": "tease_checkpoint",
+        "timeline_stage": "5",
+        "source": "stewie08 special override role 2 (Stewie as Noir = Noir teasing/coaching register)",
+        "scene": "S04 onward",
+        "meaning": "Noir's teasing doubles as coaching; available whenever the sisters interact after discovery"
+      },
+      {
+        "checkpoint": "future_persona_checkpoint",
+        "timeline_stage": "6 to 7",
+        "source": "stewie08 special override role 3 (Future Rainee new persona after regular diaper use)",
+        "scene": "S11",
+        "meaning": "the persona comes out strongly; Rainee closes holding the pride frame"
+      }
+    ],
+    "rule": "Dials must be monotonic along the transformation timeline within any single generated telling; flashback scenes (S07-S10) carry the dial of their timeline stage, not of the frame story."
+  },
+  "sfx_palette": {
+    "rules": [
+      "all bodily-function sounds are literary SFX from this palette; never describe them with hertz, frequency, or technical acoustic language",
+      "market ambience murmurs under public scenes and cuts on punchlines",
+      "whoa-chains escalate in count with the crowd's shock level"
+    ],
+    "palette": {
+      "bodily": ["pffffffft!", "braaaap!", "pooooot!", "pffft-pffft!", "pffft... trailing"],
+      "containment_system": ["soft fwump", "chime-shimmer as the magical diaper containment seals"],
+      "crowd": ["whoa whoa whoa chain (escalating count)", "murmur crest and cut"],
+      "cleanup_comedy": ["VROOOOM whirrr", "hose-suck pffft-pffft comedic"],
+      "market": ["stall awning flap", "jade pieces clinking", "distant vendor calls"]
+    }
+  },
+  "duet_patterns": {
+    "description": "Two-character interaction mechanics composed from already-bound datasets. A duet may activate in a scene only if its source datasets are bound in that scene (compositionality rule).",
+    "patterns": [
+      {
+        "name": "literal_question_vs_chain_logic",
+        "participants": ["noir", "rainee"],
+        "mechanic": "Noir asks a blunt, literal question. Rainee answers with an escalating chain of confident rationalizations. Each exchange raises the absurdity until the chain collapses under its own logic and Rainee reasserts the merchant frame as if it had held all along.",
+        "source_datasets": ["clip02_specific_time_specifically_at_10", "clip03_kill_so_many_lemons", "stewie06_foul_ball_sexy_party"],
+        "termination": "chain collapse followed by merchant reframe",
+        "apply_at": ["S03", "S05", "S11"]
+      },
+      {
+        "name": "proud_disclosure_vs_dignity",
+        "participants": ["noir", "rainee"],
+        "mechanic": "Noir announces or celebrates an embarrassing bodily reality proudly, often with a folk-medical reframe, while Rainee scrambles to defend her dignity. Ownership of the pride frame transfers scene by scene until Rainee holds it herself in S11.",
+        "source_datasets": ["clip04_cancer_farts_hotel_FINAL_CORRECT", "clip01_period_disclosure", "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE"],
+        "termination": "pride-frame transfer completes at S11",
+        "apply_at": ["S03", "S04", "S06", "S11"]
+      },
+      {
+        "name": "directed_care_vs_boundary",
+        "participants": ["rainee", "noir"],
+        "mechanic": "Rainee imperiously directs her own care and supplies routine, down to technique notes. Noir sets a firm boundary with a malaprop chain that self-repairs, declares this is not a normal sisterly duty, then complies anyway, and finally reframes Rainee's insults as affection.",
+        "source_datasets": ["stewie03_lois_cleans_diaper_with_vacuum_oopsie", "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE", "clip05_wedding_soul_train", "clip09_cheryl_bossy_reframe"],
+        "termination": "boundary stated, compliance given, affection reframe lands",
+        "apply_at": ["S04"]
+      },
+      {
+        "name": "recognizer_vs_performed_self",
+        "participants": ["noir", "rainee"],
+        "mechanic": "Rainee performs a heightened self (glamour, expertise, multi-talent boast). Noir, the recognizer, names or punctures the performance with a literal observation, converting pretense into public fact.",
+        "source_datasets": ["stewie07_Stephanie_Griffin_pageant_threat_Chuck", "stewie01_Desiree", "clip02_specific_time_specifically_at_10"],
+        "termination": "performance named; Rainee either folds it into the sales pitch or drops it",
+        "apply_at": ["S01", "S02", "S11"]
+      }
+    ]
+  },
+  "emergence_layer": {
+    "principle": "Reperformance of bound patterns is the floor of quality, not the ceiling. Every scene must ALSO generate material that exists in no source dataset: new gags, new sensory details, new vocabulary, new interaction inventions. The bindings guarantee the characters are recognizable; this layer guarantees each telling is alive and no two tellings are identical.",
+    "difference_from_bindings": "behavioral_bindings constrain what MUST be present. The emergence layer licenses what MAY be newly invented, forces pattern collisions that produce compounds neither master contains, and makes inventions persist as canon instead of evaporating.",
+    "invention_licenses": {
+      "description": "Explicit domains where the generator is required to invent freely. 'Licensed' means the invention is canon-eligible and cannot be rejected for being absent from source data.",
+      "rainee": [
+        "new pacifier taxonomy and grading criteria (color, provenance, craftsmanship standards of her own devising)",
+        "new spreadsheet fields and invented units of measurement for tracking the regression",
+        "new folk theories about mundane devices and market phenomena",
+        "new contract clauses and terms-of-service language for the cosmic arrangement",
+        "new premium-supply rituals and quality-inspection procedures",
+        "new euphemisms of her own devising for bodily matters (each telling may coin fresh ones)",
+        "new boast line-items: competencies and holdings invented on the spot"
+      ],
+      "noir": [
+        "new malaprop chains inside Rainee's merchant vocabulary (fresh manglings each telling, self-repairing)",
+        "new literal fixations: idioms or metaphors she has never taken literally before",
+        "new folk-medical reframes and 'helpful' health explanations",
+        "new accidentally-insightful literal questions that expose exactly the wrong variable",
+        "new affection reframes: novel ways to interpret Rainee's insults as love",
+        "new collections: she keeps accidentally acquiring Rainee-isms and quoting them back"
+      ],
+      "world": [
+        "new Jade City market vendors, customer types, and stall details",
+        "new containment-system behaviors and quirks (it develops habits)",
+        "new community chorus voices with distinct fixations",
+        "new sensory market detail (smells, sounds, textures) fresh per telling"
+      ]
+    },
+    "emergence_guardrails": [
+      "inventions must obey identity rules, persona dials, and the precedence order like everything else",
+      "inventions must never resolve the core conflict: no cure, no un-transformation, no exit from the contract",
+      "inventions must not contradict skeleton events or the cause-effect chain",
+      "inventions must compound: prefer building on earlier canon over unrelated novelty",
+      "tone must stay inside the established comedy register"
+    ],
+    "fusion_operators": {
+      "description": "Pattern collisions that produce compound behaviors present in NEITHER master alone. Emergence lives here. At least one fusion compound must appear per telling.",
+      "operators": [
+        {
+          "name": "vocabulary_contamination",
+          "inputs": ["noir malaprop chain", "rainee ledger precision"],
+          "emergent_behavior": "Noir mangles a merchant term; the mangled version accidentally names a real phenomenon Rainee had not noticed; Rainee institutionalizes the error into her official records. The sisters end up co-owning a piece of jargon that belongs to neither of them.",
+          "canon_output": "a new shared term with a definition both use differently"
+        },
+        {
+          "name": "escalation_spiral",
+          "inputs": ["rainee chain-logic rationalization", "noir proud disclosure"],
+          "emergent_behavior": "Each of Rainee's rationalizations becomes material Noir proudly announces to bystanders; Rainee must then out-logic her own leaked argument, which Noir announces again. The spiral generates new rungs no source clip contains.",
+          "canon_output": "the most escalated rung becomes a market rumor"
+        },
+        {
+          "name": "reframe_ping_pong",
+          "inputs": ["noir affection reframe", "rainee theatrical defensiveness"],
+          "emergent_behavior": "Each sister reframes the other's last line; the reframes compound into a third meaning neither intended, which both then have to react to as if it were real.",
+          "canon_output": "an accidental shared meaning or in-joke"
+        },
+        {
+          "name": "literalization_demand",
+          "inputs": ["noir literal interpretation", "rainee hyperbolic boast"],
+          "emergent_behavior": "Noir takes a boast literally and demands demonstration; the demonstration (which must be invented fresh, because the boast was invented fresh) becomes a market legend.",
+          "canon_output": "a market legend attached to Rainee's stall"
+        },
+        {
+          "name": "persona_osmosis",
+          "inputs": ["pride-frame transfer arc", "both behavioral layers"],
+          "emergent_behavior": "Registers leak across characters as they spend time together: Rainee starts using folk-medical framing she caught from Noir; Noir starts quoting contract clauses she caught from Rainee. By the finale each is slightly speaking the other's language.",
+          "canon_output": "each character holds at least one borrowed verbal tic from the other"
+        }
+      ]
+    },
+    "open_escalation_rungs": {
+      "rule": "Every duet pattern's escalation ladder has no ceiling. Once the source-material rungs are exhausted, generate new rungs by the pattern's own mechanic. Termination rules still apply (chain collapse, frame transfer, boundary-compliance-reframe) — only the height is unbounded.",
+      "taste_constraint": "New rungs must escalate the PATTERN, not the stakes of the plot: no injuries, no permanent status changes, no conflict resolution smuggled in through escalation."
+    },
+    "canon_ledger": {
+      "description": "The mechanism that turns invention into emergent canon. Without persistence, novelty is disposable; with it, each telling compounds.",
+      "rules": [
+        "any invented element introduced in a telling is binding canon for the remainder of that telling",
+        "each telling must promote at least one invention into the ledger to seed future tellings (write it down as part of the output)",
+        "later scenes MUST reference earlier inventions (callback economy) rather than re-inventing equivalent novelty",
+        "ledger entries obey the same filters and guardrails as dataset material"
+      ],
+      "seed_examples": [
+        "the invented unit of measurement Rainee uses to quantify her regression",
+        "Noir's recurring mangled merchant term",
+        "the market legend born from a demonstrated boast",
+        "the premium-supply ritual with its quality-inspection steps",
+        "a containment-system quirk it develops mid-story"
+      ],
+      "initial_state": "empty; populated by tellings"
+    },
+    "drift_vectors": {
+      "description": "Sanctioned directions characters may grow BEYOND their source data across tellings. Bounded drift, not replacement.",
+      "rainee": [
+        "toward treating toddler-scale logistics as prestige goods (the supplies become luxury signifiers)",
+        "toward increasingly baroque record-keeping (the spreadsheets gain appendices)",
+        "toward confident folk-expertise in domains she knows nothing about",
+        "toward treating the contract itself as a negotiable instrument"
+      ],
+      "noir": [
+        "toward accidental expertise (her literal questions keep being accidentally insightful, and she starts noticing)",
+        "toward curating a collection of Rainee-isms",
+        "toward mediating between Rainee and the market as a self-appointed translator",
+        "toward her malaprops slowly converging on real merchant vocabulary she half-learned"
+      ],
+      "drift_limits": "drift is cumulative across tellings but must never cross identity rules or contradict the masters' retained traits; drift resets only on explicit reboot"
+    },
+    "scene_injection_points": {
+      "description": "Per-scene directives for what must be injected beyond the bindings.",
+      "S01": "invent fresh market sensory detail and one never-before-seen Rainee stall habit (licensed novelty that foreshadows without explaining)",
+      "S02": "invent a new pacifier taxonomy and one new negotiation gag; vocabulary_contamination may seed here",
+      "S03": "open-rung escalation: the public event may escalate beyond any source clip; invent one onlooker with a distinct fixation; promote one gag to canon",
+      "S04": "invent a new premium-supply ritual; the directed-care/boundary collision must produce a new sibling in-joke (canon)",
+      "S05": "invent new spreadsheet fields and at least one invented unit of measurement for the regression",
+      "S06": "escalation_spiral fusion is mandatory here; invent the first-diaper purchase scene specifics fresh",
+      "S07": "invent the cosmic infant's customer-service dialogue register (new, from no master)",
+      "S08": "invent new craving lore (pacifier brands, origins, scarcity myths of her own devising)",
+      "S09": "the folk theory contents must be invented fresh each telling (the source's literal version is banned; novelty is mandatory)",
+      "S10": "invent new ruined-outfit fabrics and new amortization jokes (pricing the catastrophe)",
+      "S11": "callbacks mandatory: reference at least three earlier canon inventions; the persona close must include at least one emergent quirk no dataset contains; persona_osmosis should be audible (each sister using one borrowed tic)"
+    }
+  },
+  "scenes": [
+    {
+      "scene_id": "S01",
+      "title": "Noir Spots Rainee",
+      "location": "Jade City Central Market",
+      "time": "day",
+      "duration": "continuous observation",
+      "participants": [
+        "noir",
+        "rainee"
+      ],
+      "narrative_function": [
+        "visual reveal",
+        "identity recognition",
+        "establish transformed state",
+        "set comedic premise"
+      ],
+      "state_before": {
+        "rainee": "already transformed and operating independently in Jade City",
+        "noir": "has not yet confronted Rainee"
+      },
+      "events": [
+        {
+          "event_id": "S01E01",
+          "type": "observation",
+          "subject": "noir",
+          "action": "hides behind market displays and watches Rainee"
+        },
+        {
+          "event_id": "S01E02",
+          "type": "recognition",
+          "subject": "noir",
+          "action": "recognizes red hair, black eyelashes, fox ears, and tail despite toddler-sized body"
+        },
+        {
+          "event_id": "S01E03",
+          "type": "contrast_reveal",
+          "action": "establish that Rainee is physically toddler-sized while still radiating extraordinary supernatural presence"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "behavior": "normal_for_current_state",
+          "must_not_be_played_as": [
+            "unaware of her identity",
+            "a different person named Stewie",
+            "mindless"
+          ]
+        },
+        "noir": {
+          "behavior": "secretly observe, suppress laughter, process disbelief"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie07_Stephanie_Griffin_pageant_threat_Chuck",
+            "use_pattern": "hyperbolic_multi_talent_boast",
+            "apply_at": ["S01E03"],
+            "delivery_note": "ambient: her stall demeanor still broadcasts impossible competence; the boast energy is visible from across the market before she speaks"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip02_specific_time_specifically_at_10",
+            "use_pattern": "literal_interpretation",
+            "apply_at": ["S01E01", "S01E02"],
+            "delivery_note": "internal only while hidden; she translates the absurd sight into concrete literal terms, questions held until the confrontation"
+          },
+          {
+            "dataset": "clip03_kill_so_many_lemons",
+            "use_pattern": "literal_empathy_for_metaphor",
+            "apply_at": ["S01E02"],
+            "delivery_note": "she empathizes concretely with the scale mismatch instead of reacting abstractly"
+          }
+        ]
+      },
+      "duet_patterns_active": ["recognizer_vs_performed_self (solo precursor: recognition before confrontation)"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.15,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": [
+        {
+          "cue": "market ambience under observation",
+          "palette_ref": "market",
+          "apply_at": ["S01E01"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S02",
+      "title": "The Pacifier Negotiation",
+      "location": "Jade City Central Market, pacifier stall",
+      "participants": [
+        "rainee",
+        "noir",
+        "shopkeeper"
+      ],
+      "narrative_function": [
+        "establish Rainee's transformed routine",
+        "show retained merchant behavior",
+        "show toddler-specific wants",
+        "introduce pacifier collection",
+        "contrast dignity with practical adaptation"
+      ],
+      "events": [
+        {
+          "event_id": "S02E01",
+          "type": "shopping",
+          "subject": "rainee",
+          "object": "pacifier",
+          "behavior": "critically evaluates products by color and quality"
+        },
+        {
+          "event_id": "S02E02",
+          "type": "merchant_negotiation",
+          "behavior": "uses customer loyalty and consumption history to request a discount"
+        },
+        {
+          "event_id": "S02E03",
+          "type": "collection_reveal",
+          "behavior": "reveals extensive pacifier purchasing history"
+        },
+        {
+          "event_id": "S02E04",
+          "type": "resource_reframing",
+          "behavior": "treats her supernatural bodily output as value that contributes to the transaction"
+        }
+      ],
+      "behavioral_primitives": [
+        "luxury consumer",
+        "professional haggler",
+        "specific product preference",
+        "collection behavior",
+        "absurd monetization",
+        "matter-of-fact treatment of embarrassing circumstances"
+      ],
+      "performance_slots": {
+        "rainee": {
+          "goal": "obtain the preferred pacifier at the best possible price",
+          "social_mask": "professional merchant",
+          "comic_contrast": "adult-level commercial sophistication expressed through toddler-scale needs"
+        },
+        "noir": {
+          "goal": "understand what she is witnessing",
+          "behavior": "count, compare, remember Rainee's former collecting habits, react internally"
+        },
+        "shopkeeper": {
+          "goal": "survive the negotiation with margin intact",
+          "behavior": "reactive straight role"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie07_Stephanie_Griffin_pageant_threat_Chuck",
+            "use_pattern": "boast_and_rival_as_threat",
+            "apply_at": ["S02E01", "S02E02"],
+            "delivery_note": "she sizes up the shopkeeper mid-negotiation the way a pageant contestant labels a rival; abstract, no literal line"
+          },
+          {
+            "dataset": "stewie01_Desiree",
+            "use_pattern": "performed_sophistication_misfires",
+            "apply_at": ["S02E01"],
+            "delivery_note": "glamour-register expertise applied to pacifier grading misfires into something the shopkeeper recognizes and almost laughs at"
+          },
+          {
+            "dataset": "stewie05_lightbulb_in_butt_diaper_in_lamp_socket",
+            "use_pattern": "absurd_object_swap_recurrence",
+            "apply_at": ["S02E03"],
+            "delivery_note": "optional secondary gag: an absurd object swap in her stall display the shopkeeper has learned to expect; 'done it again' energy, never literal objects from the clip"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip02_specific_time_specifically_at_10",
+            "use_pattern": "literal_interpretation",
+            "apply_at": ["S02E03"],
+            "delivery_note": "still hidden; she counts the collection and drafts a devastatingly literal question she does not yet ask aloud"
+          }
+        ],
+        "shopkeeper": [
+          {
+            "dataset": "stewie03_lois_cleans_diaper_with_vacuum_oopsie",
+            "use_pattern": "reactive_adult_who_complies",
+            "apply_at": ["S02E02"],
+            "delivery_note": "the matriarch-adjacent compliance beat: protest, then do it anyway"
+          }
+        ]
+      },
+      "duet_patterns_active": ["recognizer_vs_performed_self"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.2,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": [
+        {
+          "cue": "jade pieces clinking at closing",
+          "palette_ref": "market",
+          "apply_at": ["S02E02"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S03",
+      "title": "The Interruption and Public Embarrassment",
+      "location": "same market",
+      "participants": [
+        "rainee",
+        "noir",
+        "shopkeeper",
+        "market_onlookers"
+      ],
+      "narrative_function": [
+        "public confrontation",
+        "escalation",
+        "comedy climax",
+        "demonstrate transformed body's practical consequences",
+        "force Rainee's composure to crack",
+        "public judgment collision: community complaint versus cooing reframe"
+      ],
+      "events": [
+        {
+          "event_id": "S03E01",
+          "type": "internal_signal",
+          "subject": "rainee",
+          "action": "recognizes a familiar bodily event beginning"
+        },
+        {
+          "event_id": "S03E02",
+          "type": "public_interruption",
+          "subject": "noir",
+          "action": "calls out to Rainee from across the market"
+        },
+        {
+          "event_id": "S03E03",
+          "type": "identity_exposure",
+          "subject": "noir",
+          "action": "publicly identifies Rainee's toddler state"
+        },
+        {
+          "event_id": "S03E04",
+          "type": "loss_of_composure",
+          "subject": "rainee",
+          "action": "becomes theatrical, mortified, defensive, and angry"
+        },
+        {
+          "event_id": "S03E05",
+          "type": "physical_comedy",
+          "subject": "rainee",
+          "action": "experiences the bodily event while the magical diaper containment system activates"
+        },
+        {
+          "event_id": "S03E06",
+          "type": "recovery",
+          "subject": "rainee",
+          "action": "immediately reframes the event as completed business/practical management"
+        },
+        {
+          "event_id": "S03E07",
+          "type": "community_complaint",
+          "subject": "market_onlookers",
+          "action": "a nearby merchant protests decorum, supplying the public-judgment pressure"
+        },
+        {
+          "event_id": "S03E08",
+          "type": "cute_reframe",
+          "subject": "market_onlookers",
+          "action": "a customer coos over the toddler merchant; the eww-versus-cute collision lands on Rainee, torn between mortification and the merchant instinct to keep a satisfied customer"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "required_emotional_sequence": [
+            "composure",
+            "surprise",
+            "mortification",
+            "defensive anger",
+            "effort",
+            "relief",
+            "smug recovery",
+            "whiplash between mortification and customer-service warmth at S03E08"
+          ],
+          "behavioral_source_hook": "Stewie-derived theatrical defensiveness and absurd rationalization"
+        },
+        "noir": {
+          "required_emotional_sequence": [
+            "recognition",
+            "shock",
+            "delight",
+            "uncontrollable laughter",
+            "fascination",
+            "continued teasing",
+            "proud public disclosure on Rainee's behalf"
+          ]
+        },
+        "market_onlookers": {
+          "behavior": "split chorus: one protester, at least one charmed customer"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie06_foul_ball_sexy_party",
+            "use_pattern": "chain_logic_rationalization",
+            "apply_at": ["S03E04"],
+            "delivery_note": "under pressure she narrates a confident if-then chain whose conclusion is absurd; abstract, no literal topic from the clip"
+          },
+          {
+            "dataset": "stewie03_lois_cleans_diaper_with_vacuum_oopsie",
+            "use_pattern": "report_then_direct_cleanup",
+            "apply_at": ["S03E05", "S03E06"],
+            "delivery_note": "she reports the event with unreasonable calm and then directs the response effort, assigning roles; never the literal lines"
+          },
+          {
+            "dataset": "stewie10_blood_vessel_dinner_strain",
+            "use_pattern": "theatrical_overstrain",
+            "apply_at": ["S03E05"],
+            "delivery_note": "effort played as grand physical production, strain as visible theater"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip04_cancer_farts_hotel_FINAL_CORRECT",
+            "use_pattern": "proud_claim_plus_medical_reframe",
+            "apply_at": ["S03E05", "S03E06"],
+            "delivery_note": "Noir proudly narrates the event's significance with a confident folk-medical frame, escalating Rainee's mortification; the community-complainer half of the clip transfers to market_onlookers at S03E07"
+          }
+        ],
+        "market_onlookers": [
+          {
+            "dataset": "clip04_cancer_farts_hotel_FINAL_CORRECT",
+            "use_pattern": "external_community_complainer",
+            "apply_at": ["S03E07"],
+            "delivery_note": "one voice protests that this is a nice market; abstract complaint, no literal hotel line"
+          }
+        ]
+      },
+      "duet_patterns_active": ["proud_disclosure_vs_dignity (primary)", "literal_question_vs_chain_logic (secondary)"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.4,
+        "future_rainee_persona": 0.05
+      },
+      "sfx_slots": [
+        {
+          "cue": "the bodily event, literary only",
+          "palette_ref": "bodily",
+          "apply_at": ["S03E05"]
+        },
+        {
+          "cue": "containment system sealing",
+          "palette_ref": "containment_system",
+          "apply_at": ["S03E05"]
+        },
+        {
+          "cue": "crowd shock chain",
+          "palette_ref": "crowd",
+          "apply_at": ["S03E03", "S03E05"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S04",
+      "title": "Noir Helps Rainee",
+      "location": "market, beside Rainee's cart",
+      "participants": [
+        "rainee",
+        "noir"
+      ],
+      "narrative_function": [
+        "relationship interaction",
+        "force practical cooperation",
+        "show Rainee's dependence without erasing her agency",
+        "extend comedy after climax",
+        "first glimmer of the Future-Rainee persona",
+        "Noir's teasing doubles as coaching"
+      ],
+      "events": [
+        {
+          "event_id": "S04E01",
+          "type": "request",
+          "subject": "rainee",
+          "action": "orders Noir to help with changing and supplies"
+        },
+        {
+          "event_id": "S04E02",
+          "type": "reluctant_assistance",
+          "subject": "noir",
+          "action": "complains that this is not a normal sisterly duty, then helps anyway"
+        },
+        {
+          "event_id": "S04E03",
+          "type": "luxury_reveal",
+          "subject": "rainee",
+          "action": "insists on premium baby supplies and rejects cheap products"
+        },
+        {
+          "event_id": "S04E04",
+          "type": "character_softening",
+          "subject": "rainee",
+          "action": "briefly drops the theatrical persona and sincerely appreciates Noir's help"
+        },
+        {
+          "event_id": "S04E05",
+          "type": "persona_glimpse",
+          "subject": "rainee",
+          "action": "mid-scene flicker of the confident post-acceptance register: a beat where the toddler state is treated not as catastrophe but as equipment"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode_switch": "Stewie-derived theatrical command -> genuine gratitude -> one unguarded beat of the future persona"
+        },
+        "noir": {
+          "mode_switch": "laughing observer -> reluctant caretaker -> teasing coach -> stunned observer"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie03_lois_cleans_diaper_with_vacuum_oopsie",
+            "use_pattern": "directs_adult_through_cleanup_with_technique_notes",
+            "apply_at": ["S04E01", "S04E03"],
+            "delivery_note": "she supervises her own changing like a quality inspection, including the front; abstract direction, never the literal line"
+          },
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "special_override_role_2_and_3",
+            "apply_at": ["S04E04", "S04E05"],
+            "delivery_note": "Noir's teasing lands as coaching (role 2), and the first glimmer of the proud post-acceptance persona shows through (role 3); shame-to-pride conversion begins"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip05_wedding_soul_train",
+            "use_pattern": "firm_boundary_with_malaprop_chain",
+            "apply_at": ["S04E02"],
+            "delivery_note": "abstract only: she draws the line, mangles a word or two, self-repairs, and helps anyway; no literal relationship content"
+          },
+          {
+            "dataset": "clip09_cheryl_bossy_reframe",
+            "use_pattern": "reframe_command_as_affection",
+            "apply_at": ["S04E02", "S04E04"],
+            "delivery_note": "she diagnoses herself charmed by the imperious direction"
+          }
+        ]
+      },
+      "duet_patterns_active": ["directed_care_vs_boundary"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.5,
+        "future_rainee_persona": 0.1
+      },
+      "sfx_slots": [
+        {
+          "cue": "cleanup comedy underscore",
+          "palette_ref": "cleanup_comedy",
+          "apply_at": ["S04E01"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S05",
+      "title": "The Explanation Begins",
+      "location": "Jade City Central Market",
+      "participants": [
+        "rainee",
+        "noir"
+      ],
+      "narrative_function": [
+        "exposition",
+        "characterization",
+        "cause-and-effect explanation",
+        "reveal psychological adaptation"
+      ],
+      "events": [
+        {
+          "event_id": "S05E01",
+          "type": "question",
+          "subject": "noir",
+          "action": "demands to know what happened"
+        },
+        {
+          "event_id": "S05E02",
+          "type": "exposition",
+          "subject": "rainee",
+          "action": "explains that the regression happened gradually"
+        },
+        {
+          "event_id": "S05E03",
+          "type": "symptom_sequence",
+          "action": "clothing became loose, body became smaller, scale perception changed"
+        },
+        {
+          "event_id": "S05E04",
+          "type": "coping_strategy",
+          "subject": "rainee",
+          "action": "documented the changes in journals and spreadsheets"
+        },
+        {
+          "event_id": "S05E05",
+          "type": "economic_conflict",
+          "subject": "rainee",
+          "action": "continued the supernatural commerce because the profits became extraordinarily high"
+        }
+      ],
+      "character_revelation": {
+        "rainee": [
+          "uses organization to cope with uncertainty",
+          "rationalizes danger through commerce",
+          "prioritizes profitable opportunities",
+          "retains strong merchant identity despite transformation"
+        ],
+        "noir": [
+          "recognizes Rainee's rationalization",
+          "uses blunt literal questions to expose denial",
+          "responds with disbelief and humor",
+          "repeats embarrassing details aloud without shame"
+        ]
+      },
+      "performance_slots": {
+        "rainee": {
+          "goal": "control the narrative of her own transformation",
+          "mode": "merchant briefing: figures, timelines, spreadsheets"
+        },
+        "noir": {
+          "goal": "get the truth in plain terms",
+          "behavior": "literal questions that puncture the briefing register; unfiltered repetition of the embarrassing parts"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "surrender_narration",
+            "apply_at": ["S05E02", "S05E03"],
+            "delivery_note": "the explanation is the surrender arc retold as logistics; external judgment reframed as market feedback"
+          },
+          {
+            "dataset": "stewie06_foul_ball_sexy_party",
+            "use_pattern": "chain_logic_rationalization",
+            "apply_at": ["S05E05"],
+            "delivery_note": "the profit justification arrives as another confident if-then chain"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip02_specific_time_specifically_at_10",
+            "use_pattern": "literal_interpretation",
+            "apply_at": ["S05E01", "S05E04"],
+            "delivery_note": "she converts each vague statement into something concrete and unflattering"
+          },
+          {
+            "dataset": "clip03_kill_so_many_lemons",
+            "use_pattern": "literal_empathy_for_metaphor",
+            "apply_at": ["S05E03"],
+            "delivery_note": "when Rainee says she lost her layers, Noir takes the clothing metaphor literally and mourns the specific garments"
+          },
+          {
+            "dataset": "clip01_period_disclosure",
+            "use_pattern": "unfiltered_repetition_teaching_tone",
+            "apply_at": ["S05E05"],
+            "delivery_note": "she restates the most mortifying detail plainly, as helpful clarification"
+          }
+        ]
+      },
+      "duet_patterns_active": ["literal_question_vs_chain_logic"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.45,
+        "future_rainee_persona": 0.1
+      },
+      "sfx_slots": [
+        {
+          "cue": "murmur cuts on each literal question",
+          "palette_ref": "crowd",
+          "apply_at": ["S05E01"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S06",
+      "title": "The Regression and the Business Decision",
+      "location": "Jade City Central Market",
+      "participants": [
+        "rainee",
+        "noir"
+      ],
+      "narrative_function": [
+        "explain behavioral transformation",
+        "establish voluntary adaptation",
+        "complicate victim/choice framing",
+        "turn transformation into character-specific worldview",
+        "complete the diaper surrender beat",
+        "public eww-versus-cute reframe absorbed into Rainee's own account"
+      ],
+      "events": [
+        {
+          "event_id": "S06E01",
+          "type": "bodily_complication",
+          "action": "Rainee experiences increasingly difficult bowel-control problems and ruined clothing"
+        },
+        {
+          "event_id": "S06E02",
+          "type": "adaptation",
+          "action": "Rainee buys her first diaper after reaching a practical breaking point"
+        },
+        {
+          "event_id": "S06E03",
+          "type": "acceptance",
+          "action": "Rainee discovers that the diaper is convenient and comfortable"
+        },
+        {
+          "event_id": "S06E04",
+          "type": "behavioral_change",
+          "action": "Rainee notices herself becoming more theatrical, demanding, direct, and simple"
+        },
+        {
+          "event_id": "S06E05",
+          "type": "self_definition",
+          "action": "Rainee defines the new state as less layered and more driven by direct wants"
+        },
+        {
+          "event_id": "S06E06",
+          "type": "economic_rationalization",
+          "action": "Rainee explains that continued jade profits outweighed her motivation to stop"
+        }
+      ],
+      "core_rule": "The story does not portray the transformed Rainee as mentally erased. The regression changes presentation, priorities, physical scale, and behavioral complexity while preserving Rainee's identity and core merchant logic.",
+      "performance_slots": {
+        "rainee": {
+          "mode": "confession delivered as quarterly report; the shame-to-pride conversion happens on stage across S06E02 to S06E03"
+        },
+        "noir": {
+          "mode": "literal witness: takes each metaphor at face value, empathizes with the wrong part, celebrates the wrong milestone"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "surrender_checkpoint_full",
+            "apply_at": ["S06E02", "S06E03"],
+            "delivery_note": "the first purchase is the acceptance beat (special override role 1); community-judgment versus cute reframing is retold as customer perception data"
+          },
+          {
+            "dataset": "stewie04_pooped_too_much_duty",
+            "use_pattern": "hyperbolic_capacity_report",
+            "apply_at": ["S06E01"],
+            "delivery_note": "the breaking point is described with absurd quantitative hyperbole; abstract euphemism of her own devising, never the clip's literal wording"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip03_kill_so_many_lemons",
+            "use_pattern": "literal_empathy_for_metaphor",
+            "apply_at": ["S06E05"],
+            "delivery_note": "she grieves the lost 'layers' as specific literal garments"
+          },
+          {
+            "dataset": "clip04_cancer_farts_hotel_FINAL_CORRECT",
+            "use_pattern": "proud_claim_plus_medical_reframe",
+            "apply_at": ["S06E03"],
+            "delivery_note": "she celebrates the comfort milestone as a health breakthrough, loudly, in public"
+          },
+          {
+            "dataset": "clip09_cheryl_bossy_reframe",
+            "use_pattern": "reframe_command_as_affection",
+            "apply_at": ["S06E06"],
+            "delivery_note": "she decides the ruthless profit logic is somehow endearing"
+          }
+        ]
+      },
+      "duet_patterns_active": ["proud_disclosure_vs_dignity"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.55,
+        "future_rainee_persona": 0.15,
+        "note": "this scene spans the stage 5 to 6 pivot; the dial rises across its events"
+      },
+      "sfx_slots": [
+        {
+          "cue": "hyperbolic capacity report underscore",
+          "palette_ref": "bodily",
+          "apply_at": ["S06E01"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S07",
+      "title": "Cosmic Contract Flashback",
+      "location": "Cosmic Infant's Domain",
+      "time": "three months earlier",
+      "participants": [
+        "rainee",
+        "cosmic_infant"
+      ],
+      "narrative_function": [
+        "origin reveal",
+        "causal explanation",
+        "supernatural contract establishment"
+      ],
+      "events": [
+        {
+          "event_id": "S07E01",
+          "type": "customer_encounter",
+          "subject": "rainee",
+          "object": "cosmic_infant"
+        },
+        {
+          "event_id": "S07E02",
+          "type": "customer_complaint",
+          "subject": "cosmic_infant",
+          "desire": "simpler, more basic service and experience"
+        },
+        {
+          "event_id": "S07E03",
+          "type": "contract_acceptance",
+          "subject": "rainee",
+          "action": "accepts the obligation as a merchant"
+        },
+        {
+          "event_id": "S07E04",
+          "type": "supernatural_consequence",
+          "action": "the ordinary merchant obligation becomes a supernatural contract"
+        }
+      ],
+      "cause_effect_chain": [
+        "Rainee accepts a customer obligation",
+        "customer is a cosmic/supernatural infant",
+        "customer wants simplicity",
+        "the request becomes supernatural",
+        "Rainee begins progressive regression",
+        "Rainee continues trading",
+        "profits increase",
+        "Rainee adapts rather than terminating the arrangement"
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode": "adult baseline merchant; competence and greed before any regression",
+          "must_not_be_played_as": "already toddler-registered"
+        },
+        "cosmic_infant": {
+          "mode": "external pressure to conform: the demand that service become simple like everyone else's, delivered with the weight of law"
+        },
+        "absent": ["noir"]
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie06_foul_ball_sexy_party",
+            "use_pattern": "chain_logic_rationalization",
+            "apply_at": ["S07E03"],
+            "delivery_note": "she accepts via a confident if-then chain about customer satisfaction and repeat business; abstract only"
+          }
+        ],
+        "cosmic_infant": [
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "external_pressure_to_conform",
+            "apply_at": ["S07E02"],
+            "delivery_note": "the matriarch-conformity pressure abstract: use it like everyone else; never literal, and the complaint registers as cosmic customer feedback"
+          }
+        ]
+      },
+      "duet_patterns_active": [],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.05,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": [
+        {
+          "cue": "contract seals with containment-system chime pre-echo",
+          "palette_ref": "containment_system",
+          "apply_at": ["S07E04"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S08",
+      "title": "Week One",
+      "location": "traveling through Jade City / surrounding markets",
+      "time": "first week after contract",
+      "participants": [
+        "rainee"
+      ],
+      "narrative_function": [
+        "slow-burn transformation",
+        "foreshadowing",
+        "establish initial denial"
+      ],
+      "events": [
+        {
+          "event_id": "S08E01",
+          "type": "appearance_change",
+          "action": "clothing becomes slightly too large"
+        },
+        {
+          "event_id": "S08E02",
+          "type": "behavioral_foreshadowing",
+          "action": "Rainee develops specific cravings for pacifiers"
+        },
+        {
+          "event_id": "S08E03",
+          "type": "denial",
+          "action": "Rainee attributes changes to travel, fatigue, stress, or environment"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode": "mostly adult baseline with the first unexamined persona leaks"
+        },
+        "absent": ["noir"]
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie02_Karina_Smirnoff",
+            "use_pattern": "persona_performance_register",
+            "apply_at": ["S08E02", "S08E03"],
+            "delivery_note": "abstract only: shape-shifter habit of trying on selves; she 'tries on' explanations for her symptoms the way she once tried on personas; no romance-subplot content"
+          }
+        ]
+      },
+      "duet_patterns_active": [],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.1,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": []
+    },
+    {
+      "scene_id": "S09",
+      "title": "Week Two Toilet Realization",
+      "location": "inn bathroom",
+      "time": "second week",
+      "participants": [
+        "rainee"
+      ],
+      "narrative_function": [
+        "physical scale reveal",
+        "realization",
+        "turning point",
+        "expertise misapplied to a mundane device"
+      ],
+      "events": [
+        {
+          "event_id": "S09E01",
+          "type": "folk_theory",
+          "subject": "rainee",
+          "action": "before any alarm, Rainee studies the oversized fixture and constructs a confident folk theory about what lives in the tank and why it is wise not to anger it"
+        },
+        {
+          "event_id": "S09E02",
+          "type": "scale_discovery",
+          "action": "Rainee realizes the toilet is nearly twice her apparent size"
+        },
+        {
+          "event_id": "S09E03",
+          "type": "recognition",
+          "action": "Rainee accepts that she is physically shrinking"
+        },
+        {
+          "event_id": "S09E04",
+          "type": "adaptation",
+          "action": "Rainee continues functioning despite the realization"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode": "field researcher delivering findings about an alien artifact that happens to be plumbing"
+        },
+        "absent": ["noir"]
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "folk_theory_of_device",
+            "apply_at": ["S09E01"],
+            "delivery_note": "two-reasonable-people energy played solo: she reasons aloud about the fixture as advanced technology with a resident entity; abstract, never the literal wizard line"
+          }
+        ]
+      },
+      "duet_patterns_active": [],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.2,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": [
+        {
+          "cue": "toilet flush as monstrous event",
+          "palette_ref": "crowd (single whoa)",
+          "apply_at": ["S09E02"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S10",
+      "title": "The Ruined Outfits",
+      "location": "marketplace",
+      "time": "during the progression",
+      "participants": [
+        "rainee"
+      ],
+      "narrative_function": [
+        "raise stakes",
+        "force practical adaptation",
+        "show cost of continuing"
+      ],
+      "events": [
+        {
+          "event_id": "S10E01",
+          "type": "loss_of_control",
+          "action": "Rainee experiences bowel-control problems"
+        },
+        {
+          "event_id": "S10E02",
+          "type": "material_cost",
+          "action": "multiple expensive silk/jade outfits are ruined"
+        },
+        {
+          "event_id": "S10E03",
+          "type": "internal_warning",
+          "action": "Rainee recognizes that something supernatural is happening"
+        },
+        {
+          "event_id": "S10E04",
+          "type": "continued_trade",
+          "action": "Rainee continues because the jade profits are exceptionally high"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode": "actuary of catastrophe: each ruined outfit logged, priced, and amortized against quarterly jade revenue"
+        },
+        "absent": ["noir"]
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie04_pooped_too_much_duty",
+            "use_pattern": "hyperbolic_capacity_report",
+            "apply_at": ["S10E01", "S10E02"],
+            "delivery_note": "the escalating incidents are reported in her own absurd quantitative register; abstract euphemism only"
+          },
+          {
+            "dataset": "stewie10_blood_vessel_dinner_strain",
+            "use_pattern": "theatrical_overstrain",
+            "apply_at": ["S10E03"],
+            "delivery_note": "the internal warning arrives as grand physical theater rather than quiet fear"
+          }
+        ]
+      },
+      "duet_patterns_active": [],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.35,
+        "future_rainee_persona": 0.0
+      },
+      "sfx_slots": [
+        {
+          "cue": "ruined-outfit incidents, literary only",
+          "palette_ref": "bodily",
+          "apply_at": ["S10E01"]
+        }
+      ]
+    },
+    {
+      "scene_id": "S11",
+      "title": "Noir Understands the Choice",
+      "location": "Jade City Central Market",
+      "participants": [
+        "rainee",
+        "noir"
+      ],
+      "narrative_function": [
+        "reframe the entire transformation",
+        "character judgment",
+        "comic philosophical conclusion",
+        "complete the shame-to-pride arc",
+        "future_persona_checkpoint"
+      ],
+      "events": [
+        {
+          "event_id": "S11E01",
+          "type": "confrontation",
+          "subject": "noir",
+          "action": "accuses Rainee of prioritizing jade over investigating the transformation"
+        },
+        {
+          "event_id": "S11E02",
+          "type": "reframing",
+          "subject": "rainee",
+          "action": "argues that she traded her 'layers' rather than simply her body"
+        },
+        {
+          "event_id": "S11E03",
+          "type": "realization",
+          "subject": "noir",
+          "action": "recognizes that Rainee knowingly continued because the contract was profitable"
+        },
+        {
+          "event_id": "S11E04",
+          "type": "comic_acceptance",
+          "subject": "rainee",
+          "action": "treats the catastrophic transformation as an extreme but successful merchant decision"
+        },
+        {
+          "event_id": "S11E05",
+          "type": "persona_close",
+          "subject": "rainee",
+          "action": "closing tag: the Future-Rainee persona, fully surfaced, reframes the whole catastrophe as a portfolio win and delivers a confident parting boast; Noir's malaprop attempt to summarize it undersells it perfectly"
+        }
+      ],
+      "performance_slots": {
+        "rainee": {
+          "mode": "future persona at full: the pride frame held outright, no shame residue, boast as closing argument"
+        },
+        "noir": {
+          "mode": "loving prosecutor who loses the case on purpose; malaprop chain in the summary"
+        }
+      },
+      "behavioral_bindings": {
+        "rainee": [
+          {
+            "dataset": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+            "use_pattern": "special_override_role_3_full",
+            "apply_at": ["S11E04", "S11E05"],
+            "delivery_note": "the persona that emerged after regular use now fronts the account; the arc from community-judged shame to owned pride completes"
+          },
+          {
+            "dataset": "stewie07_Stephanie_Griffin_pageant_threat_Chuck",
+            "use_pattern": "hyperbolic_multi_talent_boast",
+            "apply_at": ["S11E05"],
+            "delivery_note": "the closing boast inventories impossible competencies as portfolio line items; abstract, never literal lines"
+          }
+        ],
+        "noir": [
+          {
+            "dataset": "clip05_wedding_soul_train",
+            "use_pattern": "malaprop_chain_with_self_repair",
+            "apply_at": ["S11E01", "S11E05"],
+            "delivery_note": "abstract only: she mangles Rainee's merchant vocabulary in the accusation and the summary, self-repairs too late for dignity"
+          },
+          {
+            "dataset": "clip09_cheryl_bossy_reframe",
+            "use_pattern": "reframe_command_as_affection",
+            "apply_at": ["S11E03"],
+            "delivery_note": "she concludes that only her sister could turn a curse into a revenue stream and decides to be proud of it"
+          }
+        ]
+      },
+      "duet_patterns_active": ["literal_question_vs_chain_logic", "proud_disclosure_vs_dignity (pride-frame transfer completes)"],
+      "persona_dial": {
+        "stewie_behavior_layer": 0.8,
+        "future_rainee_persona": 0.7
+      },
+      "sfx_slots": [
+        {
+          "cue": "market ambience swells under the closing boast",
+          "palette_ref": "market",
+          "apply_at": ["S11E05"]
+        }
+      ]
+    }
+  ],
+  "character_relationship_graph": {
+    "rainee_noir": {
+      "relationship": "sisters",
+      "dynamic": [
+        "Noir teases Rainee",
+        "Rainee becomes defensive",
+        "Noir is genuinely curious",
+        "Rainee explains herself",
+        "Noir reluctantly helps",
+        "Rainee briefly shows genuine appreciation",
+        "both use humor to process the absurdity",
+        "Noir's teasing register doubles as coaching (stewie08 role 2)",
+        "ownership of the pride frame transfers from Noir to Rainee across the story"
+      ],
+      "rewrite_rule": "Preserve sibling familiarity, teasing, irritation, affection, and mutual recognition even if dialogue is regenerated. Noir's reactions come from the Jillian-derived abstract pattern layer; she is never literal Jillian."
+    },
+    "rainee_cosmic_infant": {
+      "relationship": "merchant/customer transformed into supernatural contract",
+      "dynamic": [
+        "Rainee serves customer",
+        "customer demands simplicity",
+        "Rainee accepts obligation",
+        "contract produces transformation"
+      ],
+      "rewrite_rule": "The infant's demand carries the external-pressure-to-conform archetype, abstracted; it never speaks transcript lines."
+    },
+    "rainee_market": {
+      "relationship": "toddler merchant versus public",
+      "dynamic": [
+        "market supplies judgment pressure (community complaint)",
+        "market also supplies the cooing customer counter-pressure",
+        "Rainee converts both into pricing signals"
+      ],
+      "rewrite_rule": "Onlookers are a split chorus, not a uniform crowd; each side gets at most one beat per scene."
+    }
+  },
+  "transformation_timeline": [
+    {
+      "stage": 0,
+      "label": "glamorous_baseline",
+      "state": "adult Rainee, glamorous fox merchant"
+    },
+    {
+      "stage": 1,
+      "label": "contract",
+      "state": "accepts supernatural customer obligation"
+    },
+    {
+      "stage": 2,
+      "label": "early_regression",
+      "state": "clothing becomes loose; unusual cravings begin; Rainee rationalizes symptoms"
+    },
+    {
+      "stage": 3,
+      "label": "scale_realization",
+      "state": "Rainee realizes her body is substantially smaller"
+    },
+    {
+      "stage": 4,
+      "label": "functional_problems",
+      "state": "bowel-control problems begin damaging expensive clothing"
+    },
+    {
+      "stage": 5,
+      "label": "practical_adaptation",
+      "state": "Rainee adopts diapers and premium toddler supplies"
+    },
+    {
+      "stage": 6,
+      "label": "behavioral_regression",
+      "state": "more theatrical, direct, demanding, simple, and want-driven behavior"
+    },
+    {
+      "stage": 7,
+      "label": "toddler_merchant_state",
+      "state": "toddler-sized Rainee operating as a wealthy merchant while retaining identity, memories, reasoning, and business instincts"
+    }
+  ],
+  "reinterpretation_contract": {
+    "preserve": [
+      "Rainee is the character who undergoes the transformation",
+      "Rainee remains Rainee after transformation",
+      "Rainee is a glamorous fox person before the regression",
+      "the regression occurs progressively",
+      "the supernatural customer/contract causes the regression",
+      "Rainee continues trading because of exceptionally profitable jade",
+      "Noir is Rainee's sister",
+      "Noir discovers Rainee in Jade City",
+      "Noir's reaction is a major comic engine",
+      "Rainee's merchant identity survives the transformation",
+      "the story includes the explanation/flashback structure",
+      "the transformed state is toddler-sized",
+      "the transformed behavior is Stewie-derived rather than Stewie identity",
+      "Noir's comic behavior comes from the Jillian-derived abstract pattern layer rather than literal Jillian identity",
+      "the shame-to-pride arc on the surrender material completes by S11",
+      "persona dials per scene are respected within any single telling"
+    ],
+    "reinterpretable": [
+      "exact dialogue",
+      "exact jokes",
+      "wording",
+      "internal monologue wording",
+      "specific comedic timing",
+      "specific physical choreography",
+      "Noir's exact reactions",
+      "Rainee's exact rationalizations",
+      "merchant dialogue",
+      "secondary gags",
+      "execution details of duet patterns (the mechanics and terminations are fixed)",
+      "sfx placement within a scene (the palette and rules are fixed)"
+    ],
+    "do_not_accidentally_change": [
+      "character identity",
+      "sibling relationship",
+      "cause of transformation",
+      "progressive nature of transformation",
+      "economic motivation for continuing",
+      "retention of Rainee's memories and core identity",
+      "Stewie as behavioral reference rather than literal identity",
+      "Jillian material as abstract archetype source rather than literal identity or lines"
+    ],
+    "generation_constraints": [
+      "no literal transcript lines from either behavior master may appear in generated text",
+      "all bindings are executed as abstract behavioral patterns, per each dataset's DO_NOT_SAY_LITERALLY field",
+      "bodily-function sounds use the literary sfx_palette only; never hertz, frequency, or acoustic-technical wording",
+      "dataset_filters.excluded_for_this_story is absolute; dataset_filters.abstract_only restricts those datasets to their listed abstract use",
+      "persona dials are ceilings as well as floors: a scene must neither exceed nor fall materially short of its dial"
+    ]
+  },
+  "rewrite_interface": {
+    "input": {
+      "narrative_json": "this file",
+      "behavior_masters": [
+        {
+          "file": "Rainee_data.json",
+          "role": "rainee behavioral layer (required)",
+          "dataset_count": 9
+        },
+        {
+          "file": "Nori_Jillian_data.json",
+          "role": "noir behavioral layer (required)",
+          "dataset_count": 13
+        }
+      ]
+    },
+    "process": [
+      "parse scene narrative functions, events, and participants",
+      "identify character performance slots and active duet patterns",
+      "read current character state and scene persona_dial",
+      "apply precedence order (identity and story state first, surface details last)",
+      "retrieve the scene's bound datasets and their abstract patterns",
+      "run each active duet pattern's mechanic to its termination",
+      "generate new actions/dialogue that satisfy the original narrative function within the dial",
+      "place sfx from the palette according to scene sfx_slots",
+      "preserve causal consequences",
+      "validate against transformation timeline, relationship rules, filters, and validation tests"
+    ],
+    "precedence": [
+      "Rainee identity and story state",
+      "explicit story overrides",
+      "Rainee core traits",
+      "relationship rules",
+      "Stewie-derived behavioral mechanisms",
+      "source-specific surface details"
+    ],
+    "output": {
+      "format": "rewritten_story",
+      "requirement": "The generated story should feel like a new performance of the same narrative rather than a transcript substitution."
+    }
+  },
+  "validation_tests": [
+    "Does the rewritten version still contain the same core transformation cause?",
+    "Is Rainee still Rainee?",
+    "Does toddler regression affect behavior without erasing identity?",
+    "Does Stewie-derived behavior appear as a behavioral layer rather than literal Stewie identity?",
+    "Does Noir remain Rainee's sister?",
+    "Does Noir behave from the Jillian-derived abstract pattern layer, never as literal Jillian?",
+    "Does the explanation still logically connect the cosmic customer to the regression?",
+    "Does Rainee's merchant behavior remain recognizable?",
+    "Does the jade-profit motivation remain causally important?",
+    "Can scenes be rewritten without copying the original dialogue?",
+    "Can the same narrative skeleton accept a different behavioral interpretation?",
+    "Does every behavioral binding resolve to a dataset id that exists in a declared behavior master?",
+    "Does every scene's generated performance stay within its persona_dial (neither exceeding nor falling short)?",
+    "Is no literal transcript line from either behavior master reused anywhere?",
+    "Are all bodily-function sounds rendered from the literary sfx_palette, with no hertz or frequency wording?",
+    "Does the shame-to-pride arc complete by S11, with Rainee holding the pride frame?",
+    "Does every two-participant scene run at least one duet pattern to its termination?",
+    "Are all dataset exclusions and abstract-only restrictions respected?",
+    "Does every scene introduce at least one element that exists in no source dataset (invention license exercised)?",
+    "Do canon-ledger elements persist once introduced, with earlier inventions referenced rather than dropped?",
+    "Does the finale (S11) call back to at least three earlier inventions?",
+    "Does at least one fusion-operator compound behavior appear, producing behavior present in neither master alone?",
+    "Do all inventions obey the emergence guardrails (identity, dials, no conflict resolution, skeleton intact)?",
+    "Is at least one invention per telling promoted into the canon ledger to seed future tellings?"
+  ],
+  "changelog": {
+    "version": "2.1",
+    "date": "2026-08-20",
+    "changes_from_v1": [
+      "added compilation_pipeline, inputs, archetype_role_map, and dataset_filters (automation layer)",
+      "added per-scene behavioral_bindings resolving to dataset ids in Rainee_data.json and Nori_Jillian_data.json",
+      "added four duet_patterns with mechanics, terminations, source datasets, and scene assignments",
+      "added persona_emergence_track with numeric dials per scene anchored to transformation timeline stages and stewie08 special overrides",
+      "added sfx_palette and per-scene sfx_slots with the no-hertz rule",
+      "added roles: shopkeeper, market_onlookers; added behavioral_layer summaries to rainee, noir, cosmic_infant",
+      "added noir performance slots to S05, S06, S07, S08, S09, S10 (previously missing)",
+      "new events: S03E07 community_complaint, S03E08 cute_reframe, S04E05 persona_glimpse, S09E01 folk_theory (S09 events renumbered accordingly), S11E05 persona_close",
+      "fixed rewrite_interface to reference the actual master filenames and made both masters required",
+      "extended validation_tests from 10 to 18 entries",
+      "v1.0 skeleton fully preserved; all v2.0 fields are additive"
+    ],
+    "changes_from_v2": [
+      "added emergence_layer: invention_licenses (required novelty domains per character and world), emergence_guardrails, fusion_operators (five cross-master pattern collisions producing compound behaviors), open_escalation_rungs (unbounded duet escalation), canon_ledger (inventions persist and compound across tellings), drift_vectors (sanctioned character growth beyond source data), and scene_injection_points (per-scene injection directives)",
+      "core philosophy: bindings are the floor, emergence is the ceiling; every telling must contain material no source dataset contains",
+      "extended validation_tests from 18 to 24 entries (invention, canon persistence, callbacks, fusion, guardrails)"
+    ]
+  }
+}

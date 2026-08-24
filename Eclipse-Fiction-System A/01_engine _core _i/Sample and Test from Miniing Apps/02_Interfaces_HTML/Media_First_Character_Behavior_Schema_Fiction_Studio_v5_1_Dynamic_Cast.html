@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Media-First Character Behavior Schema + Fiction Generation Studio v5.1</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #e94560;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .category-section {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #e94560;
+        }
+
+        .category-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .category-section h2 .badge {
+            font-size: 0.5em;
+            background: #e94560;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #fff;
+            margin-left: 10px;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1a1a2e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .reference-table th {
+            background: #0f3460;
+            color: #e94560;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .reference-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #2a2a4a;
+            vertical-align: top;
+        }
+
+        .reference-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .reference-table .entry-row td {
+            background: #1e2a4a;
+            font-weight: 500;
+        }
+
+        .reference-table .sub-row td {
+            background: #16213e;
+            padding: 8px 15px 8px 30px;
+            font-size: 0.92em;
+        }
+
+        .reference-table .sub-row .label {
+            color: #888;
+            font-weight: 600;
+            width: 120px;
+        }
+
+        .reference-table .sub-row .content {
+            color: #ccc;
+        }
+
+        .reference-table .transcript {
+            color: #a8d8ea;
+            font-style: italic;
+            border-left: 3px solid #e94560;
+            padding-left: 12px;
+            display: block;
+        }
+
+        .reference-table .video-link {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .reference-table .video-link:hover {
+            text-decoration: underline;
+        }
+
+        .story-section {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .story-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .story-section .story-content {
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            color: #ddd;
+            font-size: 0.95em;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .story-section .story-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .story-section .story-content::-webkit-scrollbar-track {
+            background: #1a1a2e;
+            border-radius: 4px;
+        }
+
+        .story-section .story-content::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 4px;
+        }
+
+        .note-box {
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .note-box strong {
+            color: #ffd700;
+        }
+
+        .scan-summary {
+            background: #1e2a4a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 5px solid #00d4ff;
+        }
+
+        .scan-summary h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .scan-summary ul {
+            list-style: none;
+            padding: 0;
+            color: #ccc;
+        }
+
+        .scan-summary li {
+            padding: 4px 0;
+            border-bottom: 1px solid #2a2a4a;
+        }
+
+        .scan-summary li:last-child {
+            border-bottom: none;
+        }
+
+        .scan-summary .fixed {
+            color: #7bed9f;
+        }
+        .scan-summary .removed {
+            color: #ff6b6b;
+        }
+        .scan-summary .replaced {
+            color: #ffd93d;
+        }
+
+        .trait-tag {
+            display: inline-block;
+            background: #0f3460;
+            color: #ffd700;
+            font-size: 0.75em;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-top: 4px;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .reference-table td,
+            .reference-table th {
+                padding: 8px 10px;
+                font-size: 0.85em;
+            }
+            .reference-table .sub-row td {
+                padding: 6px 10px 6px 15px;
+            }
+            .reference-table .sub-row .label {
+                width: 80px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+<style>
+#scenario-studio .scenario-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+#scenario-studio label {display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+#scenario-studio input,#scenario-studio textarea,#scenario-studio select {box-sizing:border-box;width:100%;padding:9px;border-radius:6px;}
+#scenario-studio textarea {font-family:inherit;line-height:1.45;}
+#scenario-studio .button-row {display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+#scenario-studio button {padding:10px 14px;border:0;border-radius:6px;cursor:pointer;font-weight:600;}
+#scenario-studio .cast-panel {margin:16px 0;padding:14px;border:1px solid rgba(128,128,128,.3);border-radius:8px;}
+#scenario-studio .cast-row {display:flex;gap:8px;align-items:center;margin:8px 0;}
+#scenario-studio .cast-row select {flex:1;}
+#scenario-studio .inline-check {display:flex;flex-direction:row;align-items:center;gap:8px;}
+#scenario-studio .inline-check input {width:auto;}
+#scenario-studio .small-note {font-size:.86em;opacity:.78;}
+</style></head>
+<body>
+<h1>🧷 The Diaper Incident Reference Table</h1>
+<p class="subtitle">Complete Reference Guide: Noir · Stewie/Rainee · Glamor Rainee</p>
+<!-- ============================================================ -->
+<!-- NOIR SECTION -->
+<!-- ============================================================ -->
+<div class="category-section">
+<h2>🎀 NOIR — The Sunny, Bubbly Blonde <span class="badge">3 References</span></h2>
+<p style="color:#aaa; margin-bottom:15px;">
+<strong>The Joke:</strong> Noir (French for "black/dark") is actually a sunshine-and-rainbows blonde. Her sister <strong>Sunni</strong> is the brooding goth one. The names are swapped as a deliberate punchline.
+        </p>
+<table class="reference-table">
+<thead>
+<tr>
+<th style="width:25%;">Reference</th>
+<th style="width:25%;">Source</th>
+<th style="width:50%;">Element / How It Fits</th>
+</tr>
+</thead>
+<tbody>
+<!-- Shelley Darlingson -->
+<tr class="entry-row">
+<td><strong>Shelley Darlingson</strong></td>
+<td><em>The House Bunny</em> (2008)</td>
+<td>Bubbly blonde with hidden depth; name is a misdirect</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">
+                            Shelley (meeting sorority): "Harmony... Carrie Mae... Joanne." (in frog voice, to remember names)<br/>
+                            Shelley: "The eyes are the nipples of the face."<br/>
+                            Shelley: "I did sexy. I did other guys want me. I worked every angle in the book."
+                        </span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: House Bunny — "Eyes are the nipples"</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Elle Woods -->
+<tr class="entry-row">
+<td><strong>Elle Woods</strong></td>
+<td><em>Legally Blonde</em> (2001)</td>
+<td>Blonde who's underestimated but brilliant</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">
+                            Elle: "All people see when they look at me is blonde hair and big boobs."<br/>
+                            Elle (in court): "Exercise gives you endorphins. Endorphins make you happy. Happy people just don't shoot their husbands."<br/>
+                            Elle (to store clerk): "It's impossible to use a half-loop top-stitching on low-viscosity rayon. It would snag the fabric."
+                        </span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Legally Blonde — "Blonde hair and big boobs"</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Cher Horowitz -->
+<tr class="entry-row">
+<td><strong>Cher Horowitz</strong></td>
+<td><em>Clueless</em> (1995)</td>
+<td>Sweet, sometimes airheaded blonde who's actually clever</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">
+                            Cher (voiceover): "I've tried everything to convince them of my scholastic aptitude, but I was brutally rebuffed."<br/>
+                            Cher: "As if!"<br/>
+                            Cher: "So okay, I don't want to be a traitor to my generation and all but I don't get how guys dress today."
+                        </span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Clueless — "As if!"</a> (Placeholder)</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ============================================================ -->
+<!-- STEWIE / RAINEE SECTION -->
+<!-- ============================================================ -->
+<div class="category-section">
+<h2>🍼 STEWIE / RAINEE — The Diaper-Wearing Genius <span class="badge">7 References</span></h2>
+<p style="color:#aaa; margin-bottom:15px;">
+<strong>Element:</strong> Rainee's behavior, voice, and entire predicament are a direct parody of <strong>Stewie Griffin</strong> from <em>Family Guy</em>. The text explicitly names this the <strong>"Stewie Persona"</strong> multiple times.
+        </p>
+<table class="reference-table">
+<thead>
+<tr>
+<th style="width:25%;">Reference</th>
+<th style="width:25%;">Source</th>
+<th style="width:50%;">Element / How It Fits</th>
+</tr>
+</thead>
+<tbody>
+<!-- Stewie Griffin Persona -->
+<tr class="entry-row">
+<td><strong>Stewie Griffin Persona</strong></td>
+<td><em>Family Guy</em> (General Character)</td>
+<td>Diaper-wearing genius with theatrical persona</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">"I am the TODDLER with the FATTEST BOOTY in all the land!" — Rainee (Stewie Persona)</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — Stewie General</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Bill & Peter's Bogus Journey -->
+<tr class="entry-row">
+<td><strong>"Bill &amp; Peter's Bogus Journey"</strong></td>
+<td>Season 5, Episode 13 (2007)</td>
+<td><strong>Brian wears a diaper</strong></td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">
+                            Lois: "Brian, you are going to wear Stewie's diapers until you learn to use the toilet!"<br/>
+                            Stewie: "Hey, have you gone yet? Have you popped your butt cherry?"<br/>
+                            Brian: "You know, you should be more sensitive to my humiliation..."<br/>
+                            Stewie: "You're wearing a diaper! You look silly."<br/>
+                            Brian: "Why? You wear a diaper."<br/>
+                            Stewie: "But I'm a baby. People see my diaper and they say, 'Oh, how cute!'"
+                        </span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — Brian wears a diaper</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Yug Ylimaf -->
+<tr class="entry-row">
+<td><strong>"Yug Ylimaf"</strong></td>
+<td>Season 11, Episode 4 (2012)</td>
+<td>"Fresh new diaper" / time-reversed diaper change</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">Lois: "There, now you've got a fresh new diaper, Stewie."<br/>Stewie: "Ahh! Get that poop-filled thing away from me! NO! Oh, god, it's cold!"</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — Yug Ylimaf diaper scene</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Peter Problems -->
+<tr class="entry-row">
+<td><strong>"Peter Problems"</strong></td>
+<td>Season 12, Episode 9 (2014)</td>
+<td>Awkward diaper change</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">Peter: "All right, Stewie, I'm gonna change your diaper now. Which, unfortunately, means I have to touch your privates."<br/>Stewie: "That's not what I heard."</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — Peter changes Stewie's diaper</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Stuck Together, Torn Apart -->
+<tr class="entry-row">
+<td><strong>"Stuck Together, Torn Apart"</strong></td>
+<td>Season 3, Episode 19 (2002)</td>
+<td>"Mind if I watch?"</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">Lois: "Stewie, it's time to change your diaper."<br/>Stewie: "Mind if I watch?"</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — "Mind if I watch?"</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Baby Not on Board -->
+<tr class="entry-row">
+<td><strong>"Baby Not on Board"</strong></td>
+<td>Season 7, Episode 4 (2008)</td>
+<td>Left alone &amp; out of diapers</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">Stewie (to Rupert): "Well, Rupert, we're out of food, diapers, and just about everything else."</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Family Guy — Stewie left home alone</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- Death Lives -->
+<tr class="entry-row">
+<td><strong>"Death Lives"</strong></td>
+<td>Season 3, Episode 6 (2001)</td>
+<td>Light bulb up the butt</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">Stewie: "Lois, he's done it again! Wait a minute?"<br/>(Stewie rubs his feet on the carpet, then touches his nose to make the bulb light up.)</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="https://www.youtube.com/watch?v=LS8_2KklqEU" target="_blank">✅ YouTube: Family Guy — Stewie Light Bulb Gag</a> (User Verified)</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ============================================================ -->
+<!-- GLAMOR RAINEE SECTION — UPDATED WITH DIALOGUE EXCERPTS -->
+<!-- ============================================================ -->
+<div class="category-section">
+<h2>✨ GLAMOR RAINEE — Before Transformation <span class="badge">1 Reference + 6 Dialogues</span></h2>
+<p style="color:#aaa; margin-bottom:15px;">
+<strong>Element:</strong> Rainee <em>before</em> she "took a dump and turned into a toddler" — glamorous, busty, blonde, and carefree.<br/>
+            The dialogue excerpts below show her original <strong>warm, teasing, philosophical, fierce, and fun‑loving</strong> personality — which she lost <strong>after</strong> switching to diapers and finding them comfortable, allowing the Stewie persona to fully take over.
+        </p>
+<table class="reference-table">
+<thead>
+<tr>
+<th style="width:25%;">Reference</th>
+<th style="width:25%;">Source</th>
+<th style="width:50%;">Element / How It Fits</th>
+</tr>
+</thead>
+<tbody>
+<!-- Rangiku Matsumoto — Main Entry -->
+<tr class="entry-row">
+<td><strong>Rangiku Matsumoto</strong></td>
+<td><em>Bleach</em> (Manga/Anime/Movies)</td>
+<td>Glamorous, busty blonde with easy-going, emotionally deep personality</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📝 Transcript:</span>
+<span class="content transcript">"Rangiku is a tall, attractive woman with long, wavy strawberry-blonde hair, icy blue eyes, and a beauty spot. Her most distinctive features are her very large breasts." — Bleach Wiki</span>
+</td>
+</tr>
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Video Clip:</span>
+<span class="content"><a class="video-link" href="#">YouTube: Bleach — Rangiku Matsumoto Compilation</a> (Placeholder)</span>
+</td>
+</tr>
+<!-- DIALOGUE EXCERPTS HEADER -->
+<tr class="sub-row" style="background:#1a1a2e; border-top:2px solid #ffd700;">
+<td colspan="3" style="color:#ffd700; font-weight:bold; padding: 12px 15px; font-size:1em;">
+                        💬 Defining Dialogue Excerpts — Rangiku's Core Traits (Pre-Diaper Rainee)
+                    </td>
+</tr>
+<!-- Quote 1: Teasing & Observant -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📖 Manga Ch.133:</span>
+<span class="content transcript">"That bad habit you had of always disappearing without telling me where you are going... still hasn't changed."</span>
+<span class="trait-tag">🎯 Trait: Playfully observant, gently teasing</span>
+</td>
+</tr>
+<!-- Quote 2: Vulnerable & Honest -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">📖 Manga Ch.-12.5:</span>
+<span class="content transcript">"I don't know, I never really counted days until I met you."</span>
+<span class="trait-tag">🎯 Trait: Vulnerable, emotionally honest, casually profound</span>
+</td>
+</tr>
+<!-- Quote 3: Poetic & Wise -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Anime (Philosophical):</span>
+<span class="content transcript">"To know sorrow is not terrifying. What is terrifying is to know you can't go back to the happiness you could have."</span>
+<span class="trait-tag">🎯 Trait: Poetic, wise, unexpectedly philosophical</span>
+</td>
+</tr>
+<!-- Quote 4: Fierce & Protective -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Anime (Battle Speech):</span>
+<span class="content transcript">"We're fighting to live. So that you can live and to protect everyone else from Aizen's grasp."</span>
+<span class="trait-tag">🎯 Trait: Fierce, protective, driven by love for others</span>
+</td>
+</tr>
+<!-- Quote 5: Warm & Maternal (Comedic) -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Anime (Comedy Scene):</span>
+<span class="content transcript">"There, there! Cry, cry, you poor thing. Drown all of your sorrows in my chest!"</span>
+<span class="trait-tag">🎯 Trait: Warm, maternal, physically affectionate, playful</span>
+</td>
+</tr>
+<!-- Quote 6: Laid-back & Blunt -->
+<tr class="sub-row">
+<td colspan="3">
+<span class="label">🎬 Anime (Casual):</span>
+<span class="content transcript">"I hate talkative guys... They gross me out."</span>
+<span class="trait-tag">🎯 Trait: Laid-back, blunt, no-nonsense when annoyed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ============================================================ -->
+<!-- KEY NOTES -->
+<!-- ============================================================ -->
+<div class="note-box">
+<p><strong>💡 Key Notes:</strong></p>
+<ul style="color:#ccc; list-style:none; padding:0; margin-top:10px;">
+<li>• <strong>Noir</strong> isn't a film noir reference. She's a <strong>Shelley Darlingson / Elle Woods / Cher Horowitz</strong>-style bubbly blonde whose name is the joke—she's the opposite of what "Noir" implies. Her sister <strong>Sunni</strong> is the actual goth one.</li>
+<li>• <strong>Stewie/Rainee</strong> references are drawn from specific <em>Family Guy</em> episodes that feature diaper-related comedy, all of which map directly onto Rainee's absurd situation in the text.</li>
+<li>• <strong>Rangiku Matsumoto</strong> from <em>Bleach</em> serves as the "before" image for Rainee—glamorous, busty, blonde, and carefree—before her supernatural transformation into a diaper-wearing toddler. The dialogue excerpts above map exactly to the personality <strong>she lost</strong> after switching to diapers and becoming Stewie.</li>
+</ul>
+</div>
+<!-- ============================================================ -->
+<!-- ORIGINAL STORY — THE DIAPER INCIDENT PART II (REVISED) -->
+<!-- ============================================================ -->
+<div class="story-section">
+<h2>📖 Original Story: The Diaper Incident — Part II: The Explanation</h2>
+<div class="story-content">
+            THE DIAPER INCIDENT — PART II: THE EXPLANATION
+            Final Clean Version with Corrected Dialogue
+            THE DIAPER INCIDENT — FINAL CORRECTED VERSION
+            ________________________________________
+            EXT. JADE CITY CENTRAL MARKET - DAY
+            The marketplace sprawls in every direction—stalls of enchanted silk, floating carts of glowing potions, merchants from a dozen dimensions haggling over impossible goods. The air smells of incense, ozone, and opportunity. Jade City's central market district hums with the low murmur of supernatural commerce, the clink of spirit-jade coins, and the occasional crackle of magical energy.
+
+            Three stalls back from the main artery, behind a display of hanging silk scarves, Noir presses herself against a support beam. Her blonde hair is slightly disheveled from the journey. Her eyes are wide. Her mouth is slightly open.
+
+            She has been watching for twenty minutes.
+
+            Her sister is here. Her sister is alive. Her sister is—
+
+            Oh no.
+
+            Her sister is wearing a diaper.
+
+            Noir spotted her three stalls away, moving through the crowd with the waddling gait of someone who has completely forgotten what normal walking feels like. The red hair was unmistakable. The black eyelashes. The fox ears. The tail. But the body was small. Diminutive. Toddler-sized. Koenma-sized. Stewie Griffin-sized.
+
+            And radiating enough presence to make nearby merchants' protective charms flicker nervously.
+
+            Noir has been following at a distance. Behind stalls. Behind displays. Behind anything that could hide her from the horrifying spectacle. Her hand has been clamped over her mouth for the entire duration. Her shoulders have been shaking.
+
+            Rainee stops at a stall. A pacifier stall. Rows and rows of pacifiers in every color imaginable. Some glow faintly. Some pulse with inner light. Some are just pacifiers. Normal-looking pacifiers. Pacifiers that would be perfectly ordinary in a baby's mouth.
+
+            Rainee picks one up. Examines it. Holds it to the light.
+
+            She is wearing a black diaper. Gold quilting runs across it in elaborate patterns. It looks expensive. It looks custom-made. It looks like something a merchant would commission because nothing off-the-shelf would do.
+
+            Rainee puts the pacifier down. Picks up another. The shopkeeper auntie watches with the patient expression of someone who has seen this exact negotiation many times.
+
+            Rainee holds up a lavender pacifier. Turns it over. Examines the gradient.
+
+            NOIR (whispering, to herself):
+            "She's serious. She's REALLY serious. She's doing this because she NEEDS it. She needs the RIGHT pacifier. The PERFECT pacifier. She has a COLLECTION."
+
+            Rainee engages the shopkeeper. Her voice carries across the stalls. Clear. Articulate.
+
+            RAINEE:
+            "I've been a customer here for three months. I expect a loyalty discount."
+
+            The auntie blinks. Slowly.
+
+            AUNTIE:
+            "Three months. You've been coming here for three months. You've bought forty-three pacifiers."
+
+            RAINEE:
+            "Forty-four as of today. If you give me a reasonable price on the lavender one."
+
+            Noir's eyes go wide. She starts counting on her fingers.
+
+            NOIR (to herself, counting):
+            "Forty-three pacifiers. Divided by three months. That's about fourteen a month. That's like a new pacifier every TWO DAYS. She has a PACIFIER SCHEDULE. She's on a PACIFIER ROUTINE."
+
+            She pauses. Her eyes go wider.
+
+            NOIR (to herself, horrified realization dawning):
+            "She used to collect JADE NECKLACES. Now it's pacifiers. This is a CAREER CHANGE."
+
+            AUNTIE:
+            "Two spirit-jade."
+
+            RAINEE:
+            "TWO? TWO? For a pacifier I am going to be sucking on for the next six hours while generating enough output to power your entire stall?"
+
+            Rainee pauses. A satisfied smirk crosses her face.
+
+            RAINEE:
+            "You're WELCOME, by the way. For the output. You're welcome."
+
+            Noir makes a sound. A high-pitched sound. Like a kettle. Like a very small, very stressed kettle. She slaps both hands over her mouth.
+
+            NOIR (muffled, through her fingers):
+            "She said 'output.' She said 'output' like it was a SERVICE. Like she's PROVIDING something."
+
+            The negotiation continues. Rainee holds up the lavender pacifier. She examines it with the critical eye of a wine connoisseur.
+
+            RAINEE:
+            "No. NO. This shade is NOT sufficiently WARM. I need the NEXT one over. The one with more AMBER in the gradient."
+
+            She stops.
+
+            Her expression shifts—first confusion, then dawning recognition. The eyes go wider. The ears flatten. Not dramatically. Just a small, quick FLAT. Like a cat that has felt something shift internally.
+
+            Rainee looks DOWN at her own midsection. Very briefly. One second. A quick, downward glance.
+
+            She looks back at the shopkeeper.
+
+            She does NOT break eye contact.
+
+            A very small, very brief LOOK crosses her face. Not pain. Not panic. Just a quick, clinical acknowledgment—a tiny squint, a press of the lips. The expression of someone who has felt a familiar, unwelcome, but entirely predictable internal event beginning, and who has decided to simply proceed through it.
+
+            From three stalls away, Noir sees this. Her pupils dilate. Her hand flies to her mouth again.
+
+            NOIR (whispering):
+            "Oh. Okay. She's doing a face. Is that a poop face? I've never seen a poop face before. I mean, I've SEEN poop faces, but not on HER. Not on someone I KNOW. That's a different kind of face. That's a face I didn't know she HAD."
+
+            Rainee braces herself. Her new frame tenses. The gold quilting flickers, just slightly.
+
+            And then—
+
+            From three stalls away, a voice cuts through the market noise. Bright. Cheerful. Completely oblivious.
+
+            NOIR (loudly, waving):
+            "HI RAINEE! Oh my GOD, it IS you! What the HECK happened to you?!"
+
+            Rainee freezes.
+
+            Her head snaps toward the sound. Her eyes go wide. Her ears flatten completely.
+
+            The gold quilting—which was just beginning to activate—stutters. Flickers. The containment system is confused. The process is interrupted.
+
+            Rainee's composure cracks.
+
+            RAINEE (high-pitched, theatrical):
+            "AAAAAAAAAH! What the BLOODY HELL, Noir?! What are you DOING here?!"
+
+            She twitches. A full-body twitch. Her ears flatten. Her tail goes rigid. She clutches her midsection.
+
+            RAINEE:
+            "Damn it! Not NOW!"
+
+            Noir is already laughing. She cannot stop. Her giggles erupt from her chest like air from a punctured balloon.
+
+            NOIR:
+            "Oh my GOD. Rainee. You're a TODDLER. What happened to you? You were gone for THREE MONTHS and now you're WEARING A DIAPER!"
+
+            She squints at Rainee's midsection. Recognition dawns. Her eyes go wide.
+
+            NOIR:
+            "Wait. Do you have to GO? You look like you have one of those faces. OH. Oh my GOD. That's the face. The face from the MUSHROOM MERCHANT. The harvest festival. Remember? You got your period. Right in the middle of haggling. And you made that EXACT face. And you got a DISCOUNT because you USED it."
+
+            Rainee's eyes go wide. Mortified. Her face flushes bright red beneath her fox fur.
+
+            RAINEE (through gritted teeth):
+            "Noir, that is NOT the same thing—"
+
+            NOIR:
+            "The SAME face. Period then. Poop now. And I KNOW it. I know it from YEARS ago."
+
+            She points at Rainee. Points at her own face. Points at the diaper. Makes sounds. Cannot form words.
+
+            RAINEE (Stewie, mortified):
+            "I am about to lose my DIGNITY in front of you and this entire marketplace, and you are LAUGHING at me!"
+
+            Rainee strains. A huge, exaggerated effort. Her face contorts. Her tail goes completely stiff. The gold quilting begins to pulse.
+
+            NOIR (screaming with laughter):
+            "You used to be so GLAMOROUS and now you're THIS! This is so FUNNY!"
+
+            The gold quilting FLARES. A brilliant, blinding pulse of golden light.
+
+            RAINEE (Stewie, through gritted teeth):
+            "DAMN it—HERE it COMES—"
+
+            Rainee lets go.
+
+            It's not a sound so much as a release—a prolonged, squelching, deeply undignified torrent that seems to go on far longer than her new body should be capable of producing. The gold quilting on her diaper pulses frantically, glowing brilliant gold as it struggles to contain what has just been unleashed. The diaper visibly expands. Nearby merchants turn away. A magical object on a nearby stall begins to float.
+
+            Rainee's body shudders once, twice. Her eyes squeeze shut. Her little hands ball up.
+
+            Then it's over.
+
+            She exhales. Her entire body relaxes. Her ears droop. Her tail goes limp.
+
+            She opens her eyes. Looks down at the diaper. A satisfied smirk curls the corner of her mouth.
+
+            RAINEE (Stewie, smug):
+            "Right. That's done. That's a LOT better. MUCH better."
+
+            She looks down at the diaper. Dark. Inert. Containment cycle complete. She looks at Noir.
+
+            RAINEE (Stewie):
+            "You're laughing at my professional struggles. That's fine. Because you don't understand the SYSTEM. You don't understand the EFFICIENCY. You don't understand the MARGINS."
+
+            Noir is on the floor. Knees. Face in hands. Shoulders shaking. She is making sounds that should not be possible.
+
+            RAINEE (Stewie):
+            "It is not the same thing. One was pain. One is—"
+
+            She stops, considering.
+
+            RAINEE (Stewie):
+            "...Actually. No. You're right. It IS the same face."
+
+            She gestures at herself. Diminutive. Diaper. Gold quilting. Pacifier dangling from its little strap.
+
+            RAINEE (Stewie):
+            "Because the universe is CRUEL. I was GLAMOROUS. I was a DOUYIN FOX with RED HAIR and EYELASHES. And now I'm WEARING a DIAPER. Making the SAME face. But now it's my TAKING A DUMP face."
+
+            She pauses. A look of deep calculation on a face that barely reaches my knee.
+
+            RAINEE (Stewie):
+            "Honestly, I need to lay off the fermented moon-pickled ghost-peppers. They're delicious but the after-effects are CATASTROPHIC. The metaphysical stink alone takes three hours to dissipate."
+
+            She waits for a moment. Nothing happens.
+
+            RAINEE (Stewie, to herself):
+            "Right. That's better."
+
+            Then—her ears relax. Her tail swishes once. Slowly. Contentedly. The posture settles. The smirk softens. Just a little.
+
+            RAINEE (quiet, amused):
+            "...They ARE the same face. That's actually kind of funny."
+
+            She looks at Noir. A smile so small you'd miss it if you blinked.
+
+            RAINEE:
+            "From a certain perspective."
+
+            Noir looks up. Tears streaming. Mascara running. Face red. Eyes puffy. She is holding a silk scarf she doesn't remember buying.
+
+            NOIR:
+            "The PERIOD DUMP FACE. I'm going to REMEMBER it. Forever."
+
+            Rainee removes the pacifier from her mouth. Just long enough to speak.
+
+            RAINEE:
+            "Anyway. The amber shade. We were discussing price."
+
+            She turns back to the shopkeeper auntie. As though nothing happened.
+
+            AUNTIE:
+            "Two spirit-jade."
+
+            Rainee's eyes narrow. She is back. Full merchant mode.
+
+            RAINEE:
+            "Two spirit-jade? I just lost my DIGNITY in front of your stall. That's worth at least HALF OFF. I should get a HUMILIATION DISCOUNT."
+
+            Noir is still on the floor. Still processing. Still broken.
+
+            NOIR (to herself, quietly):
+            "Why is she a toddler? It's a long story—one I'm still trying to untangle myself."
+
+            She doesn't get to finish.
+
+            Rainee's body twitches. Just slightly. A small, involuntary spasm. A tiny fart escapes. Just a little one.
+
+            Pfft.
+
+            Rainee freezes. Her ears flatten. Her tail goes still.
+
+            Noir's eyes go wide.
+
+            NOIR (slowly, a grin spreading across her face):
+            "...Uh-huh. Untangle."
+
+            Rainee's face flushes. She straightens her posture. Removes the pacifier.
+
+            RAINEE:
+            "One and a quarter spirit-jade. Final offer. Take it or leave it."
+
+            The auntie shrugs.
+
+            AUNTIE:
+            "Fine."
+
+            Rainee places the pacifier in her cart. She turns to Noir. A satisfied nod.
+
+            RAINEE:
+            "See? The margins are still good."
+
+            Noir is still on the floor. Still holding the scarf. Still making sounds.
+
+            NOIR (flat, distant, broken):
+            "The fart was the most PROFESSIONAL part of that transaction."
+
+            She stares at the scarf. She doesn't remember buying it.
+
+            NOIR:
+            "She farted and got a discount. Amazing."
+
+            The words spilled out before she could stop them. She was getting used to that.
+
+            Rainee's ears perk up. She turns to Noir. The Stewie persona flickers back, just for a moment. A theatrical smirk.
+
+            RAINEE (Stewie, commanding):
+            "Well, since you're here to BUG me, Noir, make yourself USEFUL! Change me! I've got a HEAVY diaper! Do your SISTERLY DUTIES!"
+
+            Noir stares. Her mouth opens. Closes. Opens again.
+
+            NOIR (laughing, incredulous):
+            "I don't think it's my SISTERLY DUTY to change your diaper. You're OLDER than me."
+
+            Rainee waves a hand dismissively. The Stewie mode holds strong.
+
+            RAINEE (Stewie):
+            "Well, whatever! You're OLDER than me NOW! Chop chop! If you're going to ANNOY me and LAUGH at my current state, make yourself USEFUL!"
+
+            She gestures at the cart. At the supplies.
+
+            RAINEE (Stewie):
+            "And use the baby powder I just got! It's TO DIE FOR! Makes it feel SUPER SMOOTH!"
+
+            Noir is laughing. Can't stop laughing. But she's also standing up. Moving toward the cart.
+
+            NOIR (still laughing):
+            "Okay, okay! I'll change you! But you STILL haven't explained why you're a LARGE TODDLER now!"
+
+            Rainee's ears twitch. The Stewie mode wavers. She looks at Noir. A theatrical sigh.
+
+            RAINEE (Stewie, dismissive):
+            "I said I'll explain LATER! Right now I'm trying not to think about how this happened! Now CHOP CHOP!"
+
+            She turns. Points at the cart.
+
+            RAINEE (Stewie):
+            "The powder is in the SECOND compartment. The gold-stitched one. Don't use the cheap stuff. I have STANDARDS."
+
+            Noir opens the compartment. The gold-stitched one. Inside: powder. Lavender-jade blend. The good stuff.
+
+            RAINEE (Stewie):
+            "You know, even though I transformed, I still have a BIG ASS! I may be small, but this diaper holds a LEGEND."
+
+            Noir freezes. The powder container in her hand. Her face contorts. The laugh is building.
+
+            NOIR (wheezing):
+            "The... the LEGENDARY BOOTY? You just called yourself—"
+
+            RAINEE (Stewie, smug):
+            "Yes. A LEGEND. In ALL THE LAND. And you're going to POWDER it. So CHOP CHOP."
+
+            Noir is shaking. She's crying. She's laughing. She's also opening the powder container.
+
+            NOIR:
+            "Okay! Okay! I'm doing it! I'm powdering the legendary booty of all the land! This is my life now! This is what I've become!"
+
+            She powders the diaper. The lavender-jade blend. It smells expensive. It smells like Rainee.
+
+            Rainee's Stewie persona holds for a beat. Two beats.
+
+            Then—her ears relax. Her tail swishes once. Slowly. Contentedly. The posture settles. The smirk softens. Just a little.
+
+            RAINEE (quiet, amused):
+            "...Thank you. That's better."
+
+            She looks at Noir. A small, genuine smile.
+
+            RAINEE:
+            "The powder really is excellent. You should try some."
+
+            Noir looks at the powder container. Still in her hand.
+
+            NOIR (flat, distant, broken):
+            "I just powdered the legendary booty of all the land. And I agreed to do it. That's a sentence I said. Out loud. In public. To my sister. Who is a toddler. In a diaper."
+
+            She looks at the scarf. She doesn't remember buying it.
+
+            She watches. She cannot tear her gaze from the diaper that held her sister's new life.
+
+            ________________________________________
+            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS
+
+            Rainee waddles to the next stall. The cart follows. The gold quilting gleams. The pacifier is in her mouth. Her red hair catches the light. Her black eyelashes frame her eyes.
+
+            She is small. She is absurd. She is radiating enough metaphysical aura to level a city block. She is wearing a diaper. She just went in it. She just got powdered. She just told Noir her booty is a legend.
+
+            She waddles. She browses. She picks up a product. Examines it. Frowns.
+
+            RAINEE:
+            "I'm sorry. Is this the BEST you have? Because this is NOT the quality I expect. I've been shopping here for THREE MONTHS. I expect BETTER. I expect PREMIUM. I expect the GOOD STUFF."
+
+            Three stalls away, Noir is still on the floor. She is holding the powder container. She is holding the silk scarf. She is crying. She is laughing. She is making the sound.
+
+            The silk shopkeeper looks down at Noir.
+
+            SHOPKEEPER:
+            "That'll be two spirit-jade for the scarf, dear."
+
+            Noir pays. She doesn't remember taking out the coins. She doesn't remember handing them over. She just watches the next stall. She watches the diaper. She watches the gold thread.
+
+            Noir whispers to no one. To herself. To the silk display. To the universe.
+
+            NOIR:
+            "The margins are still good."
+
+            She doesn't know why she said it.
+
+            She says it anyway.
+
+            She watches.
+
+            She cannot look away.
+
+            ________________________________________
+            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS
+
+            The negotiation is over. The pacifier is secured. The cart hovers behind Rainee, its gold quilting gleaming in the afternoon light.
+
+            Noir is still standing. Still holding the powder container. Still making sounds. But now she's pointing at Rainee with the powder container like an accusation.
+
+            NOIR:
+            "Okay. I powdered your bum. I changed your diaper. I participated in... whatever THAT was. Now I deserve an explanation, little miss! What HAPPENED to you?!"
+
+            Rainee sighs. A long, theatrical sigh. She removes the pacifier from her mouth. Holds it up. Examines it.
+
+            RAINEE:
+            "Alright. Alright. You want to know what happened?"
+
+            She looks at Noir. A tired smile.
+
+            RAINEE:
+            "I didn't notice at first. I mean, you don't just wake up and go, 'Oh, I'm a toddler now.' It happens slowly. Clothes get looser. You start to feel... smaller. More basic. Less layered."
+
+            She pauses. Looks at her own hands.
+
+            RAINEE:
+            "And then you look at your toilet and you realize it's almost twice your size. And you think... 'Okay. Something is happening.'"
+
+            She looks back at Noir.
+
+            RAINEE:
+            "But I didn't understand it until later. I thought I was just tired. Or stressed. Or losing weight from all the traveling. I made excuses. Merchants are good at making excuses. We can justify ANYTHING."
+
+            She reaches into her cart. Pulls out a journal. Small. Worn. Pages sticking out.
+
+            RAINEE:
+            "I started documenting everything. I thought if I wrote it down, I could figure it out. Spoiler: I didn't figure it out. I just have a lot of paper now."
+
+            She flips through the journal. Shows Noir a page.
+
+            RAINEE:
+            "Look at this. Day fourteen. 'I am now half the size of my toilet. I have no explanation. The customer paid in jade. I don't know if that's relevant.'"
+
+            She closes the journal. Looks at Noir.
+
+            RAINEE:
+            "I was very calm about it at first. Very professional. 'Oh, I'm shrinking. Better write it down.' That's how I coped. Spreadsheets. Journals. Organization. I thought if I documented it, I could control it."
+
+            Noir stares. Her hands go to her hips. She's doing the Jillian thing—the thing where she's trying to understand something that makes no sense, and she's asking questions in that way that's half-judgmental, half-genuinely confused.
+
+            NOIR (hands on hips):
+            "Okay, like, wait. You made SPREADSHEETS. You have a JOURNAL. But you didn't think to, like... ASK someone? GO to a DOCTOR? CONSULT a specialist? You just... SHRANK? And DOCUMENTED it?"
+
+            Rainee's ears flatten. Defensive.
+
+            RAINEE:
+            "I'm a merchant. I keep records. It's how I survive."
+
+            Noir stares. Her mouth opens. Closes. Then she points at Rainee with the powder container.
+
+            NOIR:
+            "You made SPREADSHEETS. For your own SHRINKAGE. That's not coping. That's DENIAL with, like, COLOR-CODED tabs."
+
+            RAINEE:
+            "The tabs were VERY helpful."
+
+            NOIR:
+            "I'm sure they WERE. I'm sure the COLOR-CODED SHRINKAGE TABS were VERY professional."
+
+            Rainee laughs. A sharp, defensive laugh.
+
+            RAINEE:
+            "Look. Why didn't I look into it? Because the jade had a grip on me tighter than any contract. I made more in two weeks than I made in the previous YEAR."
+
+            She gestures at herself. At the diaper. At the cart.
+
+            RAINEE:
+            "How do you think I'm affording these black silken diapers? They're CUSTOM-MADE. Gold thread. Void-silk. I have a RUNWAY of diapers. I got the Exotic Western European ones. You know, the ones with the extra padding. Very comfortable. Very expensive."
+
+            Noir's eyes go wide. She squints at the diaper like she's trying to see the European-ness.
+
+            NOIR (incredulous):
+            "European diapers? You have IMPORTED diapers?"
+
+            RAINEE:
+            "I have a TASTE. I've haggled for three decades – I can spot a cheap pacifier from across the market."
+
+            She points at her cart. At the compartments. At the gold quilting.
+
+            RAINEE:
+            "I'm buying baby supplies, yes. But I'm buying RICH WOMAN baby supplies. Real gold lining. The finest silks. The good powder. The lavender-jade blend. You saw the powder. You SMELLED it. That's not cheap. That's STATUS."
+
+            She pauses. A proud smile.
+
+            RAINEE:
+            "I also got several donkeys. And a lot of jade. I'm actually the fourth richest merchant in this district. I have a mansion. You should visit. It has a PACIFIER ROOM."
+
+            Noir stares. Her mouth is open. She is not processing. She is just... receiving information.
+
+            NOIR (staring, broken):
+            "...A pacifier room."
+
+            RAINEE:
+            "A ROOM. For PACIFIERS. Organized by COLOR. You'd love it."
+
+            NOIR:
+            "Holy crap. You're like, a rich toddler. Like, a REALLY rich toddler. Who has a PACIFIER ROOM. And IMPORTED DIAPERS."
+
+            Rainee's expression shifts. Embarrassed. Vulnerable.
+
+            RAINEE:
+            "By the time I was half the size of my toilet, my bowels started to... go. Just a little. At first. I thought it was the food. Or the stress. But then it got worse. I almost ruined three outfits in one week. And these were GOOD outfits. Silk. Jade embroidery. The kind you don't just REPLACE."
+
+            She looks at Noir. A tired sigh.
+
+            RAINEE:
+            "I started thinking to myself... 'Rainee, you need to get away from this. Something weird is going on.'"
+
+            She pauses. Looks at the cart. At the gold quilting.
+
+            RAINEE:
+            "But the profit margin was still fat, even if I wasn't. I couldn't walk away. The numbers didn't lie, and neither did my bank account."
+
+            Noir's face lights up. A slow grin spreading across her face. She's figured it out.
+
+            NOIR (slowly, grinning):
+            "So you were, like, too GREEDY to look into the effects of the cosmic god you've been trading with."
+
+            Rainee's face lights up. A huge, theatrical grin.
+
+            RAINEE:
+            "Yes! EXACTLY! You UNDERSTAND me!"
+
+            Noir snickers. A judgmental, sisterly snicker.
+
+            NOIR:
+            "You're hopeless. You're absolutely hopeless. You got turned into a toddler because you couldn't say no to good business."
+
+            RAINEE:
+            "I'm a merchant. I turned a curse into a business opportunity. That's what we do."
+
+            She looks at the diaper. At the gold quilting.
+
+            RAINEE:
+            "After the third ruined outfit, I knew I had to do something. So I swallowed my pride. I bought my first diaper. It was black. Plain. No gold thread. Just a diaper."
+
+            She laughs. A bitter laugh.
+
+            RAINEE:
+            "That was a low point. A very low point. I sat in that inn room and I cried. I cried for like... an hour. Just sitting there. In a diaper. Crying. And then I realized... the diaper was actually comfortable."
+
+            Noir stares. Trying to process. Her brain is not computing.
+
+            NOIR:
+            "You, like, cried in a diaper and then realized it was comfortable."
+
+            RAINEE:
+            "The convenience! You don't understand! No more looking for bathrooms! No more rushing! Just... go. And the cart handles the rest."
+
+            Rainee's ears perk up. Defensive again.
+
+            RAINEE:
+            "After I switched to diapers, I started noticing personality changes. I was getting more... theatrical. More demanding. More... BASIC. Like everything else was stripped away and what was left was just... WANT."
+
+            She looks at Noir. A uncertain look.
+
+            RAINEE:
+            "I think I've stopped mutating. I hope I've stopped. I don't want to regress any further. I can still walk. I can still talk. I can still HAGGLE. That's what matters."
+
+            Noir leans in. Eyes narrowed. She's curious now. Genuinely curious.
+
+            NOIR (leaning in):
+            "What kinda personality changes? Like, are you MEANER now? Are you NICER? Do you have a TEMPER? Do you throw things? Like a REAL toddler?"
+
+            Rainee's ears flatten. The defensive mode cracks. Just a little.
+
+            RAINEE:
+            "I'm more honest now. Less complicated. More pure. I don't lie anymore. I don't pretend. I just... WANT things. And I go get them. That's the personality change. I stopped being layered. I became simple."
+
+            She points at Noir, defensive again.
+
+            RAINEE:
+            "Don't judge me. The cart keeps rolling, and the jade keeps stacking. And the diapers are COMFORTABLE. And I have a MANSION. And FOURTEEN DONKEYS. And I am the FOURTH richest merchant in this district. You're not going to find a better situation. You're just not."
+
+            Noir leans in closer. A grin spreading across her face.
+
+            NOIR (grinning):
+            "So you're more HONEST now. That's funny. Because you were ALREADY pretty honest. You just had more WORDS for it. Now you just POINT and SCREAM."
+
+            Rainee's ears droop. A tired sigh.
+
+            RAINEE:
+            "I'm more honest now. Less complicated. More pure. I don't lie anymore. I don't pretend. I just... WANT things. And I go get them. That's the personality change. I stopped being layered. I became simple."
+
+            Noir stares. Processing. The Jillian brain is working. Slowly. Painfully.
+
+            NOIR:
+            "So you became, like, a toddler because you couldn't say no to a god."
+
+            RAINEE:
+            "Basically."
+
+            NOIR:
+            "And you stayed a toddler because the jade was too sweet."
+
+            RAINEE:
+            "I was hooked. That cosmic baby paid in pure, untainted spirit‑jade – the kind that buys you a mansion."
+
+            NOIR:
+            "And now you're, like, a rich toddler with fourteen donkeys and a pacifier room."
+
+            RAINEE:
+            "Basically. And you should visit. The mansion is HUGE. I have a staff. They change me when I don't want to do it myself."
+
+            Noir stares. Processing again.
+
+            NOIR (staring):
+            "You have a staff. That changes you. You have people. Who change your diaper."
+
+            RAINEE:
+            "I have OPTIONS. That's the difference. I'm a MERCHANT. I made the best of a bad contract. I TURNED it into profit."
+
+            Noir laughs. A broken, disbelieving laugh.
+
+            NOIR:
+            "You're hopeless. You're absolutely hopeless."
+
+            Rainee shrugs. A theatrical shrug.
+
+            RAINEE:
+            "I'm a merchant. I'm always shopping. That's what I do. That's who I AM. The difference is now I'm shopping for my SOUL."
+
+            ________________________________________
+            FLASHBACK — EXT. COSMIC BABY'S DOMAIN - THREE MONTHS AGO
+
+            The scene shifts. Rainee is standing in a glowing marketplace. A floating stall. A single customer.
+
+            The Cosmic Infant is a being of pure light. Small. Infinite. Wanting.
+
+            It points at a product. Makes a sound. A complaint. A demand.
+
+            ________________________________________
+            VIGNETTE 1: The First Transaction
+
+            Rainee approaches the customer. Professional. Confident.
+
+            RAINEE (V.O.):
+            "The customer was a Cosmic Infant. A being of infinite, pure, uncompromised WANT. It wasn't dissatisfied with the product. It was dissatisfied with the EXPERIENCE."
+
+            The Cosmic Infant makes a sound. A complaint forms in the air.
+
+            I want simpler. I want more basic. I want a merchant who is as simple as my want.
+
+            Rainee nods. She accepts. She's a merchant. This is what merchants do.
+
+            RAINEE (V.O.):
+            "I accepted the obligation. Just like any other customer. But the customer was a god. And gods don't make ordinary complaints. They make SUPERNATURAL complaints. And when you accept a supernatural complaint... it becomes a contract."
+
+            ________________________________________
+            VIGNETTE 2: Week One — The Changes Begin
+
+            Rainee is traveling. She looks normal. Glamorous. Red hair flowing. Black eyelashes sharp.
+
+            Then she notices. Her robes are a little longer. She shrugs. Must be the humidity.
+
+            RAINEE (V.O.):
+            "The first week was fine. I thought I was just tired. Or stressed. I didn't notice the changes. Not really."
+
+            She looks in a mirror. Something is different. She can't place it.
+
+            RAINEE (V.O.):
+            "But then the cravings started. I couldn't stop thinking about pacifiers. Specific ones. Specific colors. I'd wake up in the middle of the night and think... 'I need the lavender one. The one with the amber gradient.'"
+
+            ________________________________________
+            VIGNETTE 3: Week Two — The Toilet Realization
+
+            Rainee is in an inn. She wakes up. Goes to the bathroom. Looks at the toilet.
+
+            It's huge. It's almost twice her size.
+
+            She stares. Looks at herself. Looks back at the toilet.
+
+            RAINEE (V.O.):
+            "I knew something was wrong when I was almost half the size of my toilet. That's not a thing you can ignore. That's a MOMENT. You wake up, you go to the bathroom, and you think... 'Why is my toilet so big? Did I buy a big toilet? No. I'm SHRINKING.'"
+
+            She climbs the toilet to use it. Dignity is gone.
+
+            ________________________________________
+            VIGNETTE 4: The Bowel Problems
+
+            Rainee is in a marketplace. She's wearing silk. Jade embroidery. She looks glamorous. She looks like a merchant.
+
+            Her expression changes. She knows what's coming.
+
+            She makes it three steps before her bowels betray her.
+
+            RAINEE (V.O.):
+            "I almost ruined three outfits in one week. And these were GOOD outfits. Silk. Jade embroidery. The kind you don't just REPLACE."
+
+            She stands in a corner. Humiliated. Checking the damage.
+
+            RAINEE (V.O.):
+            "I started thinking to myself... 'Rainee, you need to get away from this. Something weird is going on.' But the jade held my attention the way gold holds a dragon's."
+
+            ________________________________________
+            END OF FLASHBACK
+            ________________________________________
+            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS
+
+            Noir is silent for a moment. Processing. Then she looks at Rainee with a new expression—half-sympathetic, half-horrified.
+
+            NOIR:
+            "So you knew. You KNEW you were shrinking. You KNEW something was wrong. And you just... kept going. Because the jade was too good."
+
+            Rainee nods. A tired nod.
+
+            RAINEE:
+            "I couldn't stop. I COULDN'T. The jade was too sweet. The customer was too happy. I was too good at my job."
+
+            Noir shakes her head. A slow, disbelieving shake.
+
+            NOIR:
+            "You traded your body for jade."
+
+            RAINEE:
+            "I traded my LAYERS for jade. There's a difference."
+
+            NOIR:
+            "Is there? Is there REALLY?"
+
+            Rainee pauses. A thoughtful look crosses her face.
+
+            RAINEE:
+            "...Probably not. But I made enough jade in one week to buy a small kingdom."
+
+            Noir stares. Then she starts laughing. A full, broken, disbelieving laugh.
+        </div>
+</div>
+<!-- ============================================================ -->
+<!-- SCAN SUMMARY (New) -->
+<!-- ============================================================ -->
+<div class="scan-summary">
+<h3>📋 Post‑Edit Scan Summary</h3>
+<ul>
+<li><span class="fixed">✔</span> "Complicated" – reduced from 8 to 2 instances, replaced with specific descriptions.</li>
+<li><span class="fixed">✔</span> "The money was SO good" – cut from 9 to 3 unique variations.</li>
+<li><span class="removed">✘</span> "She watches. She cannot look away." – removed all but 1 closing line.</li>
+<li><span class="removed">✘</span> "She doesn't know why she said it…" – entirely removed; replaced with one internal moment.</li>
+<li><span class="fixed">✔</span> "Fattest booty" – reduced from 4 to 1, replaced with "legendary booty".</li>
+<li><span class="replaced">↻</span> 30+ "tiny" modifiers – replaced or removed with vivid alternatives.</li>
+<li><span class="replaced">↻</span> 12+ AI‑pause patterns – restructured for varied flow.</li>
+<li><span class="replaced">↻</span> 10+ emotion tags – converted to action beats.</li>
+<li><span class="fixed">✔</span> "Merchant" identity – trimmed from 15+ to 5 unique, show‑don't‑tell moments.</li>
+<li><span class="replaced">↻</span> "Spiritual energy/output" – replaced with 3 distinct metaphors.</li>
+<li><span class="replaced">↻</span> Noir's reactions – varied across the story.</li>
+<li><span class="fixed">✔</span> "The margins are still good" – kept only as the final punchline.</li>
+<li><span class="fixed">✔</span> <strong>NEW:</strong> Added 6 Rangiku Matsumoto dialogue excerpts with trait tags to the Glamor Rainee section.</li>
+</ul>
+<p style="color:#7bed9f; margin-top:15px;"><strong>✅ All redundant patterns eliminated. Story is tighter, funnier, and more professional.</strong></p>
+</div>
+<section class="category-section" id="media-research-extension" style="margin-top:32px;">
+<h2>MEDIA RESEARCH + SCENARIO REWRITE ENGINE</h2>
+<div class="callout">
+<h3>Authority Rule</h3>
+<p><strong>Real media evidence outranks generated story evidence.</strong>
+    The source material below is used to derive behavior, scene mechanics, and reusable operators.
+    The Jade City/Rainee story remains a secondary validation set. Generated prose must not silently
+    redefine the character model.</p>
+</div>
+<div class="callout">
+<h3>Evidence Pipeline</h3>
+<pre><code>RAW MEDIA SOURCE
+      ↓
+SCENE / BEAT SEGMENTATION
+      ↓
+BEHAVIORAL ANNOTATION
+      ↓
+SCENARIO DNA
+      ↓
+REUSABLE BEHAVIORAL OPERATOR
+      ↓
+CHARACTER-SPECIFIC FILTER
+      ↓
+CHARACTER COLLISION
+      ↓
+NEW DIALOGUE / ACTION
+      ↓
+VALIDATION AUDIT</code></pre>
+</div>
+<h3>1. MEDIA SOURCE LIBRARY</h3>
+<p>These are the current research targets. “Confirmed” means a detailed transcript/script source was identified during research.
+  The system should store source metadata and extracted evidence rather than dumping copyrighted transcripts into the character prompt.</p>
+<table class="reference-table">
+<thead>
+<tr><th>Source</th><th>Role</th><th>Status</th><th>Use in Schema</th></tr>
+</thead>
+<tbody>
+<tr><td>The House Bunny (2008)</td><td>Shelley Darlingson → Noir</td><td>CONFIRMED</td><td>Bubbly social behavior, comic non-sequiturs, practical/social intelligence.</td></tr>
+<tr><td>Clueless (1995)</td><td>Cher Horowitz → Noir</td><td>CONFIRMED</td><td>Sweet confidence, underestimated intelligence, social framing, dismissive reactions.</td></tr>
+<tr><td>Legally Blonde (2001)</td><td>Elle Woods → Noir</td><td>CONFIRMED</td><td>Cheerful presentation + precise competence under challenge.</td></tr>
+<tr><td>Family Guy — Yug Ylimaf (S11E4)</td><td>Stewie → Rainee</td><td>CONFIRMED</td><td>Theatrical escalation, embarrassment, physical-comedy logic.</td></tr>
+<tr><td>Family Guy — Peter Problems (S12E9)</td><td>Stewie → Rainee</td><td>CONFIRMED</td><td>Awkward practical situations converted into verbal comedy.</td></tr>
+<tr><td>Family Guy — Stuck Together, Torn Apart (S3E19)</td><td>Stewie → Rainee</td><td>CONFIRMED</td><td>Mundane bodily situation treated as an elaborate comic event.</td></tr>
+<tr><td>Family Guy — Death Lives (S3E6)</td><td>Stewie → Rainee</td><td>CONFIRMED</td><td>Absurd physical circumstances treated matter-of-factly/experimentally.</td></tr>
+<tr><td>Family Guy — Bill &amp; Peter's Bogus Journey (S5E13)</td><td>Stewie → Rainee</td><td>PARTIAL</td><td>Useful scene/quote evidence; full transcript not yet independently verified.</td></tr>
+<tr><td>Family Guy — Baby Not on Board (S7E4)</td><td>Stewie → Rainee</td><td>PARTIAL</td><td>Baby logistics and supplies as practical problems; full transcript not yet independently verified.</td></tr>
+<tr><td>Bleach — Rangiku Matsumoto</td><td>Rangiku → Rainee</td><td>PARTIAL</td><td>Primary personality model: teasing, warmth, emotional honesty, philosophy, protectiveness.</td></tr>
+</tbody>
+</table>
+<h3>2. RAW EXAMPLE → BEHAVIORAL ANNOTATION</h3>
+<p>Never treat a quote as the personality. Treat the <em>reason the character used it</em> as the reusable data.</p>
+<div class="entry-row">
+<div class="entry-head"><strong>CHER HOROWITZ — SOCIAL DISMISSAL</strong></div>
+<div class="entry-body">
+<p><strong>Raw evidence:</strong> A short, confident dismissal can terminate an idea Cher regards as ridiculous.</p>
+<p><strong>Situation:</strong> Someone presents a premise Cher considers obviously unacceptable.</p>
+<p><strong>Interpretation:</strong> “This does not deserve a serious debate.”</p>
+<p><strong>State:</strong> amused + confident + socially dominant.</p>
+<p><strong>Behavioral move:</strong> reject the premise instead of constructing a long counterargument.</p>
+<p><strong>Delivery:</strong> compact, certain, socially effortless.</p>
+<p><strong>Comedic function:</strong> puncture an overly serious statement.</p>
+<p><strong>Reusable operator:</strong> <code>CONFIDENT_DISMISSAL_OF_ABSURD_PREMISE</code></p>
+<p><strong>Noir filter:</strong> retain the mechanism, replace Cher's exact vocabulary and references with Noir's own bubbly sisterly voice.</p>
+</div>
+</div>
+<div class="entry-row">
+<div class="entry-head"><strong>ELLE WOODS — UNDERESTIMATED COMPETENCE</strong></div>
+<div class="entry-body">
+<p><strong>Raw evidence:</strong> Elle can appear socially underestimated while producing precise, technically relevant knowledge when the situation requires it.</p>
+<p><strong>Trigger:</strong> Another person assumes she cannot understand the technical issue.</p>
+<p><strong>Interpretation:</strong> “You have mistaken my presentation for my capability.”</p>
+<p><strong>Behavior:</strong> answer the actual technical problem instead of defending her intelligence abstractly.</p>
+<p><strong>Comedic function:</strong> expectation reversal.</p>
+<p><strong>Reusable operator:</strong> <code>CHEERFUL_PRESENTATION__PRECISE_COMPETENCE</code></p>
+<p><strong>Noir filter:</strong> preserve the cheerful surface and unexpected precision, but make the knowledge domain fit Noir.</p>
+</div>
+</div>
+<div class="entry-row">
+<div class="entry-head"><strong>SHELLEY DARLINGSON — BUBBLY OBSERVATIONAL COMEDY</strong></div>
+<div class="entry-body">
+<p><strong>Trigger:</strong> A strange social or physical detail catches Shelley's attention.</p>
+<p><strong>Interpretation:</strong> The detail is worth saying aloud immediately.</p>
+<p><strong>Behavior:</strong> state the observation with sincere, playful directness.</p>
+<p><strong>Comedic function:</strong> the character's lack of embarrassment about an observation becomes the joke.</p>
+<p><strong>Reusable operator:</strong> <code>UNFILTERED_BUBBLY_OBSERVATION</code></p>
+<p><strong>Noir filter:</strong> increase sisterly curiosity and allow the observation to become a question chain.</p>
+</div>
+</div>
+<div class="entry-row">
+<div class="entry-head"><strong>STEWIE — THEATRICAL ESCALATION</strong></div>
+<div class="entry-body">
+<p><strong>Trigger:</strong> A mundane or embarrassing problem threatens status, comfort, or control.</p>
+<p><strong>Interpretation:</strong> The problem is treated as a major personal event.</p>
+<p><strong>Behavior:</strong> escalate language, seriousness, and theatrical framing beyond what the situation warrants.</p>
+<p><strong>Comedic function:</strong> adult-level rhetoric collides with an infant/toddler circumstance.</p>
+<p><strong>Reusable operator:</strong> <code>STATUS_THREAT__THEATRICAL_ESCALATION</code></p>
+<p><strong>Rainee filter:</strong> route the escalation through merchant pride, bargaining, status consciousness, and her need to rationalize the transformation.</p>
+<p><strong>Important:</strong> Do not copy Stewie's exact lines, catchphrases, or identity. Stewie supplies the behavioral mechanism only.</p>
+</div>
+</div>
+<h3>3. SCENARIO DNA LIBRARY</h3>
+<div class="entry-row">
+<div class="entry-head"><strong>SCENARIO: EMBARRASSING PROBLEM + OBSERVER</strong></div>
+<div class="entry-body">
+<p><strong>Dramatic function:</strong> expose the protagonist's attempt to preserve dignity.</p>
+<p><strong>Comedy function:</strong> protagonist treats a ridiculous problem seriously while the observer recognizes the absurdity.</p>
+<p><strong>Beat skeleton:</strong></p>
+<ol>
+<li>Character A encounters an embarrassing problem.</li>
+<li>A attempts to conceal or rationalize it.</li>
+<li>B notices something is wrong.</li>
+<li>A denies or reframes the problem.</li>
+<li>B discovers the contradiction.</li>
+<li>B reacts according to their own personality rather than merely serving the joke.</li>
+<li>A escalates to regain status.</li>
+<li>B's response creates a new problem.</li>
+<li>A is forced to improvise.</li>
+<li>Payoff reveals either acceptance, further escalation, or a brief sincere moment.</li>
+</ol>
+<p><strong>Reusable operator:</strong> <code>EMBARRASSMENT → CONCEALMENT → OBSERVATION → DENIAL → ESCALATION → COUNTERREACTION → PAYOFF</code></p>
+</div>
+</div>
+<div class="entry-row">
+<div class="entry-head"><strong>SCENARIO: UNDERESTIMATED COMPETENCE</strong></div>
+<div class="entry-body">
+<p><strong>Dramatic function:</strong> reveal that apparent simplicity is not equivalent to incompetence.</p>
+<p><strong>Beat skeleton:</strong> challenge → underestimation → character calmly identifies the real issue → unexpected competence → opponent recalibrates.</p>
+<p><strong>Reusable operator:</strong> <code>UNDERestimate → SPECIFIC_EVIDENCE → STATUS_REVERSAL</code></p>
+</div>
+</div>
+<div class="entry-row">
+<div class="entry-head"><strong>SCENARIO: BUBBLY OBSERVER VS. THEATRICAL PROTAGONIST</strong></div>
+<div class="entry-body">
+<p><strong>Rainee function:</strong> preserve dignity through increasingly elaborate rationalization.</p>
+<p><strong>Noir function:</strong> notice, question, laugh, then help.</p>
+<p><strong>Collision:</strong> Rainee interprets Noir's laughter as a status threat; Noir interprets Rainee's theatricality as increasingly funny evidence that something is wrong.</p>
+<p><strong>Escalation:</strong> every attempt by Rainee to restore authority supplies Noir with another observable contradiction.</p>
+<p><strong>Reusable operator:</strong> <code>RATIONALIZATION ↔ OBSERVATIONAL_LAUGHTER</code></p>
+</div>
+</div>
+<div class="callout" id="pre-glamor-flashback-rule">
+<h3>FLASHBACK STATE — PRE-GLAMOR RAINEE / RANGIKU SCHEME</h3>
+<p><strong>Flashbacks must use the Pre-Glamor Rainee / Rangiku scheme.</strong>
+          Do not apply the toddler/Stewie behavioral layer to these scenes.</p>
+<pre><code>FLASHBACK MODE
+Character = Rainee
+State = PRE-GLAMOR
+Primary behavioral reference = Rangiku Matsumoto
+
+LOAD:
+- playful observation
+- teasing
+- emotional honesty
+- casual/philosophical reflection
+- warmth and affection
+- protectiveness
+- laid-back bluntness when annoyed
+
+DO NOT LOAD:
+- toddler behavioral simplification
+- Stewie theatrical layer
+- toddler physical-state reactions
+- post-transformation merchant/toddler contradictions
+
+CONTINUITY RULE:
+Pre-Glamor Rainee remains Rainee.
+Rangiku supplies the behavioral reference scheme,
+not a literal copy of Rangiku's dialogue or identity.
+
+TIMELINE RULE:
+FLASHBACK → PRE-GLAMOR / RANGIKU SCHEME
+PRESENT → CURRENT RAINEE STATE
+TRANSITION SCENE → explicitly identify which state is active
+
+If a scene contains a flashback inside a present-day scene,
+switch behavioral state only for the flashback span, then restore
+the present-day state when the scene returns to the present.</code></pre>
+</div>
+<div class="callout" id="script-reference-bridge">
+<h3>9. SCRIPT REFERENCE BRIDGE</h3>
+<p><strong>Purpose:</strong> Connect real-media examples directly to the existing script's beats.
+          A reference should influence a specific dramatic function, not float around as a vague personality label.</p>
+<pre><code>MEDIA EXAMPLE
+      ↓
+BEHAVIORAL OPERATOR
+      ↓
+SCRIPT BEAT
+      ↓
+CHARACTER / STATE
+      ↓
+TRANSLATED ACTION
+      ↓
+NEW DIALOGUE
+
+REFERENCE APPLICATION:
+- source_reference_id
+- behavioral_operator_id
+- target_character
+- target_state
+- script_scene
+- script_beat
+- dramatic_function
+- comedy_function
+- expected_transformation
+- forbidden_translation</code></pre>
+<h4>Example Beat Mapping</h4>
+<div class="entry-row">
+<div class="entry-head"><strong>JADE CITY — RAINEE NOTICES NOIR LAUGHING</strong></div>
+<div class="entry-body">
+<p><strong>Reference:</strong> Stewie theatrical escalation operator.</p>
+<p><strong>Character:</strong> Rainee.</p>
+<p><strong>State:</strong> Post-Glamor / Toddler.</p>
+<p><strong>Dramatic function:</strong> Defend dignity after embarrassment.</p>
+<p><strong>Translation:</strong> theatrical escalation is filtered through Rainee's merchant pride, status consciousness, and need to rationalize her circumstances.</p>
+<p><strong>Forbidden translation:</strong> Rainee saying or thinking that she is Stewie, mentioning Family Guy, or using Stewie's catchphrases.</p>
+</div>
+</div>
+</div>
+<div class="callout" id="reference-identity-separation">
+<h3>10. REFERENCE IDENTITY ≠ STORY IDENTITY</h3>
+<p>Reference names are <strong>authoring metadata</strong>. They are not fictional identities.</p>
+<table class="reference-table">
+<thead><tr><th>Layer</th><th>Example</th><th>Visible in story?</th></tr></thead>
+<tbody>
+<tr><td>Story Identity</td><td><strong>Rainee</strong></td><td>YES</td></tr>
+<tr><td>Behavioral State</td><td>Post-Glamor / Toddler</td><td>Usually implicit</td></tr>
+<tr><td>Reference Profile</td><td>Stewie-derived behavioral layer</td><td>NO</td></tr>
+<tr><td>Flashback State</td><td>Pre-Glamor Rainee / Rangiku scheme</td><td>Usually implicit</td></tr>
+<tr><td>Source Media</td><td>Family Guy / Bleach / etc.</td><td>NO, unless deliberately referenced in-world</td></tr>
+</tbody>
+</table>
+<p><strong>Hard rule:</strong> Never turn a reference profile into a character name. Do not write
+          “Stewie Rainee,” “Rainee Stewie Griffin,” “Glamor Rainee,” or “Rangiku Rainee” as if these were
+          story-world identities. Use <strong>RAINEE</strong> as the character tag and put state/profile information
+          in invisible writer metadata.</p>
+</div>
+<div class="callout" id="invisible-writer-layer">
+<h3>11. INVISIBLE WRITER / AI ANNOTATION LAYER</h3>
+<p>The AI may reason with explicit labels that the reader never sees.</p>
+<pre><code>WRITER / AI VIEW
+
+[BEAT 12.5]
+CHARACTER: RAINEE
+STATE: POST_GLAMOR
+PROFILE: RAINEE_CORE + STEWIE_BEHAVIOR
+REFERENCE_PURPOSE: STATUS DEFENSE
+
+BEHAVIOR:
+- escalate theatrically
+- rationalize
+- reclaim authority
+
+FORBIDDEN:
+- mention Stewie
+- mention Family Guy
+- explain the inspiration
+- use source-character catchphrases
+
+READER VIEW
+
+RAINEE
+You find this amusing?</code></pre>
+<p>The prose should contain the <strong>behavior</strong>, not an explanation of the behavior's source.</p>
+</div>
+<div class="callout" id="state-machine">
+<h3>12. RAINEE STATE MACHINE</h3>
+<pre><code>PRE-GLAMOR
+  State: PRE_GLAMOR
+  Primary reference: RANGIKU
+  ↓
+GLAMOR RAINEE
+  State: GLAMOR
+  Primary profile: RAINEE CORE
+  ↓
+POST-GLAMOR
+  State: POST_GLAMOR
+  Primary profile: RAINEE CORE + STEWIE BEHAVIORAL LAYER
+  ↓
+TRANSITION SCENE
+  Explicitly identify which state is active.
+
+FLASHBACK:
+  Force PRE_GLAMOR / RANGIKU scheme.
+  Do NOT load toddler/Stewie behavioral simplification.
+
+PRESENT:
+  Restore the current story state after the flashback.</code></pre>
+</div>
+<div class="callout" id="reference-leakage-audit">
+<h3>13. REFERENCE LEAKAGE AUDIT</h3>
+<p>Before delivering prose, scan for accidental exposure of authoring references.</p>
+<pre><code>CHECK GENERATED TEXT FOR:
+
+Stewie Griffin
+Family Guy
+Rangiku
+Bleach
+Cher
+Clueless
+Elle Woods
+Legally Blonde
+Shelley
+House Bunny
+Stewie Rainee
+Rainee Stewie Griffin
+Glamor Rainee
+Rangiku Rainee
+"Stewie-like"
+"Rangiku-like"
+"acting like [reference]"
+"similar to [reference]"
+
+IF FOUND:
+1. Determine whether the reference is intentionally spoken in-world.
+2. If not intentional, remove the reference.
+3. Preserve the underlying behavior.
+4. Rewrite the action/dialogue so the behavior communicates itself.
+
+IMPORTANT:
+Delete the explanation, NOT the behavior.</code></pre>
+</div>
+<div class="callout" id="show-operator-rule">
+<h3>14. SHOW THE OPERATOR, DON'T NAME THE OPERATOR</h3>
+<p>Behavioral operators are for the engine, not for exposition.</p>
+<table class="reference-table">
+<thead><tr><th>Bad Output</th><th>Correct Output Principle</th></tr></thead>
+<tbody>
+<tr>
+<td>“Rainee reacted in a Stewie-like theatrical manner.”</td>
+<td>Show Rainee escalating, rationalizing, and defending her status through her own voice.</td>
+</tr>
+<tr>
+<td>“Noir used her Cher personality.”</td>
+<td>Show Noir making a confident, bubbly dismissal in her own voice.</td>
+</tr>
+<tr>
+<td>“This was the Rangiku side of Rainee.”</td>
+<td>Show teasing, warmth, casual philosophy, or blunt affection directly.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="callout" id="script-rewrite-contract">
+<h3>15. SCRIPT REWRITE CONTRACT</h3>
+<pre><code>WHEN REWRITING AN EXISTING SCRIPT:
+
+1. Preserve the source scene's dramatic function.
+2. Preserve its comedy mechanism when appropriate.
+3. Map each source beat to a specific script beat.
+4. Attach media examples to BEHAVIORAL OPERATORS, not prose.
+5. Load the correct character STATE.
+6. Load the correct character REFERENCE PROFILE internally.
+7. Translate the operator through the character's identity.
+8. Allow the other character's reaction to alter the next beat.
+9. Generate new dialogue rather than source-character dialogue.
+10. Remove accidental reference-name leakage.
+11. Preserve continuity across flashbacks and transformations.
+12. Run Character, Source, Novelty, and Reference-Leakage audits.
+
+REFERENCE NAMES ARE TOOLS FOR THE WRITER/AI.
+THEY ARE NOT THE CHARACTER.</code></pre>
+</div>
+<div class="callout" id="fiction-engine-v5">
+<h3>16. FICTION GENERATION ENGINE v5</h3>
+<p>This layer upgrades the document from a character-reference system into a scene-generation system.
+          The model should simulate character intent and interaction before writing prose.</p>
+<pre><code>SCENE INPUT
+  ↓
+SCRIPT / SCENARIO BEATS
+  ↓
+WORLD STATE
+  ↓
+CHARACTER STATE
+  ├─ goals
+  ├─ fears
+  ├─ beliefs
+  ├─ misinterpretations
+  ├─ hidden objectives
+  └─ current tactics
+  ↓
+CHARACTER AGENT A
+        ↕
+CHARACTER COLLISION
+        ↕
+CHARACTER AGENT B
+  ↓
+EMOTIONAL CAUSALITY
+  ↓
+DIALOGUE FUNCTION + SUBTEXT
+  ↓
+PROSE CAMERA
+  ↓
+BEAT-BY-BEAT GENERATION
+  ↓
+CHARACTER / CONTINUITY / PACING / REFERENCE AUDITS
+  ↓
+REVISION
+  ↓
+FINAL FICTION</code></pre>
+</div>
+<div class="callout" id="character-agent-schema">
+<h3>17. CHARACTER AGENT STATE</h3>
+<pre><code>CHARACTER_AGENT:
+
+identity:
+  story_name
+  current_state
+
+motivation:
+  immediate_goal
+  secondary_goal
+  hidden_goal
+  fear
+  protected_value
+  refusal
+
+interpretation:
+  what_I_think_is_happening
+  what_I_think_the_other_character_wants
+  what_I_think_the_other_character_thinks_of_me
+
+tactics:
+  preferred_strategy
+  fallback_strategy
+  escalation_trigger
+
+reaction:
+  emotion
+  physical_response
+  dialogue_function
+  action
+
+memory:
+  recent_events
+  unresolved_business
+  relationship_state
+
+RULE:
+A character's next action must be generated from the current state,
+not selected merely because it resembles a stored example.</code></pre>
+</div>
+<div class="callout" id="world-knowledge-state">
+<h3>18. WORLD + KNOWLEDGE STATE</h3>
+<pre><code>WORLD_STATE:
+  location
+  time
+  physical_objects
+  active_problem
+  unresolved_threads
+  environmental_conditions
+
+CHARACTER_KNOWLEDGE:
+  RAINEE:
+    known_facts
+    false_beliefs
+    secrets
+
+  NOIR:
+    known_facts
+    false_beliefs
+    secrets
+
+AUDIENCE_KNOWLEDGE:
+  known_facts
+  dramatic_ironies
+
+RULE:
+WHAT HAPPENED ≠ WHAT EACH CHARACTER KNOWS HAPPENED.
+
+Characters may only deliberately act on information
+available to them unless the story intentionally establishes
+another mechanism.</code></pre>
+</div>
+<div class="callout" id="emotional-causality">
+<h3>19. EMOTIONAL CAUSALITY CHAIN</h3>
+<pre><code>EVENT
+  ↓
+PERCEPTION
+  ↓
+INTERPRETATION
+  ↓
+EMOTION
+  ↓
+DEFENSE / DESIRE
+  ↓
+TACTIC
+  ↓
+ACTION / DIALOGUE
+  ↓
+OTHER CHARACTER'S INTERPRETATION
+  ↓
+CONSEQUENCE
+  ↓
+NEXT BEAT
+
+Never jump directly from EVENT → generic emotion → dialogue
+when an intermediate interpretation can create a more specific reaction.</code></pre>
+</div>
+<div class="callout" id="dialogue-subtext-engine">
+<h3>20. DIALOGUE FUNCTION + SUBTEXT ENGINE</h3>
+<table class="reference-table">
+<thead><tr><th>Layer</th><th>Question</th></tr></thead>
+<tbody>
+<tr><td>Surface</td><td>What does the character literally say?</td></tr>
+<tr><td>Function</td><td>What is the line trying to accomplish?</td></tr>
+<tr><td>Subtext</td><td>What does the character mean without saying it?</td></tr>
+<tr><td>Private motive</td><td>What does the character actually want right now?</td></tr>
+<tr><td>Interpretation</td><td>What does the other character think the line means?</td></tr>
+<tr><td>Pressure</td><td>How does this line force the next response?</td></tr>
+</tbody>
+</table>
+<p><strong>Rule:</strong> Dialogue is an action performed against another character, not merely information written in quotation marks.</p>
+</div>
+<div class="callout" id="pacing-prose-camera">
+<h3>21. PACING + PROSE CAMERA</h3>
+<pre><code>BEAT CONTROL:
+  importance: 0–10
+  dramatic_weight: 0–10
+  comedy_weight: 0–10
+  description_density: 0–10
+  dialogue_density: 0–10
+  action_density: 0–10
+
+PROSE_CAMERA:
+  focus_character
+  narrative_distance
+  available_senses
+  internal_access
+  attention_targets
+
+RULES:
+- Slow down important beats.
+- Compress connective tissue.
+- Give comedic payoffs enough setup to land.
+- Do not explain an emotion immediately after showing it.
+- Keep the narrative camera consistent unless deliberately shifted.
+- Use concrete observable behavior before abstract explanation.</code></pre>
+</div>
+<div class="callout" id="reaction-branching">
+<h3>22. REACTION BRANCHING</h3>
+<pre><code>For each important interaction, privately generate:
+
+A = default character-consistent reaction
+B = relationship-specific reaction
+C = situation-induced reaction
+D = delayed / suppressed reaction
+E = surprising but character-consistent reaction
+
+Score:
+  character_fit
+  relationship_fit
+  scene_fit
+  novelty
+  comedy_value
+  emotional_value
+  continuity
+
+Choose the strongest reaction.
+Do not expose the rejected branches in the final fiction unless requested.</code></pre>
+</div>
+<div class="callout" id="anti-ai-prose">
+<h3>23. ANTI-AI PROSE AUDIT</h3>
+<pre><code>Reject or revise:
+- emotion labels replacing observable behavior
+- characters restating exposition
+- identical speech rhythms
+- instant agreement
+- instant emotional reactions when a pause would be natural
+- repetitive "she stared / he smiled / eyes widened" constructions
+- generic sensory filler
+- jokes with no consequence
+- convenient knowledge
+- explaining why a joke is funny
+- explaining the media inspiration
+- dialogue that merely repeats the scene description
+- characters behaving only to move the plot forward
+
+TARGET:
+Specificity + causality + character pressure + consequence.</code></pre>
+</div>
+<div class="callout" id="revision-pipeline">
+<h3>24. REVISION PIPELINE</h3>
+<pre><code>DRAFT
+ ↓
+CHARACTER AUDIT
+ ↓
+DIALOGUE / SUBTEXT AUDIT
+ ↓
+PACING AUDIT
+ ↓
+CONTINUITY AUDIT
+ ↓
+REFERENCE-LEAKAGE AUDIT
+ ↓
+ANTI-AI-PROSE AUDIT
+ ↓
+REVISION
+ ↓
+FINAL</code></pre>
+</div>
+
+<div class="callout" id="scenario-studio">
+<h3>25. SCENARIO STUDIO — DYNAMIC CAST</h3>
+<p>
+    The scene is no longer restricted to two characters. Select established characters,
+    create temporary supporting characters, or allow the engine to invent incidental roles.
+    Characters receive different levels of simulation based on their narrative importance.
+  </p>
+<div class="scenario-grid">
+<label>Provider
+      <select id="ss-provider">
+<option value="openai">ChatGPT / OpenAI-compatible</option>
+<option value="deepseek">DeepSeek</option>
+</select>
+</label>
+<label>Model
+      <input id="ss-model" placeholder="gpt-5 or deepseek-chat" value="gpt-5"/>
+</label>
+<label>Mode
+      <select id="ss-mode">
+<option value="original">Original scenario</option>
+<option value="rewrite">Rewrite existing scene</option>
+<option value="flashback">Flashback — Pre-Glamor / Rangiku</option>
+<option value="present">Present — Post-Glamor</option>
+</select>
+</label>
+<label>Length
+      <select id="ss-length">
+<option value="short">Short scene</option>
+<option selected="" value="medium">Medium scene</option>
+<option value="long">Long scene</option>
+</select>
+</label>
+</div>
+<div class="cast-panel">
+<h4>CORE CAST — FULL CHARACTER SIMULATION</h4>
+<div id="ss-core-cast"></div>
+<button id="ss-add-core" type="button">+ Add Core Character</button>
+</div>
+<div class="cast-panel">
+<h4>SUPPORTING CAST — MODERATE SIMULATION</h4>
+<div id="ss-support-cast"></div>
+<button id="ss-add-support" type="button">+ Add Supporting Character</button>
+</div>
+<div class="cast-panel">
+<h4>INCIDENTAL CAST — LIGHTWEIGHT SIMULATION</h4>
+<label class="inline-check">
+<input checked="" id="ss-allow-incidental" type="checkbox"/>
+      Allow AI to invent minor characters when useful
+    </label>
+<label>Maximum incidental characters
+      <input id="ss-incidental-max" max="12" min="0" type="number" value="3"/>
+</label>
+<p class="small-note">
+      Background crowds do not require individual character simulation. An incidental
+      character may be promoted to supporting cast if their actions become narratively important.
+    </p>
+</div>
+<div class="cast-panel">
+<h4>CHARACTER CREATION</h4>
+<div class="scenario-grid">
+<label>Name
+        <input id="ss-new-name" placeholder="e.g. Jade City Merchant"/>
+</label>
+<label>Role
+        <input id="ss-new-role" placeholder="e.g. merchant"/>
+</label>
+<label>Scene function
+        <select id="ss-new-function">
+<option value="COMEDIC_OBSTACLE">Comedic obstacle</option>
+<option value="INFORMATION_SOURCE">Information source</option>
+<option value="WITNESS">Witness</option>
+<option value="CONTRAST_CHARACTER">Contrast character</option>
+<option value="AUTHORITY">Authority</option>
+<option value="TRANSACTION_PARTNER">Transaction partner</option>
+<option value="EMOTIONAL_CATALYST">Emotional catalyst</option>
+<option value="MISUNDERSTANDING_SOURCE">Misunderstanding source</option>
+<option value="ESCALATION_AGENT">Escalation agent</option>
+<option value="STRAIGHT_MAN">Straight man</option>
+<option value="FOIL">Foil</option>
+<option value="BACKGROUND_TEXTURE">Background texture</option>
+</select>
+</label>
+<label>Personality notes
+        <input id="ss-new-personality" placeholder="e.g. practical, impatient"/>
+</label>
+<label>Immediate goal
+        <input id="ss-new-goal" placeholder="e.g. complete the sale"/>
+</label>
+<label>Knowledge
+        <input id="ss-new-knowledge" placeholder="e.g. knows Rainee is embarrassed"/>
+</label>
+</div>
+<button id="ss-create-support" type="button">Create Supporting Character</button>
+</div>
+<label>Scenario / prompt
+    <textarea id="ss-scenario" placeholder="Example: Noir discovers Rainee in Jade City after the merchant mishap. Rainee is trying to buy supplies while pretending everything is normal. Noir realizes how embarrassed she is." rows="7"></textarea>
+</label>
+<label>Existing script / source scene (optional)
+    <textarea id="ss-script" placeholder="Paste the scene you want rewritten here. For original scenarios, leave blank." rows="9"></textarea>
+</label>
+<div class="button-row">
+<button id="ss-build" type="button">Build Fiction Prompt</button>
+<button id="ss-copy" type="button">Copy Prompt</button>
+<button id="ss-run" type="button">Run API</button>
+</div>
+<label>API key (optional, local prototype only)
+    <input id="ss-key" placeholder="Enter provider API key for this browser session" type="password"/>
+</label>
+<label>Generated prompt
+    <textarea id="ss-output" placeholder="Your structured prompt will appear here." readonly="" rows="22"></textarea>
+</label>
+<label>Generated fiction
+    <textarea id="ss-fiction" placeholder="API output will appear here." readonly="" rows="20"></textarea>
+</label>
+<p class="small-note">
+<strong>Security:</strong> This is a client-side prototype. Do not embed a permanent API key
+    in the HTML or publish a page containing one. A production app should use a small server-side
+    proxy so provider credentials never reach the browser.
+  </p>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+
+  const coreOptions = ["Rainee", "Noir", "Sunni", "Yae", "Aunt Yuri"];
+  const supportCharacters = [];
+
+  const characterLibrary = {
+    "Rainee": {tier:"CORE", profile:"Load Rainee's complete character/state schema."},
+    "Noir": {tier:"CORE", profile:"Load Noir's complete character/state schema."},
+    "Sunni": {tier:"CORE", profile:"Load Sunni's complete character/state schema."},
+    "Yae": {tier:"CORE", profile:"Load Yae's complete character/state schema."},
+    "Aunt Yuri": {tier:"CORE", profile:"Load Aunt Yuri's complete character/state schema."}
+  };
+
+  const schemaBrief = `
+MEDIA-FIRST FICTION ENGINE
+
+AUTHORITY:
+L0 direct media evidence
+L1 media-derived behavior
+L2 character/state translation
+L3 scenario DNA
+L4 original story material
+L5 newly generated prose
+
+REFERENCE RULE:
+Reference names are authoring metadata, not story identities.
+Never make a character say they are Stewie, Rangiku, Cher, etc.
+Never use "Stewie Rainee", "Glamor Rainee", "Rangiku Rainee", or similar
+as ordinary story-world names unless deliberately established in-world.
+Show the behavioral mechanism instead of naming its source.
+
+STATE RULE:
+Flashbacks force PRE-GLAMOR RAINEE / RANGIKU scheme.
+Present post-transformation scenes use the current Rainee state.
+Never leak the flashback profile into the present unless causally justified.
+
+CHARACTER AGENT:
+Each important character has immediate goal, hidden goal, fear, protected value,
+belief about the situation, belief about the other character, tactic, emotional state,
+physical response, dialogue function, and unresolved business.
+
+WORLD STATE:
+Track location, time, objects, active problems, unresolved threads,
+and what each character knows. What happened is not identical to what each character knows.
+
+EMOTIONAL CAUSALITY:
+Event -> perception -> interpretation -> emotion -> defense/desire ->
+tactic -> action/dialogue -> other character interpretation -> consequence.
+
+DIALOGUE:
+Important lines have surface meaning, function, subtext, private motive,
+and pressure on the next response.
+
+REACTION BRANCHING:
+Privately consider default, relationship-specific, situation-induced,
+delayed/suppressed, and surprising-but-consistent reactions.
+Select the strongest one.
+
+PROSE:
+Use concrete behavior, controlled narrative distance, scene-specific sensory detail,
+and pacing appropriate to beat importance. Compress connective tissue and slow down
+important emotional/comedic beats.
+
+ANTI-AI:
+Avoid generic emotion labels, repeated gestures, exposition restatement,
+identical speech rhythms, instant agreement, convenient knowledge, joke explanation,
+and reference-name leakage.
+
+REVISION:
+Audit character, dialogue/subtext, pacing, continuity, reference leakage,
+and anti-AI prose before finalizing.
+`;
+
+  function makeCastRow(tier, name="") {
+    const row = document.createElement("div");
+    row.className = "cast-row";
+
+    const select = document.createElement("select");
+    select.className = "cast-select";
+
+    if (tier === "CORE") {
+      coreOptions.forEach(n => {
+        const opt = document.createElement("option");
+        opt.value = n;
+        opt.textContent = n;
+        if (n === name) opt.selected = true;
+        select.appendChild(opt);
+      });
+    } else {
+      const opt = document.createElement("option");
+      opt.value = name || "";
+      opt.textContent = name || "Supporting character";
+      opt.selected = true;
+      select.appendChild(opt);
+    }
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "Remove";
+    remove.addEventListener("click", () => row.remove());
+
+    row.appendChild(select);
+    row.appendChild(remove);
+    return row;
+  }
+
+  function addCore(name) {
+    $("ss-core-cast").appendChild(makeCastRow("CORE", name));
+  }
+
+  function addSupport(name) {
+    $("ss-support-cast").appendChild(makeCastRow("SUPPORT", name));
+  }
+
+  function getCast() {
+    const core = [...$("ss-core-cast").querySelectorAll(".cast-select")]
+      .map(x => x.value).filter(Boolean);
+
+    const support = [...$("ss-support-cast").querySelectorAll(".cast-select")]
+      .map(x => x.value).filter(Boolean);
+
+    return {core, support};
+  }
+
+  function buildPrompt() {
+    const provider = $("ss-provider").value;
+    const model = $("ss-model").value.trim();
+    const mode = $("ss-mode").value;
+    const length = $("ss-length").value;
+    const scenario = $("ss-scenario").value.trim();
+    const script = $("ss-script").value.trim();
+    const cast = getCast();
+    const allowIncidental = $("ss-allow-incidental").checked;
+    const incidentalMax = $("ss-incidental-max").value;
+
+    const modeRule =
+      mode === "flashback"
+        ? "FORCE FLASHBACK MODE: Pre-Glamor Rainee / Rangiku scheme. Do not load the post-Glamor toddler/Stewie behavioral layer."
+        : mode === "present"
+        ? "FORCE PRESENT MODE: use the current Post-Glamor state and do not silently revert to Pre-Glamor behavior."
+        : mode === "rewrite"
+        ? "REWRITE MODE: preserve the source scene's dramatic/comedic function and beat architecture, but rebuild character behavior and dialogue from the schema."
+        : "ORIGINAL MODE: generate the scene from the scenario using the causal interaction engine.";
+
+    return `You are writing fiction using the attached Media-First Character Behavior Schema.
+
+PROVIDER/MODEL TARGET: ${provider} / ${model}
+LENGTH TARGET: ${length}
+
+${schemaBrief}
+
+SCENE CAST
+
+CORE CHARACTERS — FULL SIMULATION:
+${cast.core.length ? cast.core.map(x => "- " + x).join("\n") : "- None specified"}
+
+SUPPORTING CHARACTERS — MODERATE SIMULATION:
+${cast.support.length ? cast.support.map(x => "- " + x).join("\n") : "- None specified"}
+
+INCIDENTAL CHARACTERS:
+${allowIncidental
+  ? `AI may invent up to ${incidentalMax} incidental characters when they serve a clear scene function.`
+  : "Do not invent named incidental characters unless absolutely necessary."}
+
+DYNAMIC CAST RULES:
+1. Core characters use their complete established schemas.
+2. Supporting characters receive role, goal, personality seed, knowledge, relationship,
+   scene function, and enough internal state to behave consistently.
+3. Incidental characters receive lightweight simulation only.
+4. Background crowds are collective texture, not individual agents.
+5. If an incidental character becomes narratively important, PROMOTE them to supporting status
+   and give them a richer state before continuing.
+6. Do not invent characters merely to fill empty space.
+7. Every invented character must have a scene function.
+
+CHARACTER CREATION DATA:
+${supportCharacters.length
+  ? supportCharacters.map(c =>
+      `- ${c.name}: role=${c.role}; function=${c.func}; personality=${c.personality}; goal=${c.goal}; knowledge=${c.knowledge}`
+    ).join("\n")
+  : "- None"}
+
+CURRENT MODE:
+${modeRule}
+
+USER SCENARIO:
+${scenario || "[No scenario supplied]"}
+
+EXISTING SCRIPT / SOURCE SCENE:
+${script || "[None supplied]"}
+
+EXECUTION ORDER:
+1. Identify dramatic function and scene beats.
+2. Build world state.
+3. Build character knowledge state.
+4. Build each important character's goals, fears, beliefs, interpretations, and tactics.
+5. Generate reaction branches privately.
+6. Resolve character collisions and consequences.
+7. Promote incidental characters if their behavior becomes important.
+8. Convert the resulting beat chain into prose.
+9. Run character, continuity, pacing, subtext, reference-leakage, and anti-AI audits.
+10. Output only the finished scene unless analysis is explicitly requested.
+
+IMPORTANT:
+Do not explain the schema.
+Do not announce media inspirations.
+Do not write "Rainee is like Stewie" or equivalent.
+The reader should infer personality through behavior, rhythm, reactions, dialogue, and consequences.
+`;
+  }
+
+  $("ss-add-core").addEventListener("click", () => addCore());
+  $("ss-add-support").addEventListener("click", () => {
+    const name = prompt("Name of the supporting character:");
+    if (name && name.trim()) addSupport(name.trim());
+  });
+
+  $("ss-create-support").addEventListener("click", () => {
+    const name = $("ss-new-name").value.trim();
+    if (!name) {
+      alert("Give the supporting character a name.");
+      return;
+    }
+
+    supportCharacters.push({
+      name,
+      role: $("ss-new-role").value.trim() || "supporting character",
+      func: $("ss-new-function").value,
+      personality: $("ss-new-personality").value.trim() || "scene-appropriate",
+      goal: $("ss-new-goal").value.trim() || "complete their immediate task",
+      knowledge: $("ss-new-knowledge").value.trim() || "only what the scene establishes"
+    });
+
+    addSupport(name);
+
+    ["ss-new-name","ss-new-role","ss-new-personality","ss-new-goal","ss-new-knowledge"]
+      .forEach(id => $(id).value = "");
+  });
+
+  // Default cast.
+  addCore("Rainee");
+  addCore("Noir");
+
+  $("ss-build").addEventListener("click", () => {
+    $("ss-output").value = buildPrompt();
+  });
+
+  $("ss-copy").addEventListener("click", async () => {
+    const promptText = $("ss-output").value || buildPrompt();
+    $("ss-output").value = promptText;
+    try {
+      await navigator.clipboard.writeText(promptText);
+      $("ss-copy").textContent = "Copied!";
+      setTimeout(() => $("ss-copy").textContent = "Copy Prompt", 1400);
+    } catch {
+      $("ss-output").select();
+      document.execCommand("copy");
+    }
+  });
+
+  $("ss-run").addEventListener("click", async () => {
+    const key = $("ss-key").value.trim();
+    if (!key) {
+      alert("Enter an API key for this browser session, or use Build Fiction Prompt and paste the generated prompt into ChatGPT or DeepSeek.");
+      return;
+    }
+
+    const provider = $("ss-provider").value;
+    const model = $("ss-model").value.trim() || (provider === "deepseek" ? "deepseek-chat" : "gpt-5");
+    const promptText = $("ss-output").value || buildPrompt();
+    $("ss-output").value = promptText;
+    $("ss-fiction").value = "Generating...";
+
+    try {
+      let endpoint, headers, body;
+
+      if (provider === "deepseek") {
+        endpoint = "https://api.deepseek.com/chat/completions";
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + key
+        };
+        body = {
+          model,
+          messages: [
+            {
+              role: "system",
+              content: "You are a fiction writer. Follow the supplied schema as control instructions and output the finished scene."
+            },
+            {role:"user", content:promptText}
+          ],
+          temperature: 1.0
+        };
+      } else {
+        endpoint = "https://api.openai.com/v1/responses";
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + key
+        };
+        body = {
+          model,
+          input: [
+            {
+              role: "system",
+              content: "You are a fiction writer. Follow the supplied schema as control instructions and output the finished scene."
+            },
+            {role:"user", content:promptText}
+          ]
+        };
+      }
+
+      const res = await fetch(endpoint, {
+        method:"POST",
+        headers,
+        body:JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || JSON.stringify(data));
+
+      let text = "";
+      if (provider === "deepseek") {
+        text = data.choices?.[0]?.message?.content || "";
+      } else {
+        text = data.output_text ||
+          data.output?.map(x => x.content?.map(y => y.text || "").join("")).join("") ||
+          "";
+      }
+
+      $("ss-fiction").value = text || JSON.stringify(data, null, 2);
+    } catch (err) {
+      $("ss-fiction").value =
+        "API error: " + err.message +
+        "\n\nTip: use Build Fiction Prompt and paste the generated prompt into ChatGPT or DeepSeek if the browser blocks the API request.";
+    }
+  });
+})();
+</script>
+<h3>4. CHARACTER COLLISION ENGINE</h3>
+<pre><code>FOR EACH BEAT:
+
+1. Read the source beat.
+2. Identify its dramatic/comedic function.
+3. Remove source-character-specific behavior.
+4. Assign the function to Rainee or Noir.
+5. Load that character's MEDIA-DERIVED behavioral operators.
+6. Load current state.
+7. Load relationship state.
+8. Determine what the character THINKS the other character means.
+9. Determine the character's immediate objective.
+10. Choose a tactic consistent with the character.
+11. Predict the other character's likely interpretation.
+12. Generate 3 candidate reactions:
+      A. Expected
+      B. Unexpected but consistent
+      C. Extreme but plausible
+13. Reject generic, copied, or personality-breaking candidates.
+14. Select the strongest collision.
+15. Update scene state and short-term memory.
+16. Continue to the next beat.</code></pre>
+<h3>5. REWRITE ENGINE</h3>
+<pre><code>USER:
+"Rewrite this Family Guy example with Noir and Rainee."
+
+ENGINE INTERPRETATION:
+
+SOURCE_MODE = MEDIA_REWRITE
+SOURCE = supplied Family Guy scene
+
+PRESERVE:
+- premise
+- dramatic function
+- comedy mechanism
+- escalation architecture
+- reversal/payoff when structurally important
+
+TRANSFORM:
+- characters
+- dialogue
+- reactions
+- relationship dynamics
+- physical behavior
+- setting details when necessary
+
+FORBID:
+- copying source dialogue
+- copying source catchphrases
+- making Rainee behave exactly like Stewie
+- making Noir behave exactly like Cher/Elle/Shelley
+- flattening both characters into one generic comedic voice
+- using the Jade City story as a stronger authority than real media evidence
+
+PIPELINE:
+SOURCE SCENE
+→ SCENE DNA
+→ CHARACTER FUNCTION MAPPING
+→ MEDIA BEHAVIOR LOAD
+→ CURRENT STATE LOAD
+→ RELATIONSHIP LOAD
+→ CHARACTER COLLISION
+→ NEW BEATS
+→ DIALOGUE
+→ VALIDATION AUDIT</code></pre>
+<h3>6. REWRITE FIDELITY MATRIX</h3>
+<table class="reference-table">
+<thead><tr><th>Element</th><th>Preserve</th><th>Transform</th><th>Reject</th></tr></thead>
+<tbody>
+<tr><td>Basic premise</td><td>✓</td><td></td><td></td></tr>
+<tr><td>Dramatic function</td><td>✓</td><td></td><td></td></tr>
+<tr><td>Comedy mechanism</td><td>✓</td><td></td><td></td></tr>
+<tr><td>Escalation architecture</td><td>✓</td><td></td><td></td></tr>
+<tr><td>Character identities</td><td></td><td>✓</td><td></td></tr>
+<tr><td>Dialogue</td><td></td><td>✓</td><td></td></tr>
+<tr><td>Relationship dynamics</td><td></td><td>✓</td><td></td></tr>
+<tr><td>Physical behavior</td><td></td><td>✓</td><td></td></tr>
+<tr><td>Exact source jokes</td><td></td><td></td><td>✗</td></tr>
+<tr><td>Source catchphrases</td><td></td><td></td><td>✗</td></tr>
+<tr><td>Source character personality</td><td></td><td></td><td>✗</td></tr>
+</tbody>
+</table>
+<h3>7. VALIDATION AUDIT</h3>
+<pre><code>CHARACTER AUDIT
+□ Could this reaction be explained by Rainee's identity + state?
+□ Could this reaction be explained by Noir's identity + state?
+□ Are the two characters using different reasoning styles?
+□ Did a media reference become a BEHAVIORAL MECHANISM rather than a copied voice?
+□ Did the relationship alter the reaction?
+□ Did the previous beat affect the next beat?
+
+SOURCE AUDIT
+□ Is the original scene's dramatic function preserved?
+□ Is the original comedy mechanism preserved?
+□ Was source dialogue independently reconstructed?
+□ Was source-character behavior transformed through Rainee/Noir?
+
+NOVELTY AUDIT
+□ Is the dialogue new?
+□ Is the reaction not merely a stored quote?
+□ Is at least one interaction produced by character collision?
+□ Does the scene contain a consequence that was not explicitly stored in the reference?</code></pre>
+<h3>8. DATA AUTHORITY</h3>
+<ol>
+<li><strong>L0 — Direct media evidence:</strong> transcripts, scripts, captions, scenes, documented actions.</li>
+<li><strong>L1 — Media-derived behavior:</strong> generalized patterns extracted from L0.</li>
+<li><strong>L2 — Character fusion:</strong> how L1 is filtered through Rainee or Noir.</li>
+<li><strong>L3 — Scenario DNA:</strong> reusable scene structures extracted from media.</li>
+<li><strong>L4 — Original Jade City material:</strong> validation and regression tests.</li>
+<li><strong>L5 — New generation:</strong> lowest authority. New prose may demonstrate the model but cannot rewrite the model without explicit human approval.</li>
+</ol>
+<div class="callout">
+<h3>Test Command</h3>
+<p><code>Rewrite this Family Guy example with Noir and Rainee. Preserve the source scene's dramatic/comedic function, but rebuild every reaction through the Media-First Character Behavior Schema. Use the source characters only to extract behavioral mechanisms. Do not imitate their dialogue. Run the Character Collision Engine and Validation Audit before presenting the rewritten scene.</code></p>
+</div>
+</section>
+</body>
+</html>

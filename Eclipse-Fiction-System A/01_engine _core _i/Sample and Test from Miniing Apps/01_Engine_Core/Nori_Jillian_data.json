@@ -1,0 +1,330 @@
+{
+  "header": {
+    "project": "Jillian_Noir_Master_FINAL_GENERIC",
+    "override_rule_special_to_character_top": {
+      "character": "Noir",
+      "species": "fox person, has fox ears, tail, whiskers",
+      "abilities": "can shape shift like her sister Rainee",
+      "orientation_and_species_bias": {
+        "sister_Rainee": "complete lesbian",
+        "Noir": "mostly lesbian but somewhat bisexual but prefers woman/woman bias",
+        "species_rule": "species only has woman and tend to date and be attracted to woman - woman/woman bias natural"
+      },
+      "lore_override": "Noir is fox person with fox ears, shape shifter like sister. Sister complete lesbian, Noir mostly lesbian somewhat bisexual but prefers woman/woman since species only has woman. Header overrides generic defaults for Noir ONLY. Family Guy clips below remain generic archetypes to avoid contamination - do NOT have generic archetypes say literal Family Guy lines.",
+      "writing_rules": [
+        "Use literary fart SFX pffffffft! braaaap! pooooot! pffft-pffft! not hertz",
+        "Use abstract behavioral mapping, not verbatim transcript for Noir dialogue",
+        "Keep complete_transcript_source as reference only",
+        "Family Guy clips store generic archetypes only"
+      ]
+    },
+    "total_datasets": 13
+  },
+  "total_datasets": 13,
+  "compilation_note": "Complete transcripts included as complete_transcript_source FOR REFERENCE ONLY - DO NOT have Noir say literally. Behavioral mapping abstract used for generation. Literary fart SFX pffffffft! braaaap! pooooot! pffft-pffft! not hertz. Generic archetypes only in Family Guy clips to avoid contamination - NO Rainee/Noir names in clips. Noir fox override at top.",
+  "datasets": [
+    {
+      "id": "clip01_period_disclosure",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "Brian, I'm on my period."
+        },
+        {
+          "speaker": "quiet companion",
+          "text": "Mm hmm."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "unfiltered_body_disclosure_as_intimacy",
+        "DO_NOT_SAY_LITERALLY": "I'm on my period",
+        "DO_SAY_ABSTRACT": "Disclose private body function in public without shame + teaching tone"
+      },
+      "literary_sfx": "none - body talk only",
+      "generic_archetypes": {
+        "unfiltered_discloser": "period disclosure without shame"
+      }
+    },
+    {
+      "id": "clip02_specific_time_specifically_at_10",
+      "complete_transcript_source": [
+        {
+          "speaker": "Brian",
+          "text": "Can we meet at a specific time?"
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Oh, like specifically at 10?"
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "literal_interpretation_vague_to_specific",
+        "DO_NOT_SAY_LITERALLY": "specifically at 10",
+        "DO_SAY_ABSTRACT": "Take vague specific time and translate to literal specific hour with confident teaching"
+      },
+      "generic_archetypes": {
+        "unfiltered_discloser": "literal interpreter"
+      }
+    },
+    {
+      "id": "clip03_kill_so_many_lemons",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "I just wish they didn't have to kill so many lemons to make lemonade."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "literal_empathy_for_metaphor",
+        "DO_NOT_SAY_LITERALLY": "kill so many lemons",
+        "DO_SAY_ABSTRACT": "Take idiom kill literally and empathize folk-etymology"
+      },
+      "generic_archetypes": {
+        "unfiltered_discloser": "literal empathy"
+      }
+    },
+    {
+      "id": "clip04_cancer_farts_hotel_FINAL_CORRECT",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "Brian, did you hear that?"
+        },
+        {
+          "speaker": "quiet companion",
+          "text": "Mm hmm."
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Remember what the doctor said? Flatulence means my digestive system is working again."
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Oh my God! I must have like six months worth of cancer farts built up!"
+        },
+        {
+          "speaker": "SFX",
+          "text": "pffffffft! braaaaaap! pffft-pffft-pffft! pooooot! — ~11 sec rolling sustained"
+        },
+        {
+          "speaker": "external community complainer",
+          "text": "Would you stop farting please!? This is a nice hotel!"
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "unfiltered_bodily_action_with_proud_claim",
+        "DO_NOT_SAY_LITERALLY": "six months worth of cancer farts",
+        "DO_SAY_ABSTRACT": "Proud claim exaggerated bodily function + medical reframe + literary pffffffft! braaaap!"
+      },
+      "literary_sfx": "pffffffft! → braaaaaap! → pffft-pffft! → pooooot! → pffft... trailing",
+      "generic_archetypes": {
+        "unfiltered_discloser": "pffffffft! braaaap! no shame",
+        "quiet_companion": "Mm hmm silent",
+        "external_community_complainer": "nice hotel boundary"
+      }
+    },
+    {
+      "id": "clip05_wedding_soul_train",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "Brian, no. You had your chance. I thought you were my soul train but you didn't want me. Soulmate. Soul food? I'm sorry. But I'm in love with Derek now. He's everything I have especially since my mom died of cancer."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "firm_boundary_with_malaprop_chain",
+        "DO_NOT_SAY_LITERALLY": "soul train",
+        "DO_SAY_ABSTRACT": "Confident malaprop chain sound-alike with self-repair"
+      },
+      "generic_archetypes": {
+        "stability_seeker": "chooses Derek"
+      }
+    },
+    {
+      "id": "clip06_federal_boob_inspector",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "Um he showed up at my door and said he was a federal boob inspector and I was going to tell him to go away but he had a warrant. It was a Snickers wrapper, Brian. I held up a Snickers wrapper. But then he started saying things to me that my father might say if he was still alive and I knew I liked him."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "literal_fake_authority_plus_father_seeking",
+        "DO_NOT_SAY_LITERALLY": "federal boob inspector, Snickers wrapper",
+        "DO_SAY_ABSTRACT": "Literal acceptance of fake authority + repeat object"
+      },
+      "generic_archetypes": {
+        "unfiltered_discloser": "literal authority",
+        "stability_seeker": "father figure"
+      }
+    },
+    {
+      "id": "clip07_respect_boundary_boys_face_away",
+      "complete_transcript_source": [
+        {
+          "speaker": "Jillian",
+          "text": "Enough. Stop it. Both of you. You obviously have no respect for either of us."
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Yeah, you're acting all mean. Now, I'm glad you made me face away during sex."
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Maybe you boys will get it together someday but it looks like that's all you are. Boys."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "respect_boundary_with_public_unfiltered_sexual_disclosure",
+        "DO_NOT_SAY_LITERALLY": "I'm glad you made me face away during sex",
+        "DO_SAY_ABSTRACT": "Public unfiltered sexual disclosure casual at table + respect frame You have no respect + label boys category"
+      },
+      "literary_sfx": "chair scrape on Enough Stop it",
+      "generic_archetypes": {
+        "unfiltered_discloser": "public sexual disclosure",
+        "external_complainer": "respect boundary"
+      }
+    },
+    {
+      "id": "clip08_retaliation_pawn_dated_just_to_hurt_you",
+      "complete_transcript_source": [
+        {
+          "speaker": "rival male",
+          "text": "I'm no saint. I dated Jillian just to hurt you."
+        },
+        {
+          "speaker": "quiet companion",
+          "text": "It's okay. It probably wouldn't have worked out like everything else."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "peripheral_female_used_as_pawn_in_male_rivalry",
+        "DO_NOT_SAY_LITERALLY": "I dated Jillian just to hurt you",
+        "DO_SAY_ABSTRACT": "Male admits dating peripheral female instrumentally to hurt rival"
+      },
+      "generic_archetypes": {
+        "rival_male": "uses peripheral female as pawn",
+        "quiet_companion": "resigned"
+      }
+    },
+    {
+      "id": "clip09_cheryl_bossy_reframe",
+      "complete_transcript_source": [
+        {
+          "speaker": "rival male",
+          "text": "Hey, Cheryl. Get your fat ass over here before I dump you."
+        },
+        {
+          "speaker": "Cheryl (peripheral female purple dress)",
+          "text": "He's so bossy. I love it."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "bossy_as_affection_reframe",
+        "DO_NOT_SAY_LITERALLY": "He's so bossy I love it",
+        "DO_SAY_ABSTRACT": "Reframe insulting command as affectionate literal positive reframe"
+      },
+      "generic_archetypes": {
+        "unfiltered_discloser": "reframes bossy as love"
+      }
+    },
+    {
+      "id": "clip10_brians_funeral_peripheral_faded",
+      "complete_transcript_source": [
+        {
+          "speaker": "family patriarch",
+          "text": "Brian wasn't just my dog. He was my best friend in the whole world. He was like a brother to me and I'm going to spend the rest of my life missing him."
+        },
+        {
+          "speaker": "family matriarch",
+          "text": "I'm starting to think the only way to stop missing Brian is to get a new dog."
+        },
+        {
+          "speaker": "child genius",
+          "text": "I wish we never went to that dump. Oh, this is all my fault. I'm the one who had to throw away the damn time machine."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "peripheral_ex_partner_faded_from_community_mourning",
+        "DO_NOT_SAY_LITERALLY": "Brian wasn't just my dog",
+        "DO_SAY_ABSTRACT": "Peripheral ex-partner alive sporadic background not present at funeral - vanishing once relationships ended, community mourners collective droopy eyes"
+      },
+      "literary_sfx": "door close soft, hockey net clatter, cemetery wind soft organ sniffles - no pffffffft! in this clip, previous clip literary pffffffft! braaaap! pooooot!",
+      "generic_archetypes": {
+        "peripheral_ex_partner_faded": "Jillian alive sporadic background not present",
+        "community_mourners": "collective grief",
+        "quiet_companion": "holds teddy silent witness"
+      }
+    },
+    {
+      "id": "clip11_stewie_yusuf_titanium_capacitor_quest",
+      "complete_transcript_source": [
+        {
+          "speaker": "child genius",
+          "text": "I need your help. I have to track down a titanium capacitor for a high wattage mainframe I'm going to construct."
+        },
+        {
+          "speaker": "shopkeeper",
+          "text": "Titanium capacitors. Sorry, there's no way to get those anymore."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "quest_to_reverse_loss_via_rare_component",
+        "DO_NOT_SAY_LITERALLY": "titanium capacitor",
+        "DO_SAY_ABSTRACT": "Child genius seeks rare component to rebuild time machine to save companion"
+      },
+      "generic_archetypes": {
+        "quiet_companion": "quest",
+        "shopkeeper": "says impossible"
+      }
+    },
+    {
+      "id": "clip12_restaurant_double_date_L_Espece_D_Andouille",
+      "complete_transcript_source": [
+        {
+          "speaker": "rival male",
+          "text": "I'd like to treat the four of us to dinner. Well, sure, wait, who's the fourth? Oh, my new girlfriend. Here she is."
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Hi, Brian. How are you?"
+        },
+        {
+          "speaker": "Cheryl",
+          "text": "I really like this restaurant."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "double_date_retaliation_setup",
+        "DO_NOT_SAY_LITERALLY": "Hi, Brian. How are you?",
+        "DO_SAY_ABSTRACT": "Unfiltered discloser greets former partner friendly no shame at retaliation double date"
+      },
+      "generic_archetypes": {
+        "rival_male": "brings peripheral as retaliation",
+        "unfiltered_discloser": "Hi Brian friendly"
+      }
+    },
+    {
+      "id": "clip13_sad_yank_time_machine_guilt",
+      "complete_transcript_source": [
+        {
+          "speaker": "family patriarch",
+          "text": "Guys, I'm going to need a few minutes alone upstairs. I gotta do like a sad yank."
+        },
+        {
+          "speaker": "child genius",
+          "text": "Stupid street hockey. I wish we never went to that dump. Oh, this is all my fault. I'm the one who had to throw away the damn time machine."
+        }
+      ],
+      "behavioral_mapping_abstract": {
+        "pattern": "guilt_over_loss_and_private_ritual_coping",
+        "DO_NOT_SAY_LITERALLY": "sad yank",
+        "DO_SAY_ABSTRACT": "Patriarch needs private ritual coping, child genius guilt over throwing away time machine"
+      },
+      "generic_archetypes": {
+        "family_patriarch": "private ritual",
+        "child_genius": "guilt"
+      }
+    }
+  ]
+}

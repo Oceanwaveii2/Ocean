@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noir Master - JSON Structure Comparison</title>
+<style>
+  :root { --bg:#0f0f13; --card:#1a1a20; --border:#2a2a32; --accent:#ff7ab2; --accent2:#7ab8ff; --text:#e8e8ec; --muted:#9a9aa3; --code:#15151b; }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height:1.6}
+  .wrap{max-width:1100px; margin:0 auto; padding:32px 20px 80px}
+  header{padding:28px; border:1px solid var(--border); border-radius:20px; background: linear-gradient(135deg, #1a1a20 0%, #1f1f2a 100%); margin-bottom:24px}
+  header h1{margin:0 0 8px; font-size:32px; letter-spacing:-0.02em}
+  header p{margin:0; color:var(--muted)}
+  .badge{display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; letter-spacing:0.04em; border:1px solid var(--border); background:#222230; margin-right:8px}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:800px){ .grid{grid-template-columns:1fr} }
+  .card{border:1px solid var(--border); background:var(--card); border-radius:16px; padding:20px}
+  .card h2{margin:0 0 12px; font-size:18px}
+  .card h3{margin:18px 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted)}
+  table{width:100%; border-collapse:collapse; font-size:14px}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--border)}
+  th{color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.06em}
+  code, pre{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background:var(--code); border:1px solid var(--border); border-radius:8px}
+  code{padding:2px 6px; font-size:13px}
+  pre{padding:14px; overflow:auto; font-size:12.5px; line-height:1.5; white-space:pre-wrap}
+  .accent{color:var(--accent)}
+  .accent2{color:var(--accent2)}
+  .flow{display:flex; gap:12px; flex-wrap:wrap; margin:12px 0}
+  .step{flex:1; min-width:200px; border:1px dashed var(--border); border-radius:12px; padding:14px; background:#17171e}
+  .step b{display:block; margin-bottom:6px}
+  .tag{display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#2a2a3a; border:1px solid var(--border); color:var(--muted); margin:2px}
+  .callout{border-left:3px solid var(--accent); padding:12px 16px; background:#201820; border-radius:0 12px 12px 0; margin:16px 0}
+  .callout2{border-left:3px solid var(--accent2); padding:12px 16px; background:#18202a; border-radius:0 12px 12px 0; margin:16px 0}
+  footer{margin-top:32px; color:var(--muted); font-size:12px; text-align:center}
+  a{color:var(--accent2); text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <span class="badge">JILLIAN MASTER • 13 DATASETS</span>
+      <span class="badge">STEWIE COMBINED • 9 DATASETS</span>
+      <span class="badge">NOIR FOX OVERRIDE</span>
+    </div>
+    <h1>Noir Bible Comparison — Structure & Tagging System</h1>
+    <p>How to turn your two JSON masters into a story engine. Built from <code>Jillian_Noir_Master_FINAL_GENERIC_13_1.json</code> + <code>Stewie_Master_COMBINED.json</code></p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>📁 Shared Skeleton</h2>
+      <pre>header {
+  project
+  override_rule_special_to_character_top {
+    character: "Noir"
+    species: "fox person, fox ears, tail, whiskers"
+    abilities: "shape shift like sister Rainee"
+    orientation: "Rainee complete lesbian, Noir mostly lesbian somewhat bi, woman/woman bias"
+  }
+}
+total_datasets
+datasets[] {
+  id
+  complete_transcript_source
+  behavioral_mapping_abstract
+  literary_sfx
+  generic_archetypes
+}</pre>
+      <h3>Core Rule</h3>
+      <p><code>complete_transcript_source</code> = FOR REFERENCE ONLY. Never have Noir say it literally. Use <code>behavioral_mapping_abstract.DO_SAY_ABSTRACT</code> instead.</p>
+    </div>
+    <div class="card">
+      <h2>🆚 Differences</h2>
+      <table>
+        <tr><th></th><th>Jillian (13)</th><th>Stewie (9)</th></tr>
+        <tr><td><b>Focus</b></td><td>Unfiltered disclosure, literal empathy, malaprop chain, respect boundary</td><td>Child genius shape-shifter, oopsie, absurd object swap, quest</td></tr>
+        <tr><td><b>Tag Depth</b></td><td>Flat: <code>literary_sfx: string</code></td><td>Rich: <code>literary_sfx_for_writing: {fart, vacuum: VROOOOM!, dialogue}</code>, <code>visual_highres_family_guy_rig</code>, <code>provenance</code></td></tr>
+        <tr><td><b>Special Mapping</b></td><td>None</td><td><code>special_rules_override</code>: Brian_diaper = Rainee surrender, Stewie_as_Noir = teasing coach, Stewie_as_Future_Rainee = confident new persona</td></tr>
+        <tr><td><b>Best For</b></td><td>Noir's voice: <code>pffffffft! braaaap! pooooot!</code>, "specifically at 10?", "soul train / soulmate / soul food"</td><td>Plot & visuals: transformation arc, nursery blue shelves, pink tiles teal cabinet</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>🏷️ Tagging System Explained</h2>
+    <div class="grid">
+      <div>
+        <h3>1. behavioral_mapping_abstract</h3>
+        <p>The engine. Turns a Family Guy joke into a reusable beat.</p>
+        <pre>{
+  "pattern": "unfiltered_bodily_action_with_proud_claim",
+  "DO_NOT_SAY_LITERALLY": "six months worth of cancer farts",
+  "DO_SAY_ABSTRACT": "Proud claim exaggerated bodily function + medical reframe + literary pffffffft! braaaap!"
+}</pre>
+        <div class="callout"><b>Pattern examples from your files:</b><br>
+          <span class="tag">unfiltered_body_disclosure_as_intimacy</span>
+          <span class="tag">literal_interpretation_vague_to_specific</span>
+          <span class="tag">quest_to_reverse_loss_via_rare_component</span>
+          <span class="tag">Rainee_surrender_transformation</span>
+          <span class="tag">bossy_as_affection_reframe</span>
+        </div>
+      </div>
+      <div>
+        <h3>2. literary_sfx</h3>
+        <p>Prose texture. Header rule: use literary <code>pffffffft! braaaap! pooooot! pffft-pffft!</code> not hertz.</p>
+        <pre>Jillian: "pffffffft! → braaaaaap! → pffft-pffft! → pooooot! → pffft... trailing"
+Stewie: {
+  "fart": "none - oopsie implies but no pffffffft! here",
+  "vacuum": "VROOOOM! whirrr hose suck pffft-pffft comedic"
+}</pre>
+        <h3>3. generic_archetypes</h3>
+        <p>Prevents lore contamination. Keep Family Guy generic, then cast your foxes.</p>
+        <pre>{
+  "unfiltered_discloser": "period disclosure without shame",
+  "quiet_companion": "Mm hmm silent",
+  "external_community_complainer": "nice hotel boundary",
+  "child_genius_shape_shifter": "Karina"
+}</pre>
+        <h3>4. header override</h3>
+        <p>Applies to ALL clips. This is your lore bible injection.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>✍️ How To Write a Story With Them - 5 Step Engine</h2>
+    <div class="flow">
+      <div class="step"><b>1. Lock Lore</b>Apply header override: fox ears/tail/whiskers, shape-shift, woman/woman bias. All scenes = woman/woman world.</div>
+      <div class="step"><b>2. Pick Beats</b>Choose 2-3 IDs for arc: Shame → Surrender → Pride.<br><code>clip07_respect_boundary</code> + <code>stewie08_brian_diaper_SPECIAL</code> + <code>clip04_cancer_farts_hotel</code></div>
+      <div class="step"><b>3. Map Roles</b>Use generic_archetypes → cast: <br>Rainee = surrenderer (Brian_diaper), Noir = teaser/coach (Stewie_as_Noir), Future_Rainee = confident (Stewie_as_Future_Rainee)</div>
+      <div class="step"><b>4. Write Abstract</b>Use DO_SAY_ABSTRACT + SFX, avoid DO_NOT_SAY_LITERALLY.<br>Ex: "Noir flicks tail, ears flat, matter-of-fact teaching tone + <code>pffft-pffft!</code>"</div>
+      <div class="step"><b>5. Paint Visual</b>Pull from Stewie's <code>visual_highres</code>: blue shelves toys dino, crib yellow rail, pink tiles teal cabinet, O-O wide eyes vs &gt; &lt; droopy.</div>
+    </div>
+
+    <div class="callout2">
+      <b>Example Prompt You Can Paste Into Your Writing Model:</b>
+      <pre>Character: Noir = fox person fox ears tail whiskers, shape shifter like sister Rainee, mostly lesbian somewhat bi woman/woman bias
+Sister: Rainee = complete lesbian fox person
+
+Beat: Rainee_surrender_transformation - community disgust "front yard poop = push to use toilet like everyone else" -> cute reframe "baby powder vs sick dying leak", shame to pride
+Roles: Brian_in_diaper = Rainee surrendering, Stewie_as_Noir = Noir teasing coaching potty expert, Stewie_as_Future_Rainee = Future Rainee confident persona after regular diaper use came out strongly
+SFX: No pffffffft here, but later: pffffffft! braaaap! pooooot! for proud claim
+Forbidden literal: "My poop", "wizard lives", "you look silly", "that dog is sick"
+Visual: pink tiles teal cabinet white toilet flowers on tank, white diaper saggy, Lois green shirt khaki O-O disgust then proud</pre>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <h2>📊 All IDs At A Glance</h2>
+      <h3>Jillian 13</h3>
+      <p><code>clip01_period_disclosure</code>, <code>clip02_specific_time_specifically_at_10</code>, <code>clip03_kill_so_many_lemons</code>, <code>clip04_cancer_farts_hotel_FINAL_CORRECT</code>, <code>clip05_wedding_soul_train</code>, <code>clip06_federal_boob_inspector</code>, <code>clip07_respect_boundary_boys_face_away</code>, <code>clip08_retaliation_pawn_dated_just_to_hurt_you</code>, <code>clip09_cheryl_bossy_reframe</code>, <code>clip10_brians_funeral_peripheral_faded</code>, <code>clip11_stewie_yusuf_titanium_capacitor_quest</code>, <code>clip12_restaurant_double_date_L_Espece_D_Andouille</code>, <code>clip13_sad_yank_time_machine_guilt</code></p>
+      <h3>Stewie 9</h3>
+      <p><code>stewie01_Desiree</code>, <code>stewie02_Karina_Smirnoff</code>, <code>stewie03_lois_cleans_diaper_with_vacuum_oopsie</code>, <code>stewie04_pooped_too_much_duty</code>, <code>stewie05_lightbulb_in_butt_diaper_in_lamp_socket</code>, <code>stewie06_foul_ball_sexy_party</code>, <code>stewie07_Stephanie_Griffin_pageant_threat_Chuck</code>, <code>stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE</code>, <code>stewie10_blood_vessel_dinner_strain</code></p>
+    </div>
+    <div class="card">
+      <h2>🔧 Recommended Unified Schema</h2>
+      <p>If you merge both, upgrade to this story-ready shape:</p>
+<pre>{
+  "id": "rainee_surrender_01",
+  "source_clip": "stewie08",
+  "pattern": "Rainee surrender transformation",
+  "abstract_behavior": "shame to acceptance, cute reframe, folk theory wizard lives",
+  "cast": {
+    "surrenderer": "Rainee",
+    "teaser_coach": "Noir",
+    "future_self": "Future_Rainee",
+    "community": "external_complainer"
+  },
+  "sfx": ["VROOOOM!", "pffffffft! braaaap!"],
+  "visual": "pink tiles teal cabinet, white saggy diaper",
+  "emotional_arc": "shame -> tease -> pride",
+  "arc_position": "midpoint",
+  "forbidden_literal": ["My poop", "you look silly"],
+  "orientation_tag": "woman/woman bias"
+}</pre>
+      <p style="color:var(--muted); font-size:13px">This lets you query by arc_position, sfx, cast, or pattern when building chapters.</p>
+    </div>
+  </div>
+
+  <footer>Generated for Brandon • Noir Master Comparison • Save this file: File → Save As</footer>
+</div>
+</body>
+</html>

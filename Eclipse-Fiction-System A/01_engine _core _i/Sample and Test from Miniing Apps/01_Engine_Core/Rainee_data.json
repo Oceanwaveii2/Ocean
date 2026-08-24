@@ -1,0 +1,470 @@
+{
+  "header": {
+    "project": "Rainee_Toddler_Stewie_Behavior_Master",
+    "total_datasets": 9,
+    "override_rule_special_to_character_top": {
+      "character": "Rainee",
+      "species": "glamorous fox person, fox ears and tail, shape-shifter",
+      "transformation_state": "physically regressed toddler",
+      "identity_preserved": true,
+      "behavioral_source": "Stewie Griffin datasets",
+      "rule": "All Stewie source datasets are interpreted as mined behavior/comedy evidence for transformed Rainee unless a dataset is explicitly mapped otherwise.",
+      "no_identity_swap": true,
+      "related_character": "Noir",
+      "special_clip_8_override": {
+        "Brian_in_diaper": "Rainee surrendering transformation progress",
+        "Stewie_as_Noir": "Noir teasing her",
+        "Stewie_as_Future_Rainee": "Future Rainee new persona after regular diaper use came out strongly"
+      }
+    },
+    "compilation_note": "Combined master compiled from the supplied Stewie JSON files. Duplicate standalone Batch 7 and Batch 8 records were not duplicated because their dataset IDs already exist in the supplied 8-dataset master. All source dataset content is preserved.",
+    "source_files": [
+      "Stewie-Batch8-SPECIAL-RaineeSurrender.json",
+      "Stewie-Batch7-Retry-Min.json",
+      "Stewie_Master_8_SPECIAL.json",
+      "Stewie_batch10_blood_vessel_min.json"
+    ],
+    "character_binding": {
+      "application_character": "Rainee",
+      "source_behavior_character": "Stewie Griffin",
+      "source_role": "behavioral and comedic reference source",
+      "identity_rule": "Stewie is NOT the transformed character. The transformed character is Rainee.",
+      "transformation_rule": "Rainee physically regresses into a toddler. Her identity, memories, relationships, fox-person nature, merchant instincts, and core history remain Rainee.",
+      "persona_rule": "The Stewie-derived material supplies a behavioral/comedic register that becomes characteristic of transformed Rainee. It does not replace her identity.",
+      "generation_label": "Rainee Cosmic Fox Toddler",
+      "heightened_generation_label": "Rainee Cosmic Fox Toddler with Stewie Persona Emerging"
+    },
+    "rainee_lore_baseline": {
+      "species": "glamorous fox person from a female/lesbian species",
+      "identity": "Rainee",
+      "core_traits_to_retain": [
+        "glamorous fox-person identity",
+        "fox ears and tail",
+        "shape-shifter nature",
+        "merchant instincts",
+        "bargaining ability",
+        "personal preferences and tastes",
+        "memories and relationships",
+        "very high spiritual energy"
+      ],
+      "transformed_state": "toddler regression",
+      "comedic_result": "The physical regression creates a strong contrast with surviving Rainee traits and a progressively Stewie-like behavioral register.",
+      "transformation_logic": "The transformation is a progressive compression of adult physical scale and social complexity, not a replacement of Rainee with Stewie.",
+      "basic_origin": "A supernatural/customer-service incident causes reality to interpret a complaint literally, progressively compressing Rainee until she becomes toddler-sized while fundamental Rainee traits survive.",
+      "story_anchor": "After the transformation, Rainee can continue functioning as a merchant, bargaining and reasoning while increasingly treating the toddler state as ordinary."
+    },
+    "rewrite_instructions": {
+      "when_reinterpreting_existing_story": "Apply these datasets to Rainee in her toddler-regressed state. Preserve the source story's narrative events unless a rewrite instruction explicitly changes them.",
+      "do_not": "Do not replace Rainee with Stewie Griffin, import Stewie's identity or memories, or treat the source transcripts as dialogue to copy verbatim.",
+      "do": "Extract behavioral mechanisms, comedic timing, reactions, speech tendencies, escalation patterns, and situational logic from the Stewie source material and express them through Rainee.",
+      "priority_order": [
+        "Rainee identity and story state",
+        "explicit story overrides",
+        "Rainee core traits",
+        "relationship rules",
+        "Stewie-derived behavioral mechanisms",
+        "source-specific surface details"
+      ]
+    },
+    "legacy_source_override_preserved": {
+      "character": "Noir",
+      "species": "fox person fox ears tail shape shifter like sister Rainee",
+      "orientation": "sister complete lesbian Noir mostly lesbian somewhat bi woman/woman bias",
+      "special_clip_8_override": {
+        "Brian_in_diaper": "Rainee surrendering transformation progress",
+        "Stewie_as_Noir": "Noir teasing her",
+        "Stewie_as_Future_Rainee": "Future Rainee new persona after regular diaper use came out strongly"
+      }
+    }
+  },
+  "total_datasets": 9,
+  "datasets": [
+    {
+      "id": "stewie01_Desiree",
+      "complete_transcript_source": [
+        {
+          "speaker": "Brian",
+          "text": "I'm still in love with Jillian."
+        },
+        {
+          "speaker": "Stewie as Desiree",
+          "text": "you can watch me have my period"
+        },
+        {
+          "speaker": "Stewie as Desiree",
+          "text": "we're going to douche the night away"
+        },
+        {
+          "speaker": "Jillian",
+          "text": "Hi, I'm Jillian. You two are a really cute couple."
+        },
+        {
+          "speaker": "Lee",
+          "text": "Hey, is that Desiree?"
+        }
+      ],
+      "behavioral_mapping_abstract": "child genius as girl fails sexy using period + douche unfiltered misapplied, gets recognized",
+      "literary_sfx": "no pffffffft! - restaurant murmur, gasp O-O",
+      "generic_archetypes": {
+        "child_genius_as_girl": "fails sexy",
+        "external_recognizer": "Lee"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie02_Karina_Smirnoff",
+      "complete_transcript_source": [
+        {
+          "speaker": "Narrator",
+          "text": "Stewie dresses up as a girl named Karina Smirnoff and makes up a wild story and it works. He gets the part."
+        },
+        {
+          "speaker": "Narrator",
+          "text": "Stewie and Julie become friends and even have a sleepover. Julie wishes Karina was a boy. Julie says she's not a lesbian."
+        },
+        {
+          "speaker": "Narrator",
+          "text": "During live taping, Stewie reveals he's a boy. Everyone shocked. Julie's mom refuses to let her talk to him. Stewie goes for ice cream with Brian."
+        }
+      ],
+      "behavioral_mapping_abstract": "child genius shape shifts as girl Karina to get female role, falls for Julie, sleepover, wishes was boy, not lesbian boundary, live reveals boy, shocked, parental refusal, ice cream coping",
+      "generic_archetypes": {
+        "child_genius_shape_shifter": "Karina",
+        "co_star": "Julie",
+        "rival": "Randall"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie03_lois_cleans_diaper_with_vacuum_oopsie",
+      "provenance": {
+        "file": "Family_Guy_-_Lois_Cleans_Stewie_s_Diaper_With_A_Vacuum.mp4",
+        "timecode": "00:00-00:10",
+        "complete_transcript_source": [
+          {
+            "speaker": "Stewie (child genius)",
+            "text": "Mommy, I had an oopsie."
+          },
+          {
+            "speaker": "Lois (family matriarch)",
+            "text": "Oh."
+          },
+          {
+            "speaker": "Stewie",
+            "text": "Hey, get back here and do the front."
+          }
+        ],
+        "note": "FOR REFERENCE ONLY"
+      },
+      "behavioral_mapping_abstract": {
+        "pattern": "child_reports_oopsie_then_directs_cleaning_with_absurd_tool",
+        "abstract_steps": [
+          "Child reports oopsie to matriarch in nursery",
+          "Matriarch uses absurd tool vacuum to clean instead of normal method",
+          "Child directs matriarch get back here and do the front - child directs adult cleaning"
+        ],
+        "DO_NOT_SAY_LITERALLY": "I had an oopsie, get back here and do the front",
+        "DO_SAY_ABSTRACT": "Child reports minor accident, matriarch uses absurd household tool for cleaning, child directs adult to complete front"
+      },
+      "visual_highres_family_guy_rig": {
+        "nursery": "Blue shelves toys dino octopus pink, crib yellow rail blue space bedding stars planets, mobile stars, orange chairs round table, dump truck, beach ball red white, green curtains, bunny picture, moon stars headboard",
+        "characters": "Lois orange hair green shirt khaki pants pink shoes vacuuming blue vacuum, Stewie yellow shirt red overalls diaper, eyes O-O wide on oopsie, Lois > < droopy surprised then kneels, uses hose attachment on diaper area comedic absurd",
+        "action": "Vacuum hose near diaper, Stewie standing, Lois kneeling then standing pushing vacuum"
+      },
+      "literary_sfx_for_writing": {
+        "fart": "none - oopsie implies but no literary pffffffft! here",
+        "vacuum": "VROOOOM! whirrr of vacuum, hose suck pffft-pffft comedic",
+        "dialogue": "Mommy I had an oopsie soft > <, Oh surprised, Hey get back here directive"
+      },
+      "generic_archetypes": {
+        "child_genius": "reports oopsie, directs adult cleaning",
+        "family_matriarch": "uses absurd tool vacuum for diaper cleaning, kneels, comedic",
+        "nursery_setting": "blue shelves toys"
+      },
+      "recurrence": "oopsie + absurd vacuum cleaning + directive do the front PATTERN",
+      "source_type": "direct",
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie04_pooped_too_much_duty",
+      "complete_transcript_source": [
+        {
+          "speaker": "Stewie",
+          "text": "There's so much duty in here. I can't take it anymore. I haven't eaten in four days because I can't fit anymore in there. Help me."
+        }
+      ],
+      "behavioral_mapping_abstract": "reports overfull duty euphemism, hyperbolic can't eat 4 days, pleads Help me, visual trailing long diaper",
+      "literary_sfx": "strained Help me, no pffffffft! here - duty euphemism",
+      "generic_archetypes": {
+        "child_genius": "overfull reports duty"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie05_lightbulb_in_butt_diaper_in_lamp_socket",
+      "provenance": {
+        "file": "Stewie_-_Lightbulb_in_butt.mp4",
+        "timecode": "00:00-00:09",
+        "complete_transcript_source": [
+          {
+            "speaker": "Peter",
+            "text": "Peter, why is there a diaper in the lamp socket? Louis, he's done it again."
+          },
+          {
+            "speaker": "Lois",
+            "text": "Wait a minute."
+          }
+        ],
+        "note": "FOR REFERENCE ONLY"
+      },
+      "behavioral_mapping_abstract": {
+        "pattern": "absurd_object_swap_diaper_lamp_lightbulb_butt",
+        "abstract_steps": [
+          "Diaper placed in lamp socket where lightbulb should be - object swap",
+          "Lightbulb placed in butt area where diaper should be - inverse swap",
+          "Family patriarch reports absurd find, matriarch notes recurrence he's done it again",
+          "Child genius nonchalant > < half-closed eyes"
+        ],
+        "DO_NOT_SAY_LITERALLY": "diaper in lamp socket, lightbulb in butt",
+        "DO_SAY_ABSTRACT": "Absurd object swap - hygiene object in light fixture and light object in hygiene area, patriarch reports, matriarch notes recurrence"
+      },
+      "visual_highres_family_guy_rig": {
+        "lamp": "Yellow lamp base orange table, diaper white on top where bulb should be, lightbulb icon inside diaper outline",
+        "room": "Light blue walls, wooden staircase brown railing, black speaker with circles, vase yellow with red flowers orange table",
+        "lois": "Orange hair green shirt khaki pants pink shoes eyes O-O surprised mouth open",
+        "stewie": "Bald squiggly hairs, diaper? Actually naked? lightbulb glowing near butt area white glow, eyes > < half-closed smug nonchalant, hand near mouth"
+      },
+      "literary_sfx_for_writing": {
+        "fart": "none - lightbulb gag",
+        "lamp": "buzz flicker? diaper in socket absurd",
+        "dialogue": "why is there a diaper in lamp socket surprised, he's done it again recurrence"
+      },
+      "generic_archetypes": {
+        "child_genius": "absurd object swap prank, nonchalant",
+        "family_patriarch": "reports diaper in lamp socket",
+        "family_matriarch": "notes recurrence he's done it again"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie06_foul_ball_sexy_party",
+      "complete_transcript_source": [
+        {
+          "speaker": "Stewie",
+          "text": "I really don't want to go to hell but I can't fight my nature. I'm just a hateful person."
+        },
+        {
+          "speaker": "Stewie",
+          "text": "If I'm drunk, I'll be calm. If I'm calm, I'll be nice and if I'm nice, I won't go to hell. Fix me a high ball."
+        },
+        {
+          "speaker": "Brian",
+          "text": "You can't drink, you're an infant."
+        },
+        {
+          "speaker": "Stewie",
+          "text": "Do you know what it's time for? A sexy party."
+        }
+      ],
+      "behavioral_mapping_abstract": "fear hell hateful nature, chain logic drunk=calm=nice won't go hell, demands drink, boundary infant, brief compliance then defies sexy party",
+      "generic_archetypes": {
+        "child_genius": "chain logic defies",
+        "quiet_companion": "boundary"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie07_Stephanie_Griffin_pageant_threat_Chuck",
+      "complete_transcript_source": [
+        {
+          "speaker": "handler",
+          "text": "Why don't you meet the other contestants while I go register you?"
+        },
+        {
+          "speaker": "Stewie as Stephanie Griffin",
+          "text": "Hello, I'm Stephanie Griffin."
+        },
+        {
+          "speaker": "contestant",
+          "text": "Hi, Stephanie. What's your talent?"
+        },
+        {
+          "speaker": "Stewie as Stephanie",
+          "text": "I sing. I do gymnastics and I can play seven instruments at the same time."
+        },
+        {
+          "speaker": "Stewie",
+          "text": "Hm, you could be a threat to me, Chuck."
+        }
+      ],
+      "behavioral_mapping_abstract": "Introduces female alias Stephanie Griffin + hyperbolic multi-talent boast 7 instruments + labels rival as threat calling male name Chuck - shape shifter pageant",
+      "generic_archetypes": {
+        "child_genius_shape_shifter_as_girl": "Stephanie pageant boast threat"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie08_brian_diaper_SPECIAL_RAINEESURRENDER_NOIR_TEASE_FUTURE_RAINEE",
+      "special_rules_override": {
+        "Brian_wearing_diaper": "REPRESENTS Rainee surrendering herself as the transformation progresses - diaper = surrender acceptance of new state, shame to pride arc",
+        "Stewie_role_1": "REPRESENTS Noir teasing her - child genius teasing, coaching toilet training, potty expert",
+        "Stewie_role_2": "REPRESENTS Future Rainee - after she started using diaper regularly the new Stewie persona came out strongly, confident new self"
+      },
+      "provenance": {
+        "file": "Brian_Wearing_An_Diaper.mp4",
+        "timecode": "00:00-02:57",
+        "complete_transcript_source_FOR_REFERENCE_ONLY": [
+          {
+            "speaker": "Lois",
+            "text": "Brian, what is this on my shoe? My poop. That's right and it's disgusting. I am sick of you using the front yard as your bathroom. It's time you learn to use the toilet like everyone else."
+          },
+          {
+            "speaker": "Brian",
+            "text": "Look, Lois told me I had to start using the toilet and you're the one who's had potty training so I'm counting on you to help me. Alright, we're two intelligent guys. We can figure this out."
+          },
+          {
+            "speaker": "Stewie/Brian",
+            "text": "What's that big back part? Maybe that's where the wizard lives who operates this thing. It would be wise not to anger him."
+          },
+          {
+            "speaker": "Brian",
+            "text": "Well, since I couldn't help you learn to use the toilet, I found something that can. It's an instructional video on toilet training."
+          },
+          {
+            "speaker": "TV Roy Shider",
+            "text": "Hi, I'm Roy Shider and today we're going to learn to use the potty. Folks, say hi to my pal, Hungry Hank. How's it going, Hank? I'm hungry for your poo."
+          },
+          {
+            "speaker": "Stewie",
+            "text": "Oh my god, you're wearing a diaper. You look silly. Why? You wear a diaper? Yes, but I'm a baby. People see my diaper and they say, oh how cute. I bet he smells like baby powder. They see your diaper and think, eww, that dog is sick. He must be dying. I hope it doesn't leak on our carpet. Why don't they just put him to sleep?"
+          },
+          {
+            "speaker": "Brian",
+            "text": "Well, look at you using the toilet. I am so proud of you."
+          }
+        ]
+      },
+      "behavioral_mapping_abstract_SPECIAL": {
+        "pattern": "Rainee_surrender_transformation_Brian_diaper_Stewie_as_Noir_tease_and_Future_Rainee",
+        "abstract": [
+          "Lois disgust front yard poop = community push to use toilet like everyone else = external pressure to conform",
+          "Brian+Rainee surrender: intelligent guys figure out toilet, wizard lives in back part wise not to anger him = folk theory of device",
+          "Instructional video Hungry Hank hungry for poo = absurd teaching",
+          "Diaper reveal = surrender moment: baby says oh how cute baby powder vs dog sick dying leak put to sleep = shame vs cute reframed - Rainee surrender judged by others",
+          "Stewie as Noir tease + Future Rainee coaching: potty training expert, teasing silly look, then proud Well look at you using toilet so proud",
+          "Final planting sausage seeds = absurd growth after transformation"
+        ],
+        "DO_NOT_SAY_LITERALLY": "My poop, wizard lives, I'm hungry for your poo, you're wearing a diaper you look silly, that dog is sick he must be dying",
+        "DO_SAY_ABSTRACT": "Rainee surrender diaper as transformation acceptance - community disgust to cute reframe, Noir teasing as coaching, Future Rainee confident persona emerges after regular use, folk logic wizard, hungry teaching, pride after use"
+      },
+      "visual_highres": {
+        "Lois": "green shirt khaki pants orange hair O-O disgust holding shoe",
+        "Brian_couch": "white dog red collar purple couch > < droopy shame then later diaper white saggy",
+        "Stewie": "red overalls yellow shirt bald, potty expert, later teasing silly look O-O wide, then proud",
+        "bathroom": "pink tiles teal cabinet pink rug white toilet flowers on tank, Brian sitting on toilet",
+        "diaper": "white diaper on dog, community judgment visual"
+      },
+      "literary_sfx": "Oh god careful careful toilet flush VROOOOM, instructional video cheery music, no pffffffft! here - but duty euphemism earlier",
+      "generic_archetypes_WITH_SPECIAL_OVERRIDE": {
+        "Brian_in_diaper": "SPECIAL = Rainee surrendering transformation progress - shame to acceptance, judged eww sick dying leak put to sleep vs cute baby powder",
+        "Stewie_as_Noir_tease": "SPECIAL = Noir teasing her - potty training expert, teases you look silly, coaches",
+        "Stewie_as_Future_Rainee": "SPECIAL = Future Rainee persona after regular diaper use - new Stewie persona came out strongly, confident, proud coaching",
+        "Lois": "external pressure - disgusted community push use toilet like everyone else, hose, proud later",
+        "TV_Hungry_Hank": "absurd instructional"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    },
+    {
+      "id": "stewie10_blood_vessel_dinner_strain",
+      "complete_transcript_source_FOR_REFERENCE_ONLY": [
+        {
+          "speaker": "Lois",
+          "text": "So Chris, what's the latest with your little girlfriend?"
+        },
+        {
+          "speaker": "Chris",
+          "text": "Oh, I don't think missus Lockhart likes me at all."
+        },
+        {
+          "speaker": "Lois",
+          "text": "Missus Lockhart? Your teacher?"
+        },
+        {
+          "speaker": "Chris",
+          "text": "Whoa. Whoa. Whoa. Whoa. Whoa. Whoa. Whoa. Whoa."
+        },
+        {
+          "speaker": "Peter",
+          "text": "Lois, this is not my Batman class. Peter, are you listening? Chris has a crush on his teacher."
+        },
+        {
+          "speaker": "Stewie",
+          "text": "Eww, gross. You know what else is gross? Yaha broke a damn blood vessel."
+        }
+      ],
+      "behavioral_mapping_abstract": "Family dinner crush on teacher teacher Miss Lockhart, Chris whoa whoa escalation, Peter Batman class confusion, Stewie high chair gross reaction blood vessel break from strain - physical consequence",
+      "visual_highres": "Dinner table cream tablecloth steak broccoli mashed, Chris blue shirt orange cap > < droopy, Lois green shirt O-O shocked, Peter white shirt hands up whoa, Meg pink hat, Stewie high chair blue bowl, eye red blood vessel burst O-O wide then red eye",
+      "literary_sfx": "whoa whoa whoa chain, no pffffffft! - strain pop blood vessel",
+      "generic_archetypes": {
+        "child_genius": "blood vessel break gross reveal",
+        "teen_crush": "Chris Miss Lockhart",
+        "patriarch": "Peter Batman class confusion"
+      },
+      "application_mapping": {
+        "target_character": "Rainee",
+        "target_state": "toddler_regression",
+        "source_character": "Stewie Griffin",
+        "use_as": "behavioral/comedic reference",
+        "identity_preservation": "Rainee remains the character being written"
+      }
+    }
+  ]
+}

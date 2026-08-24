@@ -1,0 +1,319 @@
+{
+  "schema_name": "Media-First Character Behavior & Interaction Schema",
+  "schema_version": "1.0",
+  "principle": {
+    "priority_order": [
+      "direct_media_reference",
+      "media-derived_behavioral_pattern",
+      "character_identity",
+      "current_state",
+      "relationship_state",
+      "original_story_evidence",
+      "new_generation"
+    ],
+    "rule": "Generated fiction may demonstrate or test a character model, but it must not silently redefine the character model when it conflicts with direct media evidence."
+  },
+  "source_layers": {
+    "L0_direct_media": "Actual cited media examples, dialogue, episode/scene context, and reference descriptions.",
+    "L1_extracted_behavior": "Generalized behavioral rules inferred only from L0 examples.",
+    "L2_character_fusion": "How the media-derived behavior is filtered through Rainee or Noir rather than copied literally.",
+    "L3_story_evidence": "Original Jade City story examples used as validation and secondary evidence.",
+    "L4_generation": "New scenes generated from the schema. Lowest authority."
+  },
+  "characters": {
+    "Noir": {
+      "identity": {
+        "core": "Sunny, bubbly blonde; the name Noir is an intentional contrast. Sunni is the brooding/goth sister.",
+        "relationship_role": "Sister and observer/interlocutor for Rainee.",
+        "source_note": "The file explicitly frames Noir through Shelley Darlingson, Elle Woods, and Cher Horowitz."
+      },
+      "media_reference_set": [
+        {
+          "reference": "Shelley Darlingson",
+          "source": "The House Bunny (2008)",
+          "functions": [
+            "bubbly blonde",
+            "socially playful",
+            "apparently simple presentation with useful practical/social intelligence",
+            "comic non sequitur tendency"
+          ],
+          "evidence": [
+            "frog-voice name memorization gag",
+            "absurd anatomical observation",
+            "matter-of-fact discussion of using different social angles"
+          ]
+        },
+        {
+          "reference": "Elle Woods",
+          "source": "Legally Blonde (2001)",
+          "functions": [
+            "underestimated intelligence",
+            "cheerful surface with genuine competence",
+            "unexpectedly precise knowledge",
+            "confident rebuttal when challenged"
+          ],
+          "evidence": [
+            "recognizes a technical clothing-construction issue",
+            "uses apparently simple reasoning to make a substantive argument"
+          ]
+        },
+        {
+          "reference": "Cher Horowitz",
+          "source": "Clueless (1995)",
+          "functions": [
+            "sweet",
+            "socially confident",
+            "sometimes airheaded presentation",
+            "surprisingly articulate and clever",
+            "signature dismissive reaction"
+          ],
+          "evidence": [
+            "formal vocabulary used in casual self-description",
+            "quick dismissive response",
+            "casual generational/social commentary"
+          ]
+        }
+      ],
+      "behavioral_rules": [
+        "Default emotional energy is bright rather than gloomy.",
+        "Can misunderstand or overreact to a situation while still noticing useful details.",
+        "When something is absurd, verbal processing becomes part of the joke.",
+        "Can be genuinely clever without losing the bubbly presentation.",
+        "With Rainee, laughter and sisterly judgment can coexist with curiosity and practical assistance.",
+        "Questions tend to be concrete and immediate, often escalating through incredulity."
+      ]
+    },
+    "Rainee": {
+      "identity": {
+        "pre_transformation": "Glamorous, carefree merchant personality derived primarily from Rangiku Matsumoto.",
+        "post_transformation": "Toddler-sized Rainee retaining adult memory and merchant cognition, filtered through a Stewie-like theatrical behavioral layer.",
+        "core_continuity": [
+          "merchant identity",
+          "haggling",
+          "status consciousness",
+          "love of quality goods",
+          "self-possession",
+          "ability to rationalize absurd circumstances"
+        ]
+      },
+      "media_reference_set": [
+        {
+          "reference": "Rangiku Matsumoto",
+          "source": "Bleach",
+          "mode": "pre_transformation personality reference",
+          "functions": [
+            "playfully observant",
+            "gently teasing",
+            "emotionally honest",
+            "casually profound",
+            "poetic and unexpectedly philosophical",
+            "fierce and protective",
+            "warm and physically affectionate",
+            "laid-back and blunt when annoyed"
+          ]
+        },
+        {
+          "reference": "Stewie Griffin",
+          "source": "Family Guy",
+          "mode": "post-transformation behavioral reference",
+          "functions": [
+            "theatrical self-presentation",
+            "adult-like language emerging from toddler circumstances",
+            "comic indignation",
+            "grandiose framing of trivial problems",
+            "diaper-related situational comedy",
+            "unexpectedly elaborate reactions"
+          ],
+          "important_boundary": "Use Stewie as a behavioral source, not as a replacement identity. Rainee remains Rainee and her merchant logic filters the borrowed behavior."
+        }
+      ],
+      "specific_media_examples": [
+        {
+          "source": "Family Guy, Bill & Peter's Bogus Journey, S5E13",
+          "behavioral_signal": [
+            "diaper can become a status/comedy contrast",
+            "Stewie treats the diaper as normal for himself",
+            "other characters' embarrassment can become part of the joke"
+          ]
+        },
+        {
+          "source": "Family Guy, Yug Ylimaf, S11E4",
+          "behavioral_signal": [
+            "diaper situation produces exaggerated disgust and theatrical reaction",
+            "physical inconvenience becomes a comic escalation trigger"
+          ]
+        },
+        {
+          "source": "Family Guy, Peter Problems, S12E9",
+          "behavioral_signal": [
+            "awkward practical situation is converted into a quick verbal joke"
+          ]
+        },
+        {
+          "source": "Family Guy, Stuck Together, Torn Apart, S3E19",
+          "behavioral_signal": [
+            "Stewie responds to a mundane diaper event with an unexpectedly voyeuristic/comic attitude"
+          ]
+        },
+        {
+          "source": "Family Guy, Baby Not on Board, S7E4",
+          "behavioral_signal": [
+            "baby logistics become an explicit practical problem",
+            "Stewie can treat supplies and shortages as real operational concerns"
+          ]
+        },
+        {
+          "source": "Family Guy, Death Lives, S3E6",
+          "behavioral_signal": [
+            "physical gag can be treated as a matter-of-fact experiment",
+            "absurd physical circumstances can generate curiosity rather than pure panic"
+          ]
+        }
+      ],
+      "behavioral_rules_pre_transformation": [
+        "Tease while observing details.",
+        "Can become emotionally sincere without losing casual delivery.",
+        "Can suddenly become philosophical.",
+        "Protectiveness emerges strongly when someone she cares about is threatened.",
+        "Affection may be expressed playfully and physically.",
+        "When annoyed, becomes blunt and direct."
+      ],
+      "behavioral_rules_post_transformation": [
+        "Embarrassment increases theatricality rather than silence.",
+        "Humiliation can be reframed as a business problem.",
+        "Physical limitations do not erase adult reasoning.",
+        "Merchant logic remains active even during absurd bodily or toddler situations.",
+        "She uses exaggerated declarations to restore status.",
+        "She can abruptly return to ordinary commerce after an embarrassing event.",
+        "A practical need can override dignity.",
+        "The transformation simplifies behavior toward immediate WANT while preserving specialized competence such as haggling.",
+        "Comfort and convenience reinforce the new behavioral state.",
+        "The Stewie layer can flicker on and off, with quieter genuine Rainee moments still possible."
+      ]
+    }
+  },
+  "interaction_engine": {
+    "turn_cycle": [
+      "observe_event",
+      "character_interpretation",
+      "activate_current_state",
+      "apply_media_derived_behavior",
+      "apply_character_identity_filter",
+      "apply_relationship_filter",
+      "choose_goal",
+      "choose_tactic",
+      "generate_action_or_dialogue",
+      "predict_other_character_response",
+      "update_scene_state",
+      "store_short_term_memory"
+    ],
+    "anti_flattening_rules": [
+      "Do not let both characters react using the same comedic voice.",
+      "Do not copy a reference quote into a new situation merely because it fits.",
+      "Generalize the behavioral mechanism behind a media example.",
+      "Prefer a new expression of an established behavior over a reused line.",
+      "Keep each character's knowledge separate.",
+      "Allow one character to misinterpret the other.",
+      "Let previous turns change future reactions.",
+      "Use contradictions between identity, current state, and physical circumstances as reaction generators."
+    ],
+    "branching": {
+      "candidate_count": 3,
+      "branches": [
+        "expected_character_consistent",
+        "unexpected_but_character_consistent",
+        "extreme_but_plausible"
+      ],
+      "reject": [
+        "generic reaction",
+        "personality-breaking reaction",
+        "direct imitation of source character",
+        "repeated reaction already used in the scene"
+      ]
+    }
+  },
+  "relationship_model": {
+    "Noir_to_Rainee": [
+      "high familiarity",
+      "high willingness to tease",
+      "genuine curiosity",
+      "sisterly judgment",
+      "willingness to help even while laughing"
+    ],
+    "Rainee_to_Noir": [
+      "expects teasing",
+      "can become defensive when embarrassed",
+      "still trusts Noir enough to demand help",
+      "treats Noir as an audience and an available resource",
+      "can share genuine vulnerability after theatrical resistance"
+    ]
+  },
+  "story_validation_examples": {
+    "purpose": "Secondary evidence. These examples demonstrate what the generated interaction engine should be capable of producing, but they do not override the media-derived behavior model.",
+    "examples": [
+      {
+        "event": "Noir discovers toddler Rainee in Jade City",
+        "Rainee_behavior": [
+          "immediately continues shopping",
+          "negotiates for a loyalty discount",
+          "evaluates pacifiers by quality and color",
+          "treats supplies as premium merchandise",
+          "converts bodily inconvenience into a professional/merchant frame"
+        ],
+        "Noir_behavior": [
+          "watches from hiding",
+          "laughs uncontrollably",
+          "verbalizes observations in increasingly incredulous detail",
+          "connects the current situation to an older embarrassing memory",
+          "eventually helps despite laughing"
+        ],
+        "schema_signal": "The scene is strongest when Noir's bubbly observational energy collides with Rainee's merchant competence plus theatrical toddler state."
+      },
+      {
+        "event": "Noir confronts Rainee about the transformation",
+        "Rainee_behavior": [
+          "explains through records, journals and spreadsheets",
+          "defends record-keeping as merchant survival",
+          "rationalizes continuing the god-related business because the jade was profitable",
+          "admits vulnerability only after defensive rationalization"
+        ],
+        "Noir_behavior": [
+          "asks concrete questions",
+          "calls out the absurdity of the spreadsheets",
+          "turns Rainee's explanation back into a simple causal summary",
+          "mixes judgment with fascination"
+        ],
+        "schema_signal": "This is a model of two different reasoning styles colliding rather than two characters merely exchanging jokes."
+      },
+      {
+        "event": "Rainee explains the personality change",
+        "Rainee_behavior": [
+          "describes herself as less layered and more desire-driven",
+          "retains merchant competence",
+          "frames the transformation as a bad contract converted into a profitable lifestyle",
+          "shows fear of further regression"
+        ],
+        "Noir_behavior": [
+          "tests the claim with concrete questions",
+          "notices that Rainee's supposedly new honesty still resembles her old bluntness",
+          "reduces the elaborate explanation to a simple observation"
+        ],
+        "schema_signal": "The contradiction itself becomes dialogue: Rainee claims simplification while still displaying sophisticated merchant reasoning."
+      }
+    ]
+  },
+  "generation_contract": {
+    "highest_priority": "real media evidence",
+    "second_priority": "generalized behavioral rules extracted from that evidence",
+    "third_priority": "character-specific fusion and transformation rules",
+    "fourth_priority": "original story examples as tests",
+    "lowest_priority": "newly generated behavior",
+    "failure_condition": "If a newly generated reaction cannot be traced to identity + state + relationship + behavioral rule, regenerate it."
+  },
+  "source_appendix": {
+    "original_story_included": true,
+    "story_title": "The Diaper Incident — Part II: The Explanation",
+    "story_role": "secondary generated-story evidence / validation set",
+    "full_source_text": "THE DIAPER INCIDENT — PART II: THE EXPLANATION\n            Final Clean Version with Corrected Dialogue\n            THE DIAPER INCIDENT — FINAL CORRECTED VERSION\n            ________________________________________\n            EXT. JADE CITY CENTRAL MARKET - DAY\n            The marketplace sprawls in every direction—stalls of enchanted silk, floating carts of glowing potions, merchants from a dozen dimensions haggling over impossible goods. The air smells of incense, ozone, and opportunity. Jade City's central market district hums with the low murmur of supernatural commerce, the clink of spirit-jade coins, and the occasional crackle of magical energy.\n\n            Three stalls back from the main artery, behind a display of hanging silk scarves, Noir presses herself against a support beam. Her blonde hair is slightly disheveled from the journey. Her eyes are wide. Her mouth is slightly open.\n\n            She has been watching for twenty minutes.\n\n            Her sister is here. Her sister is alive. Her sister is—\n\n            Oh no.\n\n            Her sister is wearing a diaper.\n\n            Noir spotted her three stalls away, moving through the crowd with the waddling gait of someone who has completely forgotten what normal walking feels like. The red hair was unmistakable. The black eyelashes. The fox ears. The tail. But the body was small. Diminutive. Toddler-sized. Koenma-sized. Stewie Griffin-sized.\n\n            And radiating enough presence to make nearby merchants' protective charms flicker nervously.\n\n            Noir has been following at a distance. Behind stalls. Behind displays. Behind anything that could hide her from the horrifying spectacle. Her hand has been clamped over her mouth for the entire duration. Her shoulders have been shaking.\n\n            Rainee stops at a stall. A pacifier stall. Rows and rows of pacifiers in every color imaginable. Some glow faintly. Some pulse with inner light. Some are just pacifiers. Normal-looking pacifiers. Pacifiers that would be perfectly ordinary in a baby's mouth.\n\n            Rainee picks one up. Examines it. Holds it to the light.\n\n            She is wearing a black diaper. Gold quilting runs across it in elaborate patterns. It looks expensive. It looks custom-made. It looks like something a merchant would commission because nothing off-the-shelf would do.\n\n            Rainee puts the pacifier down. Picks up another. The shopkeeper auntie watches with the patient expression of someone who has seen this exact negotiation many times.\n\n            Rainee holds up a lavender pacifier. Turns it over. Examines the gradient.\n\n            NOIR (whispering, to herself):\n            \"She's serious. She's REALLY serious. She's doing this because she NEEDS it. She needs the RIGHT pacifier. The PERFECT pacifier. She has a COLLECTION.\"\n\n            Rainee engages the shopkeeper. Her voice carries across the stalls. Clear. Articulate.\n\n            RAINEE:\n            \"I've been a customer here for three months. I expect a loyalty discount.\"\n\n            The auntie blinks. Slowly.\n\n            AUNTIE:\n            \"Three months. You've been coming here for three months. You've bought forty-three pacifiers.\"\n\n            RAINEE:\n            \"Forty-four as of today. If you give me a reasonable price on the lavender one.\"\n\n            Noir's eyes go wide. She starts counting on her fingers.\n\n            NOIR (to herself, counting):\n            \"Forty-three pacifiers. Divided by three months. That's about fourteen a month. That's like a new pacifier every TWO DAYS. She has a PACIFIER SCHEDULE. She's on a PACIFIER ROUTINE.\"\n\n            She pauses. Her eyes go wider.\n\n            NOIR (to herself, horrified realization dawning):\n            \"She used to collect JADE NECKLACES. Now it's pacifiers. This is a CAREER CHANGE.\"\n\n            AUNTIE:\n            \"Two spirit-jade.\"\n\n            RAINEE:\n            \"TWO? TWO? For a pacifier I am going to be sucking on for the next six hours while generating enough output to power your entire stall?\"\n\n            Rainee pauses. A satisfied smirk crosses her face.\n\n            RAINEE:\n            \"You're WELCOME, by the way. For the output. You're welcome.\"\n\n            Noir makes a sound. A high-pitched sound. Like a kettle. Like a very small, very stressed kettle. She slaps both hands over her mouth.\n\n            NOIR (muffled, through her fingers):\n            \"She said 'output.' She said 'output' like it was a SERVICE. Like she's PROVIDING something.\"\n\n            The negotiation continues. Rainee holds up the lavender pacifier. She examines it with the critical eye of a wine connoisseur.\n\n            RAINEE:\n            \"No. NO. This shade is NOT sufficiently WARM. I need the NEXT one over. The one with more AMBER in the gradient.\"\n\n            She stops.\n\n            Her expression shifts—first confusion, then dawning recognition. The eyes go wider. The ears flatten. Not dramatically. Just a small, quick FLAT. Like a cat that has felt something shift internally.\n\n            Rainee looks DOWN at her own midsection. Very briefly. One second. A quick, downward glance.\n\n            She looks back at the shopkeeper.\n\n            She does NOT break eye contact.\n\n            A very small, very brief LOOK crosses her face. Not pain. Not panic. Just a quick, clinical acknowledgment—a tiny squint, a press of the lips. The expression of someone who has felt a familiar, unwelcome, but entirely predictable internal event beginning, and who has decided to simply proceed through it.\n\n            From three stalls away, Noir sees this. Her pupils dilate. Her hand flies to her mouth again.\n\n            NOIR (whispering):\n            \"Oh. Okay. She's doing a face. Is that a poop face? I've never seen a poop face before. I mean, I've SEEN poop faces, but not on HER. Not on someone I KNOW. That's a different kind of face. That's a face I didn't know she HAD.\"\n\n            Rainee braces herself. Her new frame tenses. The gold quilting flickers, just slightly.\n\n            And then—\n\n            From three stalls away, a voice cuts through the market noise. Bright. Cheerful. Completely oblivious.\n\n            NOIR (loudly, waving):\n            \"HI RAINEE! Oh my GOD, it IS you! What the HECK happened to you?!\"\n\n            Rainee freezes.\n\n            Her head snaps toward the sound. Her eyes go wide. Her ears flatten completely.\n\n            The gold quilting—which was just beginning to activate—stutters. Flickers. The containment system is confused. The process is interrupted.\n\n            Rainee's composure cracks.\n\n            RAINEE (high-pitched, theatrical):\n            \"AAAAAAAAAH! What the BLOODY HELL, Noir?! What are you DOING here?!\"\n\n            She twitches. A full-body twitch. Her ears flatten. Her tail goes rigid. She clutches her midsection.\n\n            RAINEE:\n            \"Damn it! Not NOW!\"\n\n            Noir is already laughing. She cannot stop. Her giggles erupt from her chest like air from a punctured balloon.\n\n            NOIR:\n            \"Oh my GOD. Rainee. You're a TODDLER. What happened to you? You were gone for THREE MONTHS and now you're WEARING A DIAPER!\"\n\n            She squints at Rainee's midsection. Recognition dawns. Her eyes go wide.\n\n            NOIR:\n            \"Wait. Do you have to GO? You look like you have one of those faces. OH. Oh my GOD. That's the face. The face from the MUSHROOM MERCHANT. The harvest festival. Remember? You got your period. Right in the middle of haggling. And you made that EXACT face. And you got a DISCOUNT because you USED it.\"\n\n            Rainee's eyes go wide. Mortified. Her face flushes bright red beneath her fox fur.\n\n            RAINEE (through gritted teeth):\n            \"Noir, that is NOT the same thing—\"\n\n            NOIR:\n            \"The SAME face. Period then. Poop now. And I KNOW it. I know it from YEARS ago.\"\n\n            She points at Rainee. Points at her own face. Points at the diaper. Makes sounds. Cannot form words.\n\n            RAINEE (Stewie, mortified):\n            \"I am about to lose my DIGNITY in front of you and this entire marketplace, and you are LAUGHING at me!\"\n\n            Rainee strains. A huge, exaggerated effort. Her face contorts. Her tail goes completely stiff. The gold quilting begins to pulse.\n\n            NOIR (screaming with laughter):\n            \"You used to be so GLAMOROUS and now you're THIS! This is so FUNNY!\"\n\n            The gold quilting FLARES. A brilliant, blinding pulse of golden light.\n\n            RAINEE (Stewie, through gritted teeth):\n            \"DAMN it—HERE it COMES—\"\n\n            Rainee lets go.\n\n            It's not a sound so much as a release—a prolonged, squelching, deeply undignified torrent that seems to go on far longer than her new body should be capable of producing. The gold quilting on her diaper pulses frantically, glowing brilliant gold as it struggles to contain what has just been unleashed. The diaper visibly expands. Nearby merchants turn away. A magical object on a nearby stall begins to float.\n\n            Rainee's body shudders once, twice. Her eyes squeeze shut. Her little hands ball up.\n\n            Then it's over.\n\n            She exhales. Her entire body relaxes. Her ears droop. Her tail goes limp.\n\n            She opens her eyes. Looks down at the diaper. A satisfied smirk curls the corner of her mouth.\n\n            RAINEE (Stewie, smug):\n            \"Right. That's done. That's a LOT better. MUCH better.\"\n\n            She looks down at the diaper. Dark. Inert. Containment cycle complete. She looks at Noir.\n\n            RAINEE (Stewie):\n            \"You're laughing at my professional struggles. That's fine. Because you don't understand the SYSTEM. You don't understand the EFFICIENCY. You don't understand the MARGINS.\"\n\n            Noir is on the floor. Knees. Face in hands. Shoulders shaking. She is making sounds that should not be possible.\n\n            RAINEE (Stewie):\n            \"It is not the same thing. One was pain. One is—\"\n\n            She stops, considering.\n\n            RAINEE (Stewie):\n            \"...Actually. No. You're right. It IS the same face.\"\n\n            She gestures at herself. Diminutive. Diaper. Gold quilting. Pacifier dangling from its little strap.\n\n            RAINEE (Stewie):\n            \"Because the universe is CRUEL. I was GLAMOROUS. I was a DOUYIN FOX with RED HAIR and EYELASHES. And now I'm WEARING a DIAPER. Making the SAME face. But now it's my TAKING A DUMP face.\"\n\n            She pauses. A look of deep calculation on a face that barely reaches my knee.\n\n            RAINEE (Stewie):\n            \"Honestly, I need to lay off the fermented moon-pickled ghost-peppers. They're delicious but the after-effects are CATASTROPHIC. The metaphysical stink alone takes three hours to dissipate.\"\n\n            She waits for a moment. Nothing happens.\n\n            RAINEE (Stewie, to herself):\n            \"Right. That's better.\"\n\n            Then—her ears relax. Her tail swishes once. Slowly. Contentedly. The posture settles. The smirk softens. Just a little.\n\n            RAINEE (quiet, amused):\n            \"...They ARE the same face. That's actually kind of funny.\"\n\n            She looks at Noir. A smile so small you'd miss it if you blinked.\n\n            RAINEE:\n            \"From a certain perspective.\"\n\n            Noir looks up. Tears streaming. Mascara running. Face red. Eyes puffy. She is holding a silk scarf she doesn't remember buying.\n\n            NOIR:\n            \"The PERIOD DUMP FACE. I'm going to REMEMBER it. Forever.\"\n\n            Rainee removes the pacifier from her mouth. Just long enough to speak.\n\n            RAINEE:\n            \"Anyway. The amber shade. We were discussing price.\"\n\n            She turns back to the shopkeeper auntie. As though nothing happened.\n\n            AUNTIE:\n            \"Two spirit-jade.\"\n\n            Rainee's eyes narrow. She is back. Full merchant mode.\n\n            RAINEE:\n            \"Two spirit-jade? I just lost my DIGNITY in front of your stall. That's worth at least HALF OFF. I should get a HUMILIATION DISCOUNT.\"\n\n            Noir is still on the floor. Still processing. Still broken.\n\n            NOIR (to herself, quietly):\n            \"Why is she a toddler? It's a long story—one I'm still trying to untangle myself.\"\n\n            She doesn't get to finish.\n\n            Rainee's body twitches. Just slightly. A small, involuntary spasm. A tiny fart escapes. Just a little one.\n\n            Pfft.\n\n            Rainee freezes. Her ears flatten. Her tail goes still.\n\n            Noir's eyes go wide.\n\n            NOIR (slowly, a grin spreading across her face):\n            \"...Uh-huh. Untangle.\"\n\n            Rainee's face flushes. She straightens her posture. Removes the pacifier.\n\n            RAINEE:\n            \"One and a quarter spirit-jade. Final offer. Take it or leave it.\"\n\n            The auntie shrugs.\n\n            AUNTIE:\n            \"Fine.\"\n\n            Rainee places the pacifier in her cart. She turns to Noir. A satisfied nod.\n\n            RAINEE:\n            \"See? The margins are still good.\"\n\n            Noir is still on the floor. Still holding the scarf. Still making sounds.\n\n            NOIR (flat, distant, broken):\n            \"The fart was the most PROFESSIONAL part of that transaction.\"\n\n            She stares at the scarf. She doesn't remember buying it.\n\n            NOIR:\n            \"She farted and got a discount. Amazing.\"\n\n            The words spilled out before she could stop them. She was getting used to that.\n\n            Rainee's ears perk up. She turns to Noir. The Stewie persona flickers back, just for a moment. A theatrical smirk.\n\n            RAINEE (Stewie, commanding):\n            \"Well, since you're here to BUG me, Noir, make yourself USEFUL! Change me! I've got a HEAVY diaper! Do your SISTERLY DUTIES!\"\n\n            Noir stares. Her mouth opens. Closes. Opens again.\n\n            NOIR (laughing, incredulous):\n            \"I don't think it's my SISTERLY DUTY to change your diaper. You're OLDER than me.\"\n\n            Rainee waves a hand dismissively. The Stewie mode holds strong.\n\n            RAINEE (Stewie):\n            \"Well, whatever! You're OLDER than me NOW! Chop chop! If you're going to ANNOY me and LAUGH at my current state, make yourself USEFUL!\"\n\n            She gestures at the cart. At the supplies.\n\n            RAINEE (Stewie):\n            \"And use the baby powder I just got! It's TO DIE FOR! Makes it feel SUPER SMOOTH!\"\n\n            Noir is laughing. Can't stop laughing. But she's also standing up. Moving toward the cart.\n\n            NOIR (still laughing):\n            \"Okay, okay! I'll change you! But you STILL haven't explained why you're a LARGE TODDLER now!\"\n\n            Rainee's ears twitch. The Stewie mode wavers. She looks at Noir. A theatrical sigh.\n\n            RAINEE (Stewie, dismissive):\n            \"I said I'll explain LATER! Right now I'm trying not to think about how this happened! Now CHOP CHOP!\"\n\n            She turns. Points at the cart.\n\n            RAINEE (Stewie):\n            \"The powder is in the SECOND compartment. The gold-stitched one. Don't use the cheap stuff. I have STANDARDS.\"\n\n            Noir opens the compartment. The gold-stitched one. Inside: powder. Lavender-jade blend. The good stuff.\n\n            RAINEE (Stewie):\n            \"You know, even though I transformed, I still have a BIG ASS! I may be small, but this diaper holds a LEGEND.\"\n\n            Noir freezes. The powder container in her hand. Her face contorts. The laugh is building.\n\n            NOIR (wheezing):\n            \"The... the LEGENDARY BOOTY? You just called yourself—\"\n\n            RAINEE (Stewie, smug):\n            \"Yes. A LEGEND. In ALL THE LAND. And you're going to POWDER it. So CHOP CHOP.\"\n\n            Noir is shaking. She's crying. She's laughing. She's also opening the powder container.\n\n            NOIR:\n            \"Okay! Okay! I'm doing it! I'm powdering the legendary booty of all the land! This is my life now! This is what I've become!\"\n\n            She powders the diaper. The lavender-jade blend. It smells expensive. It smells like Rainee.\n\n            Rainee's Stewie persona holds for a beat. Two beats.\n\n            Then—her ears relax. Her tail swishes once. Slowly. Contentedly. The posture settles. The smirk softens. Just a little.\n\n            RAINEE (quiet, amused):\n            \"...Thank you. That's better.\"\n\n            She looks at Noir. A small, genuine smile.\n\n            RAINEE:\n            \"The powder really is excellent. You should try some.\"\n\n            Noir looks at the powder container. Still in her hand.\n\n            NOIR (flat, distant, broken):\n            \"I just powdered the legendary booty of all the land. And I agreed to do it. That's a sentence I said. Out loud. In public. To my sister. Who is a toddler. In a diaper.\"\n\n            She looks at the scarf. She doesn't remember buying it.\n\n            She watches. She cannot tear her gaze from the diaper that held her sister's new life.\n\n            ________________________________________\n            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS\n\n            Rainee waddles to the next stall. The cart follows. The gold quilting gleams. The pacifier is in her mouth. Her red hair catches the light. Her black eyelashes frame her eyes.\n\n            She is small. She is absurd. She is radiating enough metaphysical aura to level a city block. She is wearing a diaper. She just went in it. She just got powdered. She just told Noir her booty is a legend.\n\n            She waddles. She browses. She picks up a product. Examines it. Frowns.\n\n            RAINEE:\n            \"I'm sorry. Is this the BEST you have? Because this is NOT the quality I expect. I've been shopping here for THREE MONTHS. I expect BETTER. I expect PREMIUM. I expect the GOOD STUFF.\"\n\n            Three stalls away, Noir is still on the floor. She is holding the powder container. She is holding the silk scarf. She is crying. She is laughing. She is making the sound.\n\n            The silk shopkeeper looks down at Noir.\n\n            SHOPKEEPER:\n            \"That'll be two spirit-jade for the scarf, dear.\"\n\n            Noir pays. She doesn't remember taking out the coins. She doesn't remember handing them over. She just watches the next stall. She watches the diaper. She watches the gold thread.\n\n            Noir whispers to no one. To herself. To the silk display. To the universe.\n\n            NOIR:\n            \"The margins are still good.\"\n\n            She doesn't know why she said it.\n\n            She says it anyway.\n\n            She watches.\n\n            She cannot look away.\n\n            ________________________________________\n            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS\n\n            The negotiation is over. The pacifier is secured. The cart hovers behind Rainee, its gold quilting gleaming in the afternoon light.\n\n            Noir is still standing. Still holding the powder container. Still making sounds. But now she's pointing at Rainee with the powder container like an accusation.\n\n            NOIR:\n            \"Okay. I powdered your bum. I changed your diaper. I participated in... whatever THAT was. Now I deserve an explanation, little miss! What HAPPENED to you?!\"\n\n            Rainee sighs. A long, theatrical sigh. She removes the pacifier from her mouth. Holds it up. Examines it.\n\n            RAINEE:\n            \"Alright. Alright. You want to know what happened?\"\n\n            She looks at Noir. A tired smile.\n\n            RAINEE:\n            \"I didn't notice at first. I mean, you don't just wake up and go, 'Oh, I'm a toddler now.' It happens slowly. Clothes get looser. You start to feel... smaller. More basic. Less layered.\"\n\n            She pauses. Looks at her own hands.\n\n            RAINEE:\n            \"And then you look at your toilet and you realize it's almost twice your size. And you think... 'Okay. Something is happening.'\"\n\n            She looks back at Noir.\n\n            RAINEE:\n            \"But I didn't understand it until later. I thought I was just tired. Or stressed. Or losing weight from all the traveling. I made excuses. Merchants are good at making excuses. We can justify ANYTHING.\"\n\n            She reaches into her cart. Pulls out a journal. Small. Worn. Pages sticking out.\n\n            RAINEE:\n            \"I started documenting everything. I thought if I wrote it down, I could figure it out. Spoiler: I didn't figure it out. I just have a lot of paper now.\"\n\n            She flips through the journal. Shows Noir a page.\n\n            RAINEE:\n            \"Look at this. Day fourteen. 'I am now half the size of my toilet. I have no explanation. The customer paid in jade. I don't know if that's relevant.'\"\n\n            She closes the journal. Looks at Noir.\n\n            RAINEE:\n            \"I was very calm about it at first. Very professional. 'Oh, I'm shrinking. Better write it down.' That's how I coped. Spreadsheets. Journals. Organization. I thought if I documented it, I could control it.\"\n\n            Noir stares. Her hands go to her hips. She's doing the Jillian thing—the thing where she's trying to understand something that makes no sense, and she's asking questions in that way that's half-judgmental, half-genuinely confused.\n\n            NOIR (hands on hips):\n            \"Okay, like, wait. You made SPREADSHEETS. You have a JOURNAL. But you didn't think to, like... ASK someone? GO to a DOCTOR? CONSULT a specialist? You just... SHRANK? And DOCUMENTED it?\"\n\n            Rainee's ears flatten. Defensive.\n\n            RAINEE:\n            \"I'm a merchant. I keep records. It's how I survive.\"\n\n            Noir stares. Her mouth opens. Closes. Then she points at Rainee with the powder container.\n\n            NOIR:\n            \"You made SPREADSHEETS. For your own SHRINKAGE. That's not coping. That's DENIAL with, like, COLOR-CODED tabs.\"\n\n            RAINEE:\n            \"The tabs were VERY helpful.\"\n\n            NOIR:\n            \"I'm sure they WERE. I'm sure the COLOR-CODED SHRINKAGE TABS were VERY professional.\"\n\n            Rainee laughs. A sharp, defensive laugh.\n\n            RAINEE:\n            \"Look. Why didn't I look into it? Because the jade had a grip on me tighter than any contract. I made more in two weeks than I made in the previous YEAR.\"\n\n            She gestures at herself. At the diaper. At the cart.\n\n            RAINEE:\n            \"How do you think I'm affording these black silken diapers? They're CUSTOM-MADE. Gold thread. Void-silk. I have a RUNWAY of diapers. I got the Exotic Western European ones. You know, the ones with the extra padding. Very comfortable. Very expensive.\"\n\n            Noir's eyes go wide. She squints at the diaper like she's trying to see the European-ness.\n\n            NOIR (incredulous):\n            \"European diapers? You have IMPORTED diapers?\"\n\n            RAINEE:\n            \"I have a TASTE. I've haggled for three decades – I can spot a cheap pacifier from across the market.\"\n\n            She points at her cart. At the compartments. At the gold quilting.\n\n            RAINEE:\n            \"I'm buying baby supplies, yes. But I'm buying RICH WOMAN baby supplies. Real gold lining. The finest silks. The good powder. The lavender-jade blend. You saw the powder. You SMELLED it. That's not cheap. That's STATUS.\"\n\n            She pauses. A proud smile.\n\n            RAINEE:\n            \"I also got several donkeys. And a lot of jade. I'm actually the fourth richest merchant in this district. I have a mansion. You should visit. It has a PACIFIER ROOM.\"\n\n            Noir stares. Her mouth is open. She is not processing. She is just... receiving information.\n\n            NOIR (staring, broken):\n            \"...A pacifier room.\"\n\n            RAINEE:\n            \"A ROOM. For PACIFIERS. Organized by COLOR. You'd love it.\"\n\n            NOIR:\n            \"Holy crap. You're like, a rich toddler. Like, a REALLY rich toddler. Who has a PACIFIER ROOM. And IMPORTED DIAPERS.\"\n\n            Rainee's expression shifts. Embarrassed. Vulnerable.\n\n            RAINEE:\n            \"By the time I was half the size of my toilet, my bowels started to... go. Just a little. At first. I thought it was the food. Or the stress. But then it got worse. I almost ruined three outfits in one week. And these were GOOD outfits. Silk. Jade embroidery. The kind you don't just REPLACE.\"\n\n            She looks at Noir. A tired sigh.\n\n            RAINEE:\n            \"I started thinking to myself... 'Rainee, you need to get away from this. Something weird is going on.'\"\n\n            She pauses. Looks at the cart. At the gold quilting.\n\n            RAINEE:\n            \"But the profit margin was still fat, even if I wasn't. I couldn't walk away. The numbers didn't lie, and neither did my bank account.\"\n\n            Noir's face lights up. A slow grin spreading across her face. She's figured it out.\n\n            NOIR (slowly, grinning):\n            \"So you were, like, too GREEDY to look into the effects of the cosmic god you've been trading with.\"\n\n            Rainee's face lights up. A huge, theatrical grin.\n\n            RAINEE:\n            \"Yes! EXACTLY! You UNDERSTAND me!\"\n\n            Noir snickers. A judgmental, sisterly snicker.\n\n            NOIR:\n            \"You're hopeless. You're absolutely hopeless. You got turned into a toddler because you couldn't say no to good business.\"\n\n            RAINEE:\n            \"I'm a merchant. I turned a curse into a business opportunity. That's what we do.\"\n\n            She looks at the diaper. At the gold quilting.\n\n            RAINEE:\n            \"After the third ruined outfit, I knew I had to do something. So I swallowed my pride. I bought my first diaper. It was black. Plain. No gold thread. Just a diaper.\"\n\n            She laughs. A bitter laugh.\n\n            RAINEE:\n            \"That was a low point. A very low point. I sat in that inn room and I cried. I cried for like... an hour. Just sitting there. In a diaper. Crying. And then I realized... the diaper was actually comfortable.\"\n\n            Noir stares. Trying to process. Her brain is not computing.\n\n            NOIR:\n            \"You, like, cried in a diaper and then realized it was comfortable.\"\n\n            RAINEE:\n            \"The convenience! You don't understand! No more looking for bathrooms! No more rushing! Just... go. And the cart handles the rest.\"\n\n            Rainee's ears perk up. Defensive again.\n\n            RAINEE:\n            \"After I switched to diapers, I started noticing personality changes. I was getting more... theatrical. More demanding. More... BASIC. Like everything else was stripped away and what was left was just... WANT.\"\n\n            She looks at Noir. A uncertain look.\n\n            RAINEE:\n            \"I think I've stopped mutating. I hope I've stopped. I don't want to regress any further. I can still walk. I can still talk. I can still HAGGLE. That's what matters.\"\n\n            Noir leans in. Eyes narrowed. She's curious now. Genuinely curious.\n\n            NOIR (leaning in):\n            \"What kinda personality changes? Like, are you MEANER now? Are you NICER? Do you have a TEMPER? Do you throw things? Like a REAL toddler?\"\n\n            Rainee's ears flatten. The defensive mode cracks. Just a little.\n\n            RAINEE:\n            \"I'm more honest now. Less complicated. More pure. I don't lie anymore. I don't pretend. I just... WANT things. And I go get them. That's the personality change. I stopped being layered. I became simple.\"\n\n            She points at Noir, defensive again.\n\n            RAINEE:\n            \"Don't judge me. The cart keeps rolling, and the jade keeps stacking. And the diapers are COMFORTABLE. And I have a MANSION. And FOURTEEN DONKEYS. And I am the FOURTH richest merchant in this district. You're not going to find a better situation. You're just not.\"\n\n            Noir leans in closer. A grin spreading across her face.\n\n            NOIR (grinning):\n            \"So you're more HONEST now. That's funny. Because you were ALREADY pretty honest. You just had more WORDS for it. Now you just POINT and SCREAM.\"\n\n            Rainee's ears droop. A tired sigh.\n\n            RAINEE:\n            \"I'm more honest now. Less complicated. More pure. I don't lie anymore. I don't pretend. I just... WANT things. And I go get them. That's the personality change. I stopped being layered. I became simple.\"\n\n            Noir stares. Processing. The Jillian brain is working. Slowly. Painfully.\n\n            NOIR:\n            \"So you became, like, a toddler because you couldn't say no to a god.\"\n\n            RAINEE:\n            \"Basically.\"\n\n            NOIR:\n            \"And you stayed a toddler because the jade was too sweet.\"\n\n            RAINEE:\n            \"I was hooked. That cosmic baby paid in pure, untainted spirit‑jade – the kind that buys you a mansion.\"\n\n            NOIR:\n            \"And now you're, like, a rich toddler with fourteen donkeys and a pacifier room.\"\n\n            RAINEE:\n            \"Basically. And you should visit. The mansion is HUGE. I have a staff. They change me when I don't want to do it myself.\"\n\n            Noir stares. Processing again.\n\n            NOIR (staring):\n            \"You have a staff. That changes you. You have people. Who change your diaper.\"\n\n            RAINEE:\n            \"I have OPTIONS. That's the difference. I'm a MERCHANT. I made the best of a bad contract. I TURNED it into profit.\"\n\n            Noir laughs. A broken, disbelieving laugh.\n\n            NOIR:\n            \"You're hopeless. You're absolutely hopeless.\"\n\n            Rainee shrugs. A theatrical shrug.\n\n            RAINEE:\n            \"I'm a merchant. I'm always shopping. That's what I do. That's who I AM. The difference is now I'm shopping for my SOUL.\"\n\n            ________________________________________\n            FLASHBACK — EXT. COSMIC BABY'S DOMAIN - THREE MONTHS AGO\n\n            The scene shifts. Rainee is standing in a glowing marketplace. A floating stall. A single customer.\n\n            The Cosmic Infant is a being of pure light. Small. Infinite. Wanting.\n\n            It points at a product. Makes a sound. A complaint. A demand.\n\n            ________________________________________\n            VIGNETTE 1: The First Transaction\n\n            Rainee approaches the customer. Professional. Confident.\n\n            RAINEE (V.O.):\n            \"The customer was a Cosmic Infant. A being of infinite, pure, uncompromised WANT. It wasn't dissatisfied with the product. It was dissatisfied with the EXPERIENCE.\"\n\n            The Cosmic Infant makes a sound. A complaint forms in the air.\n\n            I want simpler. I want more basic. I want a merchant who is as simple as my want.\n\n            Rainee nods. She accepts. She's a merchant. This is what merchants do.\n\n            RAINEE (V.O.):\n            \"I accepted the obligation. Just like any other customer. But the customer was a god. And gods don't make ordinary complaints. They make SUPERNATURAL complaints. And when you accept a supernatural complaint... it becomes a contract.\"\n\n            ________________________________________\n            VIGNETTE 2: Week One — The Changes Begin\n\n            Rainee is traveling. She looks normal. Glamorous. Red hair flowing. Black eyelashes sharp.\n\n            Then she notices. Her robes are a little longer. She shrugs. Must be the humidity.\n\n            RAINEE (V.O.):\n            \"The first week was fine. I thought I was just tired. Or stressed. I didn't notice the changes. Not really.\"\n\n            She looks in a mirror. Something is different. She can't place it.\n\n            RAINEE (V.O.):\n            \"But then the cravings started. I couldn't stop thinking about pacifiers. Specific ones. Specific colors. I'd wake up in the middle of the night and think... 'I need the lavender one. The one with the amber gradient.'\"\n\n            ________________________________________\n            VIGNETTE 3: Week Two — The Toilet Realization\n\n            Rainee is in an inn. She wakes up. Goes to the bathroom. Looks at the toilet.\n\n            It's huge. It's almost twice her size.\n\n            She stares. Looks at herself. Looks back at the toilet.\n\n            RAINEE (V.O.):\n            \"I knew something was wrong when I was almost half the size of my toilet. That's not a thing you can ignore. That's a MOMENT. You wake up, you go to the bathroom, and you think... 'Why is my toilet so big? Did I buy a big toilet? No. I'm SHRINKING.'\"\n\n            She climbs the toilet to use it. Dignity is gone.\n\n            ________________________________________\n            VIGNETTE 4: The Bowel Problems\n\n            Rainee is in a marketplace. She's wearing silk. Jade embroidery. She looks glamorous. She looks like a merchant.\n\n            Her expression changes. She knows what's coming.\n\n            She makes it three steps before her bowels betray her.\n\n            RAINEE (V.O.):\n            \"I almost ruined three outfits in one week. And these were GOOD outfits. Silk. Jade embroidery. The kind you don't just REPLACE.\"\n\n            She stands in a corner. Humiliated. Checking the damage.\n\n            RAINEE (V.O.):\n            \"I started thinking to myself... 'Rainee, you need to get away from this. Something weird is going on.' But the jade held my attention the way gold holds a dragon's.\"\n\n            ________________________________________\n            END OF FLASHBACK\n            ________________________________________\n            EXT. JADE CITY CENTRAL MARKET - CONTINUOUS\n\n            Noir is silent for a moment. Processing. Then she looks at Rainee with a new expression—half-sympathetic, half-horrified.\n\n            NOIR:\n            \"So you knew. You KNEW you were shrinking. You KNEW something was wrong. And you just... kept going. Because the jade was too good.\"\n\n            Rainee nods. A tired nod.\n\n            RAINEE:\n            \"I couldn't stop. I COULDN'T. The jade was too sweet. The customer was too happy. I was too good at my job.\"\n\n            Noir shakes her head. A slow, disbelieving shake.\n\n            NOIR:\n            \"You traded your body for jade.\"\n\n            RAINEE:\n            \"I traded my LAYERS for jade. There's a difference.\"\n\n            NOIR:\n            \"Is there? Is there REALLY?\"\n\n            Rainee pauses. A thoughtful look crosses her face.\n\n            RAINEE:\n            \"...Probably not. But I made enough jade in one week to buy a small kingdom.\"\n\n            Noir stares. Then she starts laughing. A full, broken, disbelieving laugh."
+  }
+}

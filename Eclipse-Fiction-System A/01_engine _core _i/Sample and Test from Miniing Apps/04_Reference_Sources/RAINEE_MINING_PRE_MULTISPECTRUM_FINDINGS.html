@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rainee Mining Benchmark — Pre-Multispectrum Findings</title>
+<style>
+:root{--bg:#0b0f16;--panel:#121a24;--panel2:#0e151e;--text:#e8eef7;--muted:#9eafc2;--cyan:#42d9ff;--gold:#ffd166;--green:#62e6a7;--red:#ff7d8a;--purple:#b99cff;--border:#243347}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#0a0e14,#0c131d);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.55}
+main{max-width:1250px;margin:auto;padding:34px}.hero,.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 14px 40px rgba(0,0,0,.18)}
+h1{font-size:2.4rem;margin:0 0 8px}.subtitle{color:var(--muted);font-size:1.05rem}.badge{display:inline-block;border:1px solid var(--border);background:var(--panel2);border-radius:999px;padding:4px 10px;margin:4px 5px 0 0;font-size:.82rem;color:var(--cyan)}
+h2{color:var(--gold);margin-top:0} h3{color:var(--cyan)} code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace} pre{background:#091018;border:1px solid var(--border);padding:16px;border-radius:12px;overflow:auto;color:#d8e6f5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}.stat{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px}.stat b{display:block;font-size:1.5rem;color:var(--green)}
+table{width:100%;border-collapse:collapse;background:var(--panel2);border-radius:12px;overflow:hidden}th,td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top}th{color:var(--gold);text-align:left}tr:last-child td{border-bottom:none}.yes{color:var(--green);font-weight:700}.partial{color:var(--gold);font-weight:700}.no{color:var(--red);font-weight:700}
+.callout{border-left:4px solid var(--cyan);padding:14px 16px;background:#0b1722;border-radius:8px}.warning{border-left-color:var(--red)}.success{border-left-color:var(--green)}
+.small{font-size:.9rem;color:var(--muted)}ul{padding-left:1.25rem}.source{padding:10px 12px;border:1px solid var(--border);background:var(--panel2);border-radius:10px;margin:8px 0}.source b{color:#fff}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+</style></head>
+<body><main>
+<section class="hero">
+<h1>Rainee Mining Benchmark</h1>
+<div class="subtitle">Pre-Multispectrum Analysis · Recovered from the retained Rainee / Family Guy / Fiction Behavior Engine corpus</div>
+<div style="margin-top:14px"><span class="badge">Golden sample: Rainee → Stewie behavior transfer</span><span class="badge">Weak sample: Jillian → Noir</span><span class="badge">Baseline app: Fiction Behavior Engine v3.5</span><span class="badge">Goal: 110% analytical enrichment</span></div>
+<p style="margin-top:18px">This package is a historical benchmark, not the final miner. Its job is to show what the successful pre-multispectrum workflow actually captured, what it discarded, and how the next Mining App should improve the extraction pipeline without throwing away the evidence that made the old test work.</p>
+</section>
+
+<section class="card"><h2>1. What We Recovered</h2>
+<div class="grid">
+<div class="stat"><b>1</b> original Rainee/Noir HTML schema</div>
+<div class="stat"><b>1</b> JSON conversion of that schema/story data</div>
+<div class="stat"><b>4+</b> rewrite-engine / fiction-engine generations</div>
+<div class="stat"><b>3</b> v3.5 application copies/revisions</div>
+<div class="stat"><b>multiple</b> Family Guy / Stewie transcript evidence packets</div>
+<div class="stat"><b>1</b> controlled Rainee transformation test architecture</div>
+</div>
+<p>The original HTML schema explicitly establishes an authority stack where direct media evidence outranks generalized behavioral rules, character-filtered behavior, validation examples, and generated scenes. Generated fiction is not allowed to silently redefine the behavioral model.</p>
+</section>
+
+<section class="card"><h2>2. The Successful Old Pipeline</h2>
+<pre>RAW TRANSCRIPT
+      ↓
+ChatGPT transcript → Episode JSON
+      ↓
+Character / transformation-state selection
+      ↓
+Evidence stored in Episode Library
+      ↓
+Behavior + beats + relationship/state interpretation
+      ↓
+Interaction simulation / branching
+      ↓
+Original prose
+      ↓
+Audit</pre>
+<div class="callout success"><b>Critical finding:</b> the old v3.5 system did not actually discard the transcript. It preserved transcript chunks alongside observations, beats, tags, supplements, character/state links, and derived data. The transcript stayed evidence while the abstractions became reusable indexing layers.</div>
+</section>
+
+<section class="card"><h2>3. What the Old Miner Captured</h2>
+<table><thead><tr><th>Information class</th><th>Status</th><th>Assessment</th></tr></thead><tbody>
+<tr><td>Transcript / dialogue evidence</td><td class="yes">Captured</td><td>Strong. Retained as transcript chunks and source evidence.</td></tr>
+<tr><td>Speaker identity</td><td class="yes">Captured</td><td>Explicit speaker arrays/chunk structure.</td></tr>
+<tr><td>Episode / scene identity</td><td class="yes">Captured</td><td>Episode anchors, scene IDs, sequence fields.</td></tr>
+<tr><td>Basic situation</td><td class="yes">Captured</td><td>Often represented through episode function and observations.</td></tr>
+<tr><td>Observable behavior</td><td class="yes">Captured</td><td>This was one of the strongest outputs.</td></tr>
+<tr><td>Comedic function</td><td class="yes">Captured</td><td>Disproportionate response, escalation, observer contrast, etc.</td></tr>
+<tr><td>Beat architecture</td><td class="yes">Captured</td><td>Setup → pressure/problem → tactic → reaction → consequence patterns.</td></tr>
+<tr><td>Relationship dynamics</td><td class="partial">Partial / strong in selected scenes</td><td>Useful, but not uniformly evidence-backed.</td></tr>
+<tr><td>Transformation-state effects</td><td class="yes">Captured</td><td>State could alter priorities, reactions, physical constraints, vocabulary, reasoning, and interaction strategy.</td></tr>
+<tr><td>Dialogue tendencies</td><td class="partial">Derived</td><td>Useful behavioral abstraction, but often under-grounded in repeated examples.</td></tr>
+<tr><td>Physical / gesture behavior</td><td class="partial">Weak</td><td>Mostly text-observable actions, not systematic visual extraction.</td></tr>
+<tr><td>Facial expression</td><td class="no">Weak / mostly absent</td><td>No dedicated multimodal extraction layer.</td></tr>
+<tr><td>Vocal performance</td><td class="no">Weak / absent</td><td>Pitch, cadence, intensity, timing largely lost.</td></tr>
+<tr><td>Shot / camera / staging</td><td class="no">Absent</td><td>Not a core part of the v3.5 representation.</td></tr>
+<tr><td>Music / sound effects / silence</td><td class="no">Absent</td><td>No dedicated audio mining layer.</td></tr>
+<tr><td>Behavior frequency / recurrence statistics</td><td class="no">Absent</td><td>Traits were inferred, but recurrence was not systematically counted.</td></tr>
+<tr><td>Per-inference provenance / confidence</td><td class="partial">Partial</td><td>Some source separation existed, but not a full evidence-to-claim graph.</td></tr>
+</tbody></table>
+</section>
+
+<section class="card"><h2>4. Where Information Gets Stripped</h2>
+<p>The old system was optimized for <b>useful narrative abstraction</b>, not complete source preservation. That is why it could succeed while still losing large portions of the source.</p>
+<pre>RAW EVENT
+  ├─ visual action
+  ├─ facial change
+  ├─ body posture
+  ├─ vocal delivery
+  ├─ spoken content
+  ├─ timing
+  ├─ reaction delay
+  ├─ other-character interpretation
+  └─ consequence
+        ↓
+OLD ABSTRACTION
+  "character escalates theatrically"
+</pre>
+<p>The abstraction is useful, but it has compressed away the trigger, timing, physical implementation, delivery, sequence of micro-actions, and other evidence that made the inference trustworthy.</p>
+<div class="callout warning"><b>Mining failure mode:</b> a strong summary can look intelligent while silently deleting the causal evidence needed to reproduce, compare, debug, or improve the behavior later.</div>
+</section>
+
+<section class="card"><h2>5. The Jillian → Noir Lesson</h2>
+<p>Jillian is the deliberately weak / low-data case. The retained conversion notes make the important distinction explicit:</p>
+<pre>DO NOT:
+Jillian personality
+      ↓
+copy Jillian onto Noir
+
+DO:
+Jillian transcript evidence
+      ↓
+extract behavioral mechanisms
+      ↓
+filter through Noir's existing identity
+      ↓
+activate only mechanisms useful to the scene
+      ↓
+generate Noir-specific behavior</pre>
+<p>The resulting Noir schema extracted mechanisms such as literal interpretation, associative logic, enthusiastic validation, social trust, unfiltered observation, emotional sincerity, boundary response, comedic escalation, group solidarity, and emotional recovery.</p>
+<div class="callout success"><b>Lesson:</b> the miner should never confuse “this source exhibited X” with “this character is permanently X.” Repetition, context, and evidence count must determine confidence.</div>
+</section>
+
+<section class="card"><h2>6. What “110% Mining” Should Mean</h2>
+<p>110% is not literal information creation. It means preserving 100% of the useful evidence while adding a second layer of analytical value that was not explicit in the raw transcript.</p>
+<table><thead><tr><th>Level</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><b>100% source fidelity</b></td><td>Everything materially observable is preserved or explicitly marked as unavailable.</td></tr>
+<tr><td><b>+10% analytical enrichment</b></td><td>The miner derives reusable mechanisms, relationships, trigger/response structures, recurrence patterns, and causal operators while retaining links back to evidence.</td></tr>
+</tbody></table>
+</section>
+
+<section class="card"><h2>7. Recommended Mining v2 Data Model</h2>
+<pre>SOURCE MEDIA
+   ↓
+RAW EVIDENCE
+   ↓
+ATOMIC EVENTS
+   ↓
+OBSERVATIONS
+   ↓
+BEHAVIOR PATTERNS
+   ↓
+OPERATORS / FUNCTIONS
+   ↓
+CHARACTER MODEL
+   ↓
+RELATIONSHIP MODEL
+   ↓
+FICTION ENGINE
+
+Every upper layer retains source references to the layer below.</pre>
+<p>An atomic event should know its participants, stimulus, action, reaction, consequence, time span, transcript location, visual/audio evidence, behavioral interpretation, relationship target, comedic/narrative function, confidence, and provenance.</p>
+</section>
+
+<section class="card"><h2>8. Proposed Multispectrum Expansion</h2>
+<table><thead><tr><th>Stream</th><th>Mining targets</th><th>Old v3.5 gap</th></tr></thead><tbody>
+<tr><td>Text</td><td>Dialogue, action, scene context, semantic events</td><td>Strong baseline</td></tr>
+<tr><td>Video</td><td>Body movement, pose, gesture, facial expression, staging, object interaction</td><td>Major gap</td></tr>
+<tr><td>Audio</td><td>Voice intensity, pace, pitch, pauses, laughter, music, SFX, silence</td><td>Major gap</td></tr>
+<tr><td>Temporal</td><td>Reaction latency, escalation duration, repetition, beat timing</td><td>Major gap</td></tr>
+<tr><td>Relationship</td><td>Who triggers whom, interpretation, counter-reaction, trust/boundary changes</td><td>Partially modeled</td></tr>
+<tr><td>Recurrence</td><td>Trait frequency across scenes/episodes</td><td>Major gap</td></tr>
+<tr><td>Provenance</td><td>Evidence-to-claim traceability</td><td>Needs a dedicated layer</td></tr>
+</tbody></table>
+</section>
+
+<section class="card"><h2>9. Evidence-Backed Character Mining</h2>
+<pre>OBSERVED
+  Directly supported by source evidence
+
+SUPPORTED PATTERN
+  Repeated across multiple independent source events
+
+UNRESOLVED
+  Dataset does not contain enough evidence
+
+CONTRADICTED
+  Source contains evidence against the proposed rule
+
+INFERRED
+  Analytical hypothesis, explicitly marked as inference
+</pre>
+<p>This prevents the classic failure where a sparse minor-character dataset becomes a fake complete personality bible.</p>
+</section>
+
+<section class="card"><h2>10. Small-Data Benchmark Strategy</h2>
+<pre>1 scene
+  ↓
+extract everything available
+  ↓
+measure coverage + confidence
+  ↓
+3–5 scenes
+  ↓
+measure recurrence
+  ↓
+10–20 scenes
+  ↓
+measure stability / new traits
+  ↓
+episode cluster
+  ↓
+season
+  ↓
+series</pre>
+<p>Minor characters should be allowed to remain sparse. The system should report “unknown” instead of inventing missing dimensions.</p>
+</section>
+
+<section class="card"><h2>11. Benchmark the New Miner Against the Old Success</h2>
+<table><thead><tr><th>Benchmark</th><th>Old v3.5 baseline</th><th>Mining v2 goal</th></tr></thead><tbody>
+<tr><td>Source event retention</td><td>Moderate</td><td>Near-complete</td></tr>
+<tr><td>Behavior extraction</td><td>Strong</td><td>Strong + evidence-linked</td></tr>
+<tr><td>Comedy mechanism extraction</td><td>Strong</td><td>Strong + recurrence statistics</td></tr>
+<tr><td>Relationship extraction</td><td>Moderate</td><td>High + causal chains</td></tr>
+<tr><td>Physical behavior</td><td>Weak</td><td>High</td></tr>
+<tr><td>Facial behavior</td><td>Weak</td><td>High</td></tr>
+<tr><td>Vocal behavior</td><td>Weak</td><td>High</td></tr>
+<tr><td>Timing</td><td>Weak</td><td>High</td></tr>
+<tr><td>Provenance</td><td>Partial</td><td>Complete traceability</td></tr>
+<tr><td>Sparse-character handling</td><td>Risk of overgeneralization</td><td>Explicit uncertainty model</td></tr>
+</tbody></table>
+</section>
+
+<section class="card"><h2>12. Recovered Source Manifest</h2>
+<div class="source"><b>Media_First_Character_Behavior_Schema_Rainee_Noir.html</b><br><span class="small">Original/base Rainee + Noir Media-First schema.</span></div>
+<div class="source"><b>Media_First_Character_Behavior_Schema_Rainee_Noir.json</b><br><span class="small">Structured JSON conversion of the Rainee/Noir sample.</span></div>
+<div class="source"><b>Media_First_Character_Behavior_Schema_Rainee_Noir_REWRITE_ENGINE_v2.html</b><br><span class="small">Intermediate rewrite-engine form.</span></div>
+<div class="source"><b>Media_First_Character_Behavior_Schema_Rainee_Noir_REWRITE_ENGINE_v3.html</b><br><span class="small">Expanded rewrite-engine form.</span></div>
+<div class="source"><b>Media_First_Character_Behavior_Schema_Rainee_Noir_REWRITE_ENGINE_v4.html</b><br><span class="small">Expanded state machine, operators, audits, and transformation logic.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v3_5_SIMPLE_EPISODE_JSON.html</b><br><span class="small">Primary v3.5 application identified by its developer handoff.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v3_5_SIMPLE_EPISODE_JSON(1).html</b><br><span class="small">Retained v3.5 duplicate/revision.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v3_5_SIMPLE_EPISODE_JSON(2).html</b><br><span class="small">Retained v3.5 duplicate/revision.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v3_5_DEV_NOTES.md</b><br><span class="small">Primary handoff notes, architecture, data model, controlled test.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v3_DATA_LIBRARY(1).html</b><br><span class="small">Data-library generation showing evidence/episode integration.</span></div>
+<div class="source"><b>Fiction_Behavior_Engine_v2.html</b><br><span class="small">Earlier processing application.</span></div>
+<div class="source"><b>Pasted markdown(20260814-202819).md</b><br><span class="small">Transcript-style Family Guy source material recovered from the retained corpus.</span></div>
+<div class="source"><b>Rainee_Transformation_Lore_Node(1).html / (2).html</b><br><span class="small">Later conversion work showing evidence → behavior mechanisms → character-specific filters.</span></div>
+<div class="source"><b>Fiction_Engine_Rainee_Noir_Test.html</b><br><span class="small">Rainee/Noir interaction-engine experiment and causal comic-loop design.</span></div>
+</section>
+
+<section class="card"><h2>13. Bottom Line</h2>
+<div class="callout success"><b>The pre-multispectrum system was already doing the right conceptual thing.</b> It preserved source evidence, derived behavioral abstractions, separated character identity from inspiration/state, modeled relationship pressure, and converted the result into new fiction. Its weakness was not the overall idea. Its weakness was how much evidence disappeared between raw media and abstraction.</div>
+<p>The Mining App should therefore preserve the v3.5 architecture as the successful baseline, but insert a much richer evidence layer underneath it: atomic events, multimodal signals, recurrence statistics, temporal structure, relationship causality, confidence, contradiction handling, and complete provenance. The goal is not a larger JSON blob. The goal is a reversible chain from <span class="mono">source → evidence → inference → reusable behavior → fiction</span>.</p>
+</section>
+
+<footer class="small">Prepared from the retained ChatGPT file/library corpus on 2026-08-19. This package is a research handoff and benchmark snapshot, not a claim that every source file represents the exact first chronological version.</footer>
+</main></body></html>

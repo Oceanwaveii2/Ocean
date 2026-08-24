@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qwen Vision API Reference | Eclipse Visual Mining</title>
+<style>
+:root{
+  --bg:#0b1020; --panel:#121a2e; --panel2:#18223b; --text:#e8eefc;
+  --muted:#9eabc8; --line:#293754; --accent:#63d3ff; --accent2:#9dffb0;
+  --warn:#ffd166; --bad:#ff7f8a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#080c17,#0d1426 50%,#0a0f1d);color:var(--text);
+font:15px/1.6 Inter,Segoe UI,Arial,sans-serif}
+header{padding:42px 7vw 34px;border-bottom:1px solid var(--line);background:radial-gradient(circle at 20% 0%,#183457 0,transparent 42%)}
+h1{font-size:42px;line-height:1.05;margin:0 0 12px}
+h2{margin-top:38px;font-size:26px}
+h3{margin-top:25px;font-size:19px}
+p{max-width:980px}
+.container{width:min(1180px,86vw);margin:auto}
+.badge{display:inline-block;padding:5px 9px;border:1px solid #355878;border-radius:999px;color:var(--accent);font-size:12px;margin:4px 6px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:rgba(18,26,46,.9);border:1px solid var(--line);border-radius:14px;padding:19px}
+.card strong{color:var(--accent2)}
+pre{background:#070b14;border:1px solid var(--line);padding:17px;border-radius:12px;overflow:auto;color:#d7e7ff}
+code{color:#b8e9ff}
+table{width:100%;border-collapse:collapse;margin:15px 0 24px}
+th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;vertical-align:top}
+th{color:var(--accent)}
+.small{color:var(--muted);font-size:13px}
+.callout{border-left:4px solid var(--accent);background:#0f1d31;padding:14px 17px;border-radius:8px;margin:18px 0}
+.warning{border-left-color:var(--warn)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flow span{background:var(--panel2);padding:10px 12px;border-radius:9px;border:1px solid var(--line)}
+.flow b{color:var(--accent)}
+a{color:#7cdbff}
+footer{border-top:1px solid var(--line);margin-top:50px;padding:30px 0 60px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+  <div class="badge">ECLIPSE VISUAL MINING</div>
+  <div class="badge">QWEN PRIMARY</div>
+  <div class="badge">API REFERENCE</div>
+  <h1>Qwen Vision API</h1>
+  <p style="font-size:19px;color:#cbd7ed">
+    A practical design for turning images and video into structured visual evidence,
+    then feeding that evidence into the Eclipse relationship graph and FICTION narrative engine.
+  </p>
+  <p class="small">Research checked against Alibaba Cloud Model Studio documentation on August 20, 2026.</p>
+</div>
+</header>
+
+<main class="container">
+
+<h2>1. Decision</h2>
+<div class="callout">
+  <strong>Primary recommendation:</strong> use Alibaba Cloud Model Studio with
+  <code>qwen3.7-plus</code> as the first serious visual-mining target.
+  Alibaba currently documents it as a native vision-language model with image, text and video input,
+  structured outputs, and function calling.
+</div>
+
+<div class="grid">
+  <div class="card"><strong>Qwen3.7 Plus</strong><br>Primary high-quality video/image miner.</div>
+  <div class="card"><strong>Qwen3.6 Flash</strong><br>Cheap first-pass candidate detector.</div>
+  <div class="card"><strong>Qwen3.6 Plus</strong><br>Strong structured image/video extraction and localization.</div>
+  <div class="card"><strong>Qwen-OCR</strong><br>Specialized text extraction from visual material.</div>
+</div>
+
+<h2>2. Why Qwen fits Eclipse</h2>
+<p>
+  The target is not ordinary image captioning. Eclipse wants machine-readable observations:
+  who is present, what changed, what action occurred, what object was involved, when it happened,
+  and how confident the model is.
+</p>
+
+<p>
+  Alibaba's current visual-understanding documentation recommends <code>qwen3.7-plus</code> as the flagship
+  visual model and documents image/video understanding, a 1M context window, videos up to 2 hours / 2 GB,
+  function calling and built-in tools. The same documentation says <code>qwen3.6-flash</code> can be used
+  later to reduce cost while retaining a similar feature set. 
+</p>
+
+<div class="flow">
+  <span>Video / Images</span><b>→</b>
+  <span>Frame + Scene Preprocessor</span><b>→</b>
+  <span>Qwen Vision</span><b>→</b>
+  <span>Structured Visual JSON</span><b>→</b>
+  <span>Relationship Graph</span><b>→</b>
+  <span>FICTION</span>
+</div>
+
+<h2>3. Recommended architecture</h2>
+<pre>
+                    VISUAL MINER
+                         │
+          ┌──────────────┴──────────────┐
+          │                             │
+   Video / image input           Frame metadata
+          │                             │
+          └──────────────┬──────────────┘
+                         ▼
+                SCENE / FRAME SELECTOR
+                         │
+               coarse event detection
+                         │
+                         ▼
+                  QWEN VISION PASS
+                         │
+        ┌────────────────┼─────────────────┐
+        │                │                 │
+      subjects         actions          objects
+        │                │                 │
+        └────────────────┼─────────────────┘
+                         ▼
+               TEMPORAL EVENT JSON
+                         │
+                         ▼
+              VISUAL RELATIONSHIP GRAPH
+                         │
+                         ▼
+                   FICTION JSON
+                         │
+                         ▼
+                Narrative / prose LLM
+</pre>
+
+<h2>4. Two-pass mining strategy</h2>
+<p>
+  Do not send every frame of a long clip to the most expensive model. Use a cheap/coarse pass to locate
+  candidate intervals, then a dense analysis pass around those intervals.
+</p>
+<table>
+<tr><th>Pass</th><th>Purpose</th><th>Example output</th></tr>
+<tr><td>Pass A: discovery</td><td>Find interesting time windows and major visual events.</td><td>00:12.4–00:15.8 = expression/action change</td></tr>
+<tr><td>Pass B: forensic</td><td>Analyze selected frames or short windows in detail.</td><td>subject, pose, expression, object, interaction, confidence</td></tr>
+<tr><td>Pass C: normalization</td><td>Convert provider-specific output to Eclipse's canonical schema.</td><td>VisualObservation JSON</td></tr>
+</table>
+
+<h2>5. Canonical visual observation schema</h2>
+<pre>{
+  "asset_id": "clip_0042",
+  "scene_id": "scene_07",
+  "observations": [
+    {
+      "timestamp": 12.42,
+      "subject": "character_01",
+      "type": "pose_change",
+      "value": "arms_crossed",
+      "confidence": 0.94
+    },
+    {
+      "timestamp": 13.10,
+      "subject": "character_01",
+      "type": "expression_change",
+      "value": "surprised",
+      "confidence": 0.88
+    }
+  ]
+}</pre>
+
+<h2>6. The important separation: perception vs. interpretation</h2>
+<div class="grid">
+  <div class="card">
+    <h3>VISION</h3>
+    <p><strong>Question:</strong> What happened?</p>
+    <p>Detect characters, actions, expressions, poses, objects, camera events, temporal changes, text and interactions.</p>
+  </div>
+  <div class="card">
+    <h3>RELATIONSHIP LAYER</h3>
+    <p><strong>Question:</strong> How do the observations relate?</p>
+    <p>Convert raw observations into subject → action, subject → object, expression → event, and frame → timestamp relationships.</p>
+  </div>
+  <div class="card">
+    <h3>FICTION</h3>
+    <p><strong>Question:</strong> What does this mean for the narrative?</p>
+    <p>Apply character behavior masters, story structure, bindings, dials, duet patterns and narrative rules.</p>
+  </div>
+</div>
+
+<h2>7. Qwen API integration</h2>
+<p>
+  Alibaba documents an OpenAI-compatible interface for Qwen vision models. The basic migration pattern
+  is to change the API key, <code>base_url</code>, and model name. Region-specific endpoints exist for
+  China (Beijing), Singapore, Japan, US (Virginia), and Hong Kong.
+</p>
+
+<pre>from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://&lt;WorkspaceId&gt;.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
+)
+
+response = client.chat.completions.create(
+    model="qwen3.7-plus",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "video_url",
+                    "video_url": {
+                        "url": "https://example.com/clip.mp4"
+                    },
+                    "fps": 2
+                },
+                {
+                    "type": "text",
+                    "text": "Return JSON describing the visual events and their timestamps."
+                }
+            ]
+        }
+    ],
+    response_format={"type": "json_object"}
+)</pre>
+
+<p class="small">
+  The exact regional base URL and workspace identifier must come from the Alibaba Cloud Model Studio
+  console for the region/account being used. Do not paste API keys into client-side HTML.
+</p>
+
+<h2>8. Video sampling</h2>
+<p>
+  Alibaba's current Qwen visual-understanding examples show direct video input through the OpenAI-compatible
+  interface and a configurable <code>fps</code> sampling parameter. Their documentation explains that this
+  controls how frames are extracted from the original video so the model can reason about sequence, duration,
+  and dynamic changes.
+</p>
+
+<pre>
+coarse discovery:
+    fps = 0.5–2
+
+candidate window:
+    extract only around detected events
+
+dense analysis:
+    fps = 2–10 depending on motion and task
+
+final:
+    store timestamps + normalized observations
+</pre>
+
+<p>
+  The exact sampling rate should be task-dependent. Fast motion may need denser sampling; static dialogue
+  or composition analysis usually does not.
+</p>
+
+<h2>9. Structured output</h2>
+<p>
+  Qwen Model Studio currently documents JSON mode through <code>response_format:
+  {"type":"json_object"}</code>. The documentation also states that the system or user message must include
+  the word “JSON” for this mode.
+</p>
+
+<pre>{
+  "response_format": {
+    "type": "json_object"
+  }
+}</pre>
+
+<p>
+  For Eclipse, structured output should be mandatory. Free-form prose should be treated as a fallback/debug
+  mode, not as the canonical mining format.
+</p>
+
+<h2>10. Provider abstraction</h2>
+<p>
+  Even though Qwen is the preferred provider, do not hard-wire Eclipse to Qwen's response format.
+  Build a provider adapter.
+</p>
+
+<pre>
+VisionProvider
+    ├── QwenProvider
+    ├── GeminiProvider
+    ├── OpenAIProvider
+    └── OpenRouterProvider
+
+          ↓
+
+Canonical VisualObservation schema
+          ↓
+Visual Relationship Graph
+          ↓
+FICTION
+</pre>
+
+<p>
+  That lets the same 20 benchmark clips be tested against different vision models without changing
+  the downstream graph or FICTION layer.
+</p>
+
+<h2>11. Secondary Chinese models worth benchmarking</h2>
+<table>
+<tr><th>Provider / model</th><th>Use</th><th>Reason to keep in the test matrix</th></tr>
+<tr><td>Qwen3.7 Plus</td><td>Primary</td><td>Native image/video, structured output, function calling.</td></tr>
+<tr><td>Qwen3.6 Plus</td><td>Primary benchmark</td><td>Native vision-language; object recognition, OCR and localization improvements.</td></tr>
+<tr><td>Qwen3.6 Flash</td><td>Cheap discovery</td><td>Lower-cost route for broad first-pass visual mining.</td></tr>
+<tr><td>Kimi K2.5</td><td>Independent Chinese benchmark</td><td>Native visual understanding and useful alternative provider.</td></tr>
+<tr><td>GLM-5</td><td>Not primary vision model</td><td>Alibaba's current guidance distinguishes GLM-5 as text-only in the Coding Plan; visual capabilities require a Skill/Agent there.</td></tr>
+</table>
+
+<h2>12. Eclipse-specific mining targets</h2>
+<p>These should be represented as explicit detectors rather than one giant prompt.</p>
+<div class="grid">
+  <div class="card"><strong>Character detection</strong><br>identity candidate, screen position, visibility, occlusion</div>
+  <div class="card"><strong>Pose</strong><br>standing, sitting, turning, leaning, gesture, locomotion</div>
+  <div class="card"><strong>Expression</strong><br>neutral, surprise, anger, embarrassment, laughter, etc.</div>
+  <div class="card"><strong>Interaction</strong><br>gaze, proximity, contact, object use, response relationships</div>
+  <div class="card"><strong>Camera</strong><br>shot size, angle, cut, pan, zoom, framing changes</div>
+  <div class="card"><strong>Temporal events</strong><br>entry, exit, transformation, pose change, expression change, object change</div>
+  <div class="card"><strong>Text/OCR</strong><br>signs, captions, labels, UI, props, written dialogue</div>
+  <div class="card"><strong>Visual composition</strong><br>character placement, foreground/background, dominant objects, scene layout</div>
+</div>
+
+<h2>13. How this feeds FICTION</h2>
+<p>
+  Eclipse's current narrative schema already defines a pipeline in which structured story data and behavior
+  masters are bound before final prose generation. The visual miner should therefore produce another
+  structured evidence stream rather than directly writing story prose.
+</p>
+
+<pre>
+VISUAL DATA
+    ↓
+VisualObservation[]
+    ↓
+Visual Relationship Graph
+    ↓
+Behavior Pattern Candidates
+    ↓
+FICTION bindings
+    ↓
+scene performance slots
+    ↓
+LLM prose generation
+</pre>
+
+<h2>14. Security</h2>
+<div class="callout warning">
+  <strong>Never put the Qwen API key in browser JavaScript.</strong><br>
+  Use a small local/server-side API bridge:
+  browser → local backend → Qwen.
+  The browser should only know your local endpoint.
+</div>
+
+<pre>
+Browser
+   │
+   │ POST /api/vision
+   ▼
+Local Eclipse backend
+   │
+   │ Authorization: Bearer &lt;DASHSCOPE_API_KEY&gt;
+   ▼
+Alibaba Cloud Model Studio
+</pre>
+
+<h2>15. Recommended first prototype</h2>
+<ol>
+<li>Build a local Qwen adapter using the OpenAI-compatible interface.</li>
+<li>Upload one short clip.</li>
+<li>Ask for only timestamped visual events in JSON.</li>
+<li>Normalize the response into the canonical VisualObservation schema.</li>
+<li>Render those observations as nodes in the relationship editor.</li>
+<li>Only then connect the output to FICTION.</li>
+</ol>
+
+<div class="callout">
+  <strong>Design principle:</strong> the vision model is the sensor, not the author.
+  Qwen observes the visual material. Eclipse decides how those observations become relationships,
+  behavior evidence, and eventually narrative.
+</div>
+
+<h2>Sources</h2>
+<ul>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/vision-model" target="_blank">Alibaba Cloud Model Studio: Visual understanding</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/qwen3-7-plus" target="_blank">Alibaba Cloud: qwen3.7-plus model info</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/qwen3-6-plus" target="_blank">Alibaba Cloud: qwen3.6-plus model info</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/qwen-vl-compatible-with-openai" target="_blank">Alibaba Cloud: OpenAI-compatible Qwen Vision API</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/vision" target="_blank">Alibaba Cloud: Qwen image and video understanding</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/qwen-structured-output" target="_blank">Alibaba Cloud: Qwen structured output</a></li>
+<li><a href="https://www.alibabacloud.com/help/en/model-studio/qwen-vl-ocr-api-reference" target="_blank">Alibaba Cloud: Qwen-OCR API reference</a></li>
+</ul>
+
+</main>
+<footer>
+<div class="container">
+  Eclipse Visual Mining / Qwen API Reference · Updated 2026-08-20
+</div>
+</footer>
+</body>
+</html>
