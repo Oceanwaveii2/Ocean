@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canonical Mining Evaluation | Eclipse Fiction System</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1c2730;
+      --muted: #5e6971;
+      --paper: #f4f6f7;
+      --surface: #ffffff;
+      --line: #d4dce0;
+      --blue: #0d6282;
+      --teal: #1c7c73;
+      --gold: #9b6b18;
+      --red: #9a3f43;
+      --code: #16242d;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+    a { color: var(--blue); }
+    a:focus-visible, summary:focus-visible {
+      outline: 3px solid #f0bc4b;
+      outline-offset: 3px;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 276px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 28px 20px;
+      background: #172a34;
+      color: #e8eff1;
+      border-right: 1px solid #11212a;
+    }
+    .brand {
+      margin: 0 0 28px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+    .brand span {
+      display: block;
+      margin-top: 6px;
+      color: #a9bec5;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    nav a {
+      display: block;
+      padding: 8px 10px;
+      border-left: 2px solid transparent;
+      color: #cddadd;
+      font-size: 0.83rem;
+      line-height: 1.28;
+      text-decoration: none;
+    }
+    nav a:hover { color: #ffffff; border-left-color: #67c1b6; }
+    .side-note {
+      margin-top: 28px;
+      padding: 12px;
+      color: #b9c8cc;
+      border-top: 1px solid #35505c;
+      font-size: 0.77rem;
+    }
+    main { min-width: 0; }
+    .wrap {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+    .intro {
+      padding: 56px 0 42px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--teal);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 {
+      margin: 0;
+      color: #15232c;
+      line-height: 1.15;
+    }
+    h1 { max-width: 900px; font-size: clamp(2.1rem, 5vw, 4.1rem); }
+    h2 { margin-top: 0; font-size: clamp(1.45rem, 2.6vw, 2.15rem); }
+    h3 { margin-top: 26px; font-size: 1.12rem; }
+    .lead { max-width: 850px; margin: 20px 0 0; color: #3c4b53; font-size: 1.15rem; }
+    .status {
+      max-width: 900px;
+      margin-top: 24px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--teal);
+      background: #e7f3f1;
+    }
+    section { padding: 42px 0; border-bottom: 1px solid var(--line); }
+    section:last-child { border-bottom: 0; }
+    p, li { max-width: 860px; }
+    .flow {
+      margin: 24px 0 0;
+      padding: 18px;
+      overflow-x: auto;
+      background: var(--code);
+      color: #e3eff2;
+      border-radius: 6px;
+      font: 0.88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+    .callout {
+      max-width: 900px;
+      margin: 22px 0;
+      padding: 16px 18px;
+      background: #fff8e5;
+      border-left: 4px solid var(--gold);
+    }
+    .boundary {
+      max-width: 900px;
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #eaf1f6;
+      border-left: 4px solid var(--blue);
+    }
+    .table-wrap { overflow-x: auto; margin-top: 20px; }
+    table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+      background: var(--surface);
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      border: 1px solid var(--line);
+    }
+    th { background: #e9eff1; font-size: 0.86rem; }
+    code { overflow-wrap: anywhere; }
+    pre {
+      max-width: 900px;
+      padding: 18px;
+      overflow-x: auto;
+      background: var(--code);
+      color: #e3eff2;
+      border-radius: 6px;
+      font-size: 0.82rem;
+    }
+    details {
+      margin-top: 18px;
+      padding: 0 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    summary {
+      cursor: pointer;
+      color: #17394b;
+      font-weight: 760;
+    }
+    .hint { margin: 9px 0 0; color: var(--muted); font-size: 0.91rem; }
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    figure {
+      margin: 0;
+      padding: 10px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    figure img, figure video {
+      display: block;
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      background: #101a20;
+      border-radius: 3px;
+    }
+    figcaption {
+      margin-top: 8px;
+      color: #48565d;
+      font-size: 0.79rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .asset-list {
+      columns: 2 320px;
+      column-gap: 32px;
+      max-width: 1050px;
+      padding-left: 20px;
+    }
+    .asset-list li { break-inside: avoid; margin-bottom: 7px; font-size: 0.86rem; }
+    .source-tag {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      background: #e2f0ed;
+      color: #15574f;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .derived { background: #f4e9ee; color: #7f3343; }
+    .research-list li { margin-bottom: 14px; }
+    .audit-list li { margin-bottom: 8px; }
+    footer {
+      padding: 30px 0 52px;
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+    @media (max-width: 850px) {
+      .shell { display: block; }
+      aside { position: static; height: auto; padding: 20px; }
+      nav { display: flex; flex-wrap: wrap; gap: 2px; }
+      nav a { flex: 1 1 145px; }
+      .side-note { display: none; }
+      .wrap { width: min(100% - 32px, 1120px); }
+      .intro { padding-top: 36px; }
+      section { padding: 32px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">ECLIPSE / FICTION<span>canonical mining evaluation</span></div>
+      <nav aria-label="Document sections">
+        <a href="#scope">Scope</a>
+        <a href="#boundary">Four-app boundary</a>
+        <a href="#evidence">Evidence hierarchy</a>
+        <a href="#channels">Mining channels</a>
+        <a href="#library">Media library</a>
+        <a href="#football">Football case</a>
+        <a href="#rainee">Rainee case</a>
+        <a href="#montreal">Montreal case</a>
+        <a href="#authoring">Authoring boundary</a>
+        <a href="#scale">Collection scale</a>
+        <a href="#research">Research</a>
+        <a href="#audit">Audit</a>
+      </nav>
+      <div class="side-note">Direct media, generated reinterpretations, and concept sketches are deliberately kept distinct. The page records evidence; it does not silently convert a source into character canon.</div>
+    </aside>
+
+    <main>
+      <header class="intro" id="scope">
+        <div class="wrap">
+          <p class="eyebrow">Mining App / Evaluation Library</p>
+          <h1>Real media first. Relationships later.</h1>
+          <p class="lead">This is the canonical record of the BBL/Rangiku/Rainee discussion, the supplied media, and the extraction boundary for the Eclipse Fiction System.</p>
+          <div class="status"><strong>Current phase:</strong> determine what can be mined, preserved, indexed, and made available from real video, animation, images, captions, audio, transcripts, and visual references. The Visual Narrative Authoring App decides later how the data relates, activates, or behaves.</div>
+          <div class="callout"><strong>High-priority feature requirement:</strong> Dedicated boob and booty mining is a first-class requirement for this project. These body-region signals are central to the character designs being studied because mainstream and prestige media frequently omit, flatten, marginalize, or detach curvy body forms from personality and narrative function. The Mining App must preserve body-specific geometry, silhouette, motion, secondary motion, framing, clothing interaction, camera presentation, and comedic or dramatic use as evidence rather than treating them as optional decoration.</div>
+        </div>
+      </header>
+
+      <section id="boundary">
+        <div class="wrap">
+          <h2>Four-App Boundary</h2>
+          <p>The system only works if its responsibilities stay separate. Mining preserves source evidence. The Visual Editor composes it. The Fiction Engine generates new material. The Composer recomposes existing material.</p>
+          <pre class="flow">MEDIA
+  video, images, audio, transcripts, captions, social-post context, scripts
+  -&gt;
+MINING APP
+  source manifest, timestamped fragments, observations, inferences, motifs,
+  repeated patterns, negative observations, provenance-aware JSON
+  -&gt;
+VISUAL NARRATIVE AUTHORING APP
+  nodes, nesting, roles, relationships, authored weights, filters, overrides,
+  world and character composition
+  -&gt;
+FICTION ENGINE
+  new scene or story generation from the resolved active state
+  OR
+NARRATIVE COMPOSER
+  controlled recomposition of an existing script or episode
+  -&gt;
+WRITING PASS
+  final prose only</pre>
+          <div class="boundary">The Mining App can propose observations and candidate patterns, but it must not silently turn a guess about a real person into permanent character truth. No amount of relationship logic can replace evidence that was never extracted.</div>
+        </div>
+      </section>
+
+      <section id="evidence">
+        <div class="wrap">
+          <h2>Evidence Hierarchy</h2>
+          <pre class="flow">signal or measurement
+  -&gt; observation
+  -&gt; interpretation or inference
+  -&gt; repeated pattern
+  -&gt; author-accepted rule</pre>
+          <ul>
+            <li><strong>Signal:</strong> a frame, subtitle, timecode, camera angle, caption, audio event, or posture change.</li>
+            <li><strong>Observation:</strong> what the source visibly or audibly does, without assigning private motive.</li>
+            <li><strong>Inference:</strong> a plausible expressive function with confidence and provenance.</li>
+            <li><strong>Pattern:</strong> a recurrence across sources, not a conclusion from one moment.</li>
+            <li><strong>Author-accepted rule:</strong> authored in the Visual Editor, not emitted by Mining.</li>
+          </ul>
+          <div class="callout">Live-action social media can support a record of public-facing performance, framing, and repeated visual behavior. It cannot justify a claim that the system knows the source person's private psychology, history, or intent.</div>
+        </div>
+      </section>
+
+      <section id="channels">
+        <div class="wrap">
+          <h2>What the Mining App Can Extract</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Channel</th><th>Traceable evidence</th></tr></thead>
+              <tbody>
+                <tr><td>Image and frame</td><td>Silhouette, clothing, pose, expression, composition, spatial relationship, setting, camera distance, and angle.</td></tr>
+                <tr><td>Video</td><td>Movement, timing, entrances, gesture and reaction sequences, shot progression, repeated framing, interaction order.</td></tr>
+                <tr><td>Caption and post context</td><td>Visible text, series marker, date label, tags, location label, creator framing, and disagreement between caption and visible action.</td></tr>
+                <tr><td>Dialogue and transcript</td><td>Words, turn order, interruption, response shape, repeated phrases, stated facts, and genre cues.</td></tr>
+                <tr><td>Speech</td><td>Pacing, pause, volume, pitch contour, accent, register, laughter, and vocal effort. These remain observations or labelled inferences.</td></tr>
+                <tr><td>Music and sound</td><td>Audible cue, timing, tempo estimate, intensity, instrumentation hypothesis, and tonal association with confidence.</td></tr>
+                <tr><td>Touch and contact</td><td>Distance, approach, recoil, restraint, impact, care, and visible contact. Relationship meaning must be labelled as interpretation.</td></tr>
+                <tr><td>Smell and sensory language</td><td>Written/spoken references, visual cues, or literary association only. The system does not claim to sense an absent smell.</td></tr>
+                <tr><td>Negative evidence</td><td>A behavior, role, relationship, or motif not found within a declared source/search scope.</td></tr>
+              </tbody>
+            </table>
+          </div>
+            <h3>Dedicated boob, booty, and secondary-motion channels (HIGH PRIORITY)</h3>
+          <p>The Mining App also has dedicated boob and booty channels. These are specialized motion and design evidence, not merely generic appearance tags. They can later connect physical form to behavior, framing, comedy, costume, or action.</p>
+          <ul>
+            <li><strong>Booty Tracking:</strong> booty/butt/peach-butt geometry, silhouette, apparent volume class, camera orientation, pelvic/lower-body displacement, sway or oscillation, turning, walking, posing, camera-facing presentation, repetition, and context.</li>
+            <li><strong>Boob Tracking:</strong> chest-region geometry and orientation plus primary and secondary motion: displacement, acceleration, follow-through, phase delay, overshoot, oscillation, damping, settling, symmetry, and response to walking, running, jumping, turning, stopping, impact, or camera movement.</li>
+            <li><strong>Related tracking channels:</strong> face, full body, hair, clothing, and accessories, which provide the surrounding motion chain needed to interpret a body-region event accurately.</li>
+          </ul>
+          <h4>Search and vocabulary aliases</h4>
+          <p>Language is part of the retrieval problem. The interface should accept colloquial and cross-language terms as discovery aliases while normalizing results into stable schema labels. Useful booty-search terms include <code>booty</code>, <code>butt</code>, <code>big butt</code>, <code>peach butt</code>, <code>big peach butt</code>, <code>BBL</code>, Brazilian butt, <code>bunda</code>, and <code>bundona</code>. Chinese social-media searches may also use translated or platform-specific equivalents for peach-shaped or Kardashian-influenced body presentation; those terms should retain source language, platform, and translation confidence rather than being treated as universal cultural facts.</p>
+          <h4>Entertainment and joke-register vocabulary</h4>
+          <p>The miner must preserve the language used by entertainment itself. Body-focused characters can be built around recurring jokes, euphemisms, boasts, reactions, double meanings, absurd logistics, and self-aware commentary. English aliases may include <code>boobs</code>, <code>boobies</code>, <code>breasts</code>, <code>tits</code>, <code>rack</code>, <code>pair</code>, <code>cans</code>, <code>melons</code>, <code>honkers</code>, <code>knockers</code>, <code>bazongas</code>, <code>jugs</code>, <code>curves</code>, and <code>big chest</code>. Each term should retain register and speaker ownership.</p>
+          <p>Japanese entertainment needs its own search and translation layer: <code>おっぱい (oppai)</code>, <code>胸 (mune)</code>, <code>巨乳 (kyonyuu)</code>, <code>爆乳 (bakunyuu)</code>, <code>ボインボイン (boin-boin)</code>, and <code>お尻 (oshiri)</code>. Preserve the Japanese spelling, romaji, translation, register, and whether the term comes from the character, another character, a narrator, caption, or fan/community label. These terms are not interchangeable.</p>
+          <ul>
+            <li><strong>Third-party remark:</strong> another character comments on the body.</li>
+            <li><strong>Self-commentary:</strong> the character notices, boasts about, apologizes for, or privately acknowledges the feature.</li>
+            <li><strong>Euphemistic substitution:</strong> a safer word replaces a direct body term.</li>
+            <li><strong>Visual exaggeration:</strong> scale, motion, support structures, clothing failure, or impossible physics becomes the punchline.</li>
+            <li><strong>Reaction beat:</strong> stare, pause, shock, envy, embarrassment, or deadpan response.</li>
+            <li><strong>Recurring series gag:</strong> the feature returns as a recognizable character or world motif.</li>
+          </ul>
+          <p>Examples such as “nice cans,” a character privately acknowledging her own figure, or an Aphrodite-style scene where attendants physically support exaggerated breasts should be mined as dialogue, self-awareness, visual exaggeration, and joke structure. The exact source, translation, speaker, and context remain attached. A joke register can influence Rainee's expressive vocabulary later, but it does not automatically define her morality, sexuality, or private psychology.</p>
+          <p>The full dedicated specification is available in <a href="../Eclipse-Fiction-System/01_Mining_App/phase3_planning/Mining_Video_Behavior_Enhancement_Research.html">Mining Video Behavior Enhancement Research</a>. Its numeric values are schema examples unless a particular clip has been measured. Body-region events should retain source timecode, visibility or occlusion status, confidence, triggering motion, vocabulary alias, and context. The Visual Editor later decides whether a signal becomes a character trait, physical-comedy device, costume or silhouette rule, or permitted action channel.</p>
+          <p>The desired outcome is a novelized behavioral record that remains attached to the original material. An author or downstream node should always be able to return to the source file and time window.</p>
+        </div>
+      </section>
+
+      <section id="library">
+        <div class="wrap">
+          <h2>Preserved Media Library</h2>
+          <p>All session assets are now local to this evaluation under <code>assets/</code>. Direct sources, generated visual reinterpretations, and concept sketches are separated so a later model can tell what constitutes evidence and what constitutes a downstream visual proposal.</p>
+
+          <details open>
+            <summary>Direct evidence: football post, BBL corpus, and Montreal source</summary>
+            <p class="hint">Videos are preserved in full rather than reduced to a written description. The player is deliberately set to metadata-only loading.</p>
+            <div class="media-grid">
+              <figure>
+                <span class="source-tag">Direct video</span>
+                <video controls preload="metadata" src="assets/source_media/bbl_social/football_warmups_source.mp4"></video>
+                <figcaption>Football-practice source video. Companion post context is preserved below.</figcaption>
+              </figure>
+              <figure>
+                <span class="source-tag">Post context</span>
+                <img loading="lazy" src="assets/session_screenshots/football_post_metadata.png" alt="Screenshot showing a football-practice social post and visible metadata">
+                <figcaption>Post metadata evidence: training-series framing, caption, tags, location label, and filming context.</figcaption>
+              </figure>
+              <figure>
+                <span class="source-tag">Direct video</span>
+                <video controls preload="metadata" src="assets/source_media/scene_sources/montreal_strip_club_family_guy_source.mp4"></video>
+                <figcaption>Montreal strip-club Family Guy source video. Mine as a sequence of scenes, not one trait.</figcaption>
+              </figure>
+              <figure>
+                <span class="source-tag">Source frame</span>
+                <img loading="lazy" src="assets/session_screenshots/montreal_source_frame.png" alt="Frame from the Montreal strip-club Family Guy source">
+                <figcaption>Supplied source frame from the animated Montreal scene.</figcaption>
+              </figure>
+              <figure>
+                <span class="source-tag">Source frame</span>
+                <img loading="lazy" src="assets/session_screenshots/montreal_source_vlcsnap-2026-08-15-20h52m45s343.png" alt="Direct still from the Montreal strip-club Family Guy source">
+                <figcaption>Direct VLC source still retained alongside the video and extraction pass.</figcaption>
+              </figure>
+            </div>
+          </details>
+
+          <details>
+            <summary>Direct BBL source stills</summary>
+            <div class="media-grid">
+              <figure><img loading="lazy" src="assets/source_stills/bbl_social/criollannatv_1785365437_3952254037574434956_24910531752.jpg" alt="Football-practice source still"><figcaption>Direct still: football-practice collection.</figcaption></figure>
+              <figure><img loading="lazy" src="assets/source_stills/bbl_social/criollannatv_1783296057_3934894925295515215_24910531752.jpg" alt="Horse-riding source still"><figcaption>Direct still: horse-riding collection.</figcaption></figure>
+              <figure><img loading="lazy" src="assets/source_stills/bbl_social/criollannatv_1783296057_3934894937039513699_24910531752.jpg" alt="Horse-riding source still with a facial expression"><figcaption>Direct still: horse-riding collection, expression and pose reference.</figcaption></figure>
+            </div>
+          </details>
+
+          <details>
+            <summary>Full BBL social-video library</summary>
+            <div class="media-grid">
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1785346561_3952094393858066799_24910531752.mp4"></video><figcaption>criollannatv_1785346561_3952094393858066799_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1785375608_3952339339223726520_24910531752.mp4"></video><figcaption>criollannatv_1785375608_3952339339223726520_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1785417558_3952691278775894698_24910531752.mp4"></video><figcaption>criollannatv_1785417558_3952691278775894698_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1782609283_3929130023905851684_24910531752.mp4"></video><figcaption>criollannatv_1782609283_3929130023905851684_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1782845008_3931110819922415892_24910531752.mp4"></video><figcaption>criollannatv_1782845008_3931110819922415892_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1782872002_3931336900500618007_24910531752.mp4"></video><figcaption>criollannatv_1782872002_3931336900500618007_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1783288063_3934827716924841378_24910531752.mp4"></video><figcaption>criollannatv_1783288063_3934827716924841378_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1783302635_3934949235945566746_24910531752.mp4"></video><figcaption>criollannatv_1783302635_3934949235945566746_24910531752.mp4</figcaption></figure>
+              <figure><video controls preload="metadata" src="assets/source_media/bbl_social/criollannatv_1783613135_3937554414461199911_24910531752.mp4"></video><figcaption>criollannatv_1783613135_3937554414461199911_24910531752.mp4</figcaption></figure>
+            </div>
+          </details>
+
+          <details>
+            <summary>Montreal source-frame extraction pass</summary>
+            <p class="hint">Frames every ten seconds preserve the source timeline for future segmentation.</p>
+            <div class="media-grid">
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_000.0s.jpg" alt="Montreal source at zero seconds"><figcaption>00:00</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_010.0s.jpg" alt="Montreal source at ten seconds"><figcaption>00:10</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_020.0s.jpg" alt="Montreal source at twenty seconds"><figcaption>00:20</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_030.0s.jpg" alt="Montreal source at thirty seconds"><figcaption>00:30</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_040.0s.jpg" alt="Montreal source at forty seconds"><figcaption>00:40</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_050.0s.jpg" alt="Montreal source at fifty seconds"><figcaption>00:50</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_060.0s.jpg" alt="Montreal source at sixty seconds"><figcaption>01:00</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_070.0s.jpg" alt="Montreal source at seventy seconds"><figcaption>01:10</figcaption></figure>
+              <figure><img loading="lazy" src="montreal_eval_frames/montreal_080.0s.jpg" alt="Montreal source at eighty seconds"><figcaption>01:20</figcaption></figure>
+            </div>
+          </details>
+
+          <details>
+            <summary>Generated visual reinterpretations</summary>
+            <p class="hint">These are visual hypotheses and references. They are not direct evidence of the original videos.</p>
+            <div class="media-grid">
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/rainee_rangiku_interpretation.png" alt="Generated Rangiku and Rainee interpretation"><figcaption>Rainee/Rangiku interpretation.</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_KgT4mLK.jpeg" alt="Generated Montreal performer reinterpretation"><figcaption>VeniceAI_KgT4mLK.jpeg</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_xC9mfyK.jpeg" alt="Generated Montreal close character reinterpretation"><figcaption>VeniceAI_xC9mfyK.jpeg</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_jghtmRo.jpeg" alt="Generated Montreal character portrait reinterpretation"><figcaption>VeniceAI_jghtmRo.jpeg</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_b1cOgQV.jpeg" alt="Generated Montreal two character reinterpretation"><figcaption>VeniceAI_b1cOgQV.jpeg</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_PIwUZP2.png" alt="Generated Montreal performer reinterpretation in purple"><figcaption>VeniceAI_PIwUZP2.png</figcaption></figure>
+              <figure><span class="source-tag derived">Derived visual</span><img loading="lazy" src="assets/derived_visuals/montreal_reinterpretations/VeniceAI_rqxMzPT.png" alt="Generated Montreal performer reinterpretation in white"><figcaption>VeniceAI_rqxMzPT.png</figcaption></figure>
+            </div>
+          </details>
+
+          <details>
+            <summary>Concept sketches and art-direction studies</summary>
+            <div class="media-grid">
+              <figure><span class="source-tag derived">Concept sketch</span><img loading="lazy" src="assets/concept_sketches/rainee_hyper_exaggeration_pose.png" alt="Rainee concept sketch in a seated pose"><figcaption>Hyper-exaggeration pose study.</figcaption></figure>
+              <figure><span class="source-tag derived">Concept sketch</span><img loading="lazy" src="assets/concept_sketches/rainee_fight_study.png" alt="Rainee combat concept sketch"><figcaption>Fight study.</figcaption></figure>
+              <figure><span class="source-tag derived">Concept sketch</span><img loading="lazy" src="assets/concept_sketches/rainee_casual_study.png" alt="Rainee casual character concept sketch"><figcaption>Casual character study.</figcaption></figure>
+              <figure><span class="source-tag derived">Concept sketch</span><img loading="lazy" src="assets/concept_sketches/rainee_functional_shelf_study.png" alt="Annotated Rainee design study"><figcaption>Functional/surreal body-design study.</figcaption></figure>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section id="football">
+        <div class="wrap">
+          <h2>Case Study A: Football-Practice Micro-Behavior</h2>
+          <p>The football clip is a strong mining challenge because the meaningful information is small, visual, repeated, and not stated in dialogue. The system should be able to preserve a look, brief expression, posture adjustment, hand placement, hip shift, turn, deliberate walk, camera framing, and the timing between them.</p>
+          <h3>Directly supportable observations</h3>
+          <ul>
+            <li>A football-practice setting is visible.</li>
+            <li>The subject is filmed in a social and camera-aware context.</li>
+            <li>Nearby people and the camera are part of the spatial situation.</li>
+            <li>The source includes a turn, posture adjustment, hip movement, and a walk toward the field.</li>
+            <li>Clothing, composition, and repeated framing make silhouette and public presentation relevant evidence channels.</li>
+            <li>A brief added, cartoon-like wobble/squeak cue is synchronized with the movement sequence. The clearest candidate moments are approximately <code>00:00:01.6</code> and <code>00:00:02.7</code>; its exact sound-library source is unknown.</li>
+          </ul>
+          <h3>Audiovisual sync pass: what to look for</h3>
+          <p>For each video fragment, compare visible action with the audio at the same timecode. Store whether an event is recorded scene sound, added editorial sound, music, speech, or uncertain, alongside onset, duration, repetition, confidence, and narrative function. Here the cautious label is <code>exaggerated_comedic_wobble</code>: a likely editorial physical-comedy accent, not a fact about private psychology.</p>
+          <h3>Candidate interpretations, not private-person facts</h3>
+          <ul>
+            <li>Comfort with being visually observed.</li>
+            <li>Playful or deliberate public presentation.</li>
+            <li>Use of posture and movement as social communication.</li>
+            <li>A public visual brand expressed through recurring framing, styling, and movement.</li>
+          </ul>
+          <div class="callout">The proposed nose-scrunch is exactly the sort of tiny event the miner should attempt to capture, but it should be stored only after a close timestamped review confirms it. The current frame pass more clearly supports the larger posture, movement, and walking sequence.</div>
+          <pre>{
+  "id": "mining:bbl:football:0001",
+  "type": "capture_entry",
+  "origin_app": "mining_app",
+  "provenance": {
+    "source": "assets/source_media/bbl_social/football_warmups_source.mp4",
+    "source_class": "social_media_video",
+    "timecode": "00:00:00-00:00:10",
+    "related_post": "assets/session_screenshots/football_post_metadata.png"
+  },
+  "fragment": { "medium": "video", "subject": "bbl_dataset_subject", "context": "football practice" },
+  "observation": [
+    "turns toward the nearby social space",
+    "brief facial reaction",
+    "hands move near lower back or hips",
+    "shifts hips before moving",
+    "walks onto the field",
+    "added wobble/squeak cue aligns with the movement sequence"
+  ],
+  "audio_events": [{
+    "label": "exaggerated_comedic_wobble",
+    "timecodes": ["00:00:01.6", "00:00:02.7"],
+    "source_status": "likely added editorial effect",
+    "function_hypothesis": "camera-aware physical-comedy accent",
+    "confidence": 0.62
+  }],
+  "motifs": ["camera_awareness", "self_presentation", "deliberate_walk", "hip_shift", "public_branding"],
+  "inference": [{
+    "label": "deliberate public presentation",
+    "confidence": 0.68,
+    "basis": "visible posture, movement, camera framing, and social context"
+  }],
+  "series_link": "bbl_football_practice_video_set"
+}</pre>
+          <p>The physical form visible in this corpus is part of its public visual brand. Mining can therefore record body form, clothing, movement, framing, and the social use of self-presentation together. It must not convert those details into a stereotype or moral judgement.</p>
+        </div>
+      </section>
+
+      <section id="rainee">
+        <div class="wrap">
+          <h2>Case Study B: BBL-Dominant Rainee Dataset</h2>
+          <p>Rainee is an author-created character, not an equal 50/50 blend. The BBL corpus is intentionally dominant in visible body form, silhouette, public presentation, camera-facing behavior, movement motifs, clothing emphasis, and visual branding. Rangiku Matsumoto is the anime-character substrate and Bleach-world bridge: canon relationships, narrative context, dialogue possibilities, combat setting, and existing character material.</p>
+          <div class="callout"><strong>Source-volume imbalance is not automatically a defect.</strong> Hundreds of BBL clips outweighing four to eight hours of Rangiku material is acceptable when BBL dominance is the authorial target. Mining preserves both source pools. Later authoring decides which evidence is eligible for the current context.</div>
+          <pre>{
+  "node": "rainee",
+  "source_roles": {
+    "bbl_dataset": [
+      "body_form",
+      "body_presentation",
+      "camera_awareness",
+      "movement_style",
+      "public_persona",
+      "visual_branding"
+    ],
+    "rangiku_matsumoto": [
+      "anime_substrate",
+      "bleach_world_bridge",
+      "canon_relationships",
+      "narrative_context"
+    ]
+  },
+  "mining_boundary": "records source evidence and its provenance only",
+  "authoring_boundary": "resolves relationships, context, dominance, filters, and overrides later"
+}</pre>
+          <p>This closes the psychosemantic gap the project identified: body design, body-aware movement, social presentation, and narrative role should be available as connected evidence rather than a cosmetic body edit pasted onto an unrelated personality.</p>
+        </div>
+      </section>
+
+      <section id="montreal">
+        <div class="wrap">
+          <h2>Case Study C: Montreal Club as Character and World</h2>
+          <p>The Montreal strip-club source is special because it can live in more than one place in the authored graph without being duplicated or reduced to a single category.</p>
+          <ul>
+            <li>Connected to Rainee, it can be a behavioral and transformation source.</li>
+            <li>Connected to a scene, it can be a World Node: location, atmosphere, collective social logic, staging, audience behavior, and comedy framing.</li>
+            <li>Connected to an ensemble, it can be shared scene data with performer, patron, bartender, and observer deltas.</li>
+            <li>Connected to a transformation, it can support the joke that Rainee becomes the club's collective or hive mind.</li>
+          </ul>
+          <pre class="flow">Montreal Club source
+  -&gt; Rainee character page: behavior and transformation reference
+  -&gt; World graph: location, social system, visual atmosphere
+  -&gt; Ensemble graph: shared scene data plus member deltas
+  -&gt; Comedy relationship: temporary hive-mind or cutaway state</pre>
+          <p>This is a role-versus-identity distinction. The club is one authored source with multiple graph roles. Mining should first preserve its setup, transition, spatial layout, performers, patrons, staging, music/sound cues, money exchange, camera grammar, joke setup, joke release, and return to the surrounding narrative.</p>
+          <p>The supplied generated images are worth retaining because they reveal a present visual-model limitation: the high-level concept transfers, while identity, anatomy, exact pose, cast continuity, and multi-character spatial continuity drift. That is visual-authoring feedback. It does not replace the source video or its frames.</p>
+        </div>
+      </section>
+
+      <section id="authoring">
+        <div class="wrap">
+          <h2>Visual Authoring: Recorded Here, Not Solved Here</h2>
+          <p>The Visual Editor takes inspiration from Houdini, Unreal, and Cinema 4D node editing. Containers can hold nodes. Reusable groups can expose selected outputs. The same source can participate in multiple arrangements. Hierarchy provides navigation; the node graph provides composition.</p>
+          <p>A Character Node can contain a World-like source. A World Node can contain character-like agents. A relationship can expose only selected channels. The source does not need to be permanently sorted into one box before it becomes useful.</p>
+          <h3>Future relationship-layer concerns</h3>
+          <ul>
+            <li>Context activation and scene-specific eligibility.</li>
+            <li>Channel-level dominance rather than global averaging.</li>
+            <li>Selective transfer of visual, behavioral, dialogue, or world channels.</li>
+            <li>Group/ensemble and hive-mind composition.</li>
+            <li>Nested roles and re-used sources.</li>
+            <li>Author overrides, ON/OFF states, and inspectable collision outputs.</li>
+            <li>A possible nullification function that removes source-specific identity while retaining an abstract scene structure for later reassociation.</li>
+          </ul>
+          <div class="boundary">The Bulma/Goku thought experiment belongs here, not in Mining: preserve a shonen fight's source fragments, suppress Goku-specific identity later, and make a Bulma-derived stack eligible to inhabit the abstracted action. Mining's role is to preserve the relevant fighting, dialogue, movement, setting, and female-combat evidence cleanly enough that the operation is possible.</div>
+          <p>Emergent collision is intended. Personality can emerge from graph conditions rather than a blend slider. The authoring system should expose and edit those conditions, not remove every surprise.</p>
+        </div>
+      </section>
+
+      <section id="scale">
+        <div class="wrap">
+          <h2>Mining at Collection Scale</h2>
+          <pre class="flow">collection
+  -&gt; source item
+    -&gt; episode, post, or file
+      -&gt; scene or post segment
+        -&gt; shot or clip window
+          -&gt; capture entry</pre>
+          <ol>
+<li>Create a manifest with source id, path, hash, duration, modality, and source class.</li>
+            <li>Preserve post context separately from raw video: caption, visible post information, title, tags, series marker, and location label.</li>
+            <li>Segment video, speech, and shot changes before semantic interpretation.</li>
+            <li>Extract observations before inferences: subject identity, clothing, pose, movement, camera, text, dialogue, sound, and setting.</li>
+            <li>Run specialized passes for behavior, dialogue/reaction pairs, visual motifs, sound, and repeated-pattern retrieval.</li>
+            <li>Link recurring motifs across sources without deleting source boundaries.</li>
+            <li>Record negative evidence with its search scope.</li>
+            <li>Present patterns for author acceptance, revision, or rejection.</li>
+          </ol>
+          <p>Thirty-minute processing batches are fine for throughput. They are not the identity of the evidence. Every result must return to an original source file and time window.</p>
+          <h3>Data and human review</h3>
+          <p>The project starts from a practical artistic problem: people have limited attention, limited source exposure, social assumptions, status filters, and emotional reactions that can make useful material invisible. A structured evidence system can force a wider search and preserve details a casual observer never consciously catalogued.</p>
+          <p>This does not make an LLM automatically objective. The operational advantage is that source selection, extraction prompts, evidence labels, confidence, provenance, transfer eligibility, and author decisions can be inspected and changed. The model expands the creator's search space; the author still decides what is meaningful.</p>
+        </div>
+      </section>
+
+      <section id="research">
+        <div class="wrap">
+          <h2>Relevant Research and Design Implications</h2>
+          <p>These sources support the technical architecture. They do not establish that a model can correctly infer a real person's private personality from media.</p>
+          <ul class="research-list">
+            <li><a href="https://openaccess.thecvf.com/content/CVPR2023/html/Girdhar_ImageBind_One_Embedding_Space_To_Bind_Them_All_CVPR_2023_paper.html">ImageBind: One Embedding Space To Bind Them All (CVPR 2023)</a> learns a shared representation across image, text, audio, depth, thermal, and IMU data. Design implication: a future retrieval layer can find cross-modal evidence, but shared embeddings must not replace provenance or authored meaning.</li>
+            <li><a href="https://aclanthology.org/P19-1656/">Multimodal Transformer for Unaligned Multimodal Language Sequences (ACL 2019)</a> addresses text, facial, and acoustic streams that do not line up perfectly. Design implication: preserve modality-specific timecodes and cross-modal links rather than forcing video, audio, captions, and transcripts into a falsely exact single clock.</li>
+            <li><a href="https://aclanthology.org/2021.emnlp-main.544/">VideoCLIP: Contrastive Pre-training for Zero-shot Video-Text Understanding (EMNLP 2021)</a> uses temporally overlapping video/text for retrieval, action localization, and segmentation. Design implication: retrieval can locate candidate behavior, but the project still needs source fragments, confidence, and direct-versus-derived labels.</li>
+            <li><a href="https://www.w3.org/TR/prov-dm/">W3C PROV-DM: The PROV Data Model</a> distinguishes entities, activities, agents, derivations, and collections. Design implication: source file, extraction pass, human editor, model/API, derived image, and author-approved rule can form an inspectable provenance chain instead of one opaque JSON blob.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="audit">
+        <div class="wrap">
+          <h2>Audit and Corrections</h2>
+          <ul class="audit-list">
+            <li>This page and the matching text document are the canonical evidence-first case study.</li>
+            <li>All session assets are copied into <code>assets/</code> or retained as timestamped frame sets in this project.</li>
+            <li>Direct source media, generated reinterpretations, and concept sketches are now explicitly separated.</li>
+            <li>No exact duplicate files were found in the existing football and Montreal frame-extraction directories.</li>
+            <li>The Mining scope is being corrected to describe the Visual Editor as a multi-node relationship/composition graph, not a simple two-dataset blend.</li>
+            <li><code>source_type</code> still matters: <code>direct</code>, <code>structural</code>, <code>archetypal</code>, and <code>analogical</code> evidence must not silently become direct canon evidence for a target character.</li>
+          </ul>
+          <div class="callout"><strong>Final evaluation:</strong> the project is not trying to make the system "know" the source person or to write Rainee at mining time. It is building a rich, traceable evidence library so later character, world, relationship, and narrative work has real material to operate on.</div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="wrap">Canonical Mining Evaluation. Source evidence survives first; later node composition depends on it.</div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

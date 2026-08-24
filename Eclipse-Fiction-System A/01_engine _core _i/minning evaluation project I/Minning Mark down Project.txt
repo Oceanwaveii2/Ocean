@@ -1,0 +1,370 @@
+# Canonical Mining Evaluation: Live-Action Media, Rainee, and Cross-App Boundaries
+
+## Status and Scope
+
+This is the canonical record of the BBL/Rangiku/Rainee mining discussion and its supplied evidence library. It records what the Mining App is expected to extract from real media. It does not decide how all data should behave after extraction.
+
+> **High-priority feature requirement:** For this project, dedicated boob and booty mining is a first-class requirement. These body-region signals are central to the character designs being studied because mainstream and prestige media frequently omit, flatten, marginalize, or detach curvy body forms from personality and narrative function. The Mining App must preserve body-specific geometry, silhouette, motion, secondary motion, framing, clothing interaction, camera presentation, and comedic or dramatic use as evidence rather than treating them as optional decoration.
+
+The immediate project question is:
+
+> What can be mined, preserved, indexed, and made available from real human media, animation, text, audio, and visual references?
+
+Relationship construction, transformation logic, dominance resolution, and final character behavior belong to the Visual Narrative Authoring App. Story generation belongs to the Fiction Engine. Rewriting an existing story belongs to the Narrative Composer. Those applications consume mining evidence; they do not redefine or erase it.
+
+This separation is intentional. No amount of relationship logic can replace missing evidence from real media. The extractor must preserve the details that an author may want to connect later.
+
+## Four-App Boundary
+
+```text
+MEDIA
+  video, images, audio, transcripts, captions, social-post context, scripts
+  ->
+MINING APP
+  source manifest, timestamped fragments, observations, inferences, motifs,
+  repeated patterns, negative observations, provenance-aware JSON
+  ->
+VISUAL NARRATIVE AUTHORING APP
+  nodes, nesting, roles, relationships, authored weights, filters, overrides,
+  world and character composition
+  ->
+FICTION ENGINE
+  new scene or story generation from the resolved active state
+  OR
+NARRATIVE COMPOSER
+  controlled recomposition of an existing script or episode
+  ->
+WRITING PASS
+  final prose only
+```
+
+The Mining App is evidence-first. It can propose observations and candidate patterns, but it must not silently turn a guess about a person into permanent character truth.
+
+## Evidence Hierarchy
+
+```text
+signal or measurement
+  -> observation
+  -> interpretation or inference
+  -> repeated pattern
+  -> author-accepted rule
+```
+
+- A signal is directly measurable or visible: frame, subtitle, camera angle, timecode, audio amplitude, posture change, or caption.
+- An observation states what the source visibly or audibly does without assigning private motive.
+- An inference describes a plausible expressive function and carries confidence plus provenance.
+- A pattern is a cross-source recurrence, not a claim made from one isolated moment.
+- An author-accepted rule is authored in the Visual Editor. It is not Mining App output.
+
+This distinction matters especially for live-action social media. A performed public persona can be mined as public-facing behavior. The system must not claim to know a real person's private psychology, life history, or intent beyond the source.
+
+## What the Mining App Can Mine
+
+| Channel | Extractable evidence |
+|---|---|
+| Image and frame | silhouette, clothing, pose, facial expression, composition, spatial relationship, environment, camera distance and angle |
+| Video | movement, timing, entrances, gesture sequence, reaction sequence, shot progression, repeated framing, interaction order |
+| Caption and post context | visible text, series label, date marker, hashtags, location label, creator framing, mismatch between caption and visible action |
+| Dialogue and transcript | words, turn order, interruption, response shape, repeated phrases, stated facts, genre cues |
+| Speech | pacing, pause, volume, pitch contour, accent, register, interruption, laughter, vocal effort; all marked as observed or inferred |
+| Music and sound | audible cue, tempo estimate, intensity, instrumentation hypothesis, sound-event timing, tonal association with confidence |
+| Touch and contact | distance, approach, recoil, restraint, impact, care, and visible contact; interpreted relational meaning must be labelled |
+| Smell and other sensory language | written or spoken references, visual cues, or literary association only; not a claim that the machine directly sensed an absent smell |
+| Negative evidence | a behavior, role, relationship, or motif not found within a declared search scope |
+
+### Dedicated body-region and secondary-motion channels (HIGH PRIORITY)
+
+The Mining App also has dedicated boob and booty channels. These are specialized motion and design evidence, not merely generic appearance tags. They can later connect physical form to behavior, framing, comedy, costume, or action.
+
+- **Booty Tracking:** booty/butt/peach-butt geometry, silhouette, apparent volume class, camera orientation, pelvic/lower-body displacement, sway or oscillation, turning, walking, posing, camera-facing presentation, repetition, and context.
+- **Boob Tracking:** chest-region geometry and orientation plus primary and secondary motion: displacement, acceleration, follow-through, phase delay, overshoot, oscillation, damping, settling, symmetry, and response to walking, running, jumping, turning, stopping, impact, or camera movement.
+- **Related tracking channels:** face, full body, hair, clothing, and accessories, which provide the surrounding motion chain needed to interpret a body-region event accurately.
+
+#### Search and vocabulary aliases
+
+Language is part of the retrieval problem. The interface should accept colloquial and cross-language terms as discovery aliases while normalizing results into stable schema labels. Useful booty-search terms include `booty`, `butt`, `big butt`, `peach butt`, `big peach butt`, `BBL`, Brazilian butt, `bunda`, and `bundona`. Chinese social-media searches may also use translated or platform-specific equivalents for peach-shaped or Kardashian-influenced body presentation; those terms should retain source language, platform, and translation confidence rather than being treated as universal cultural facts.
+
+#### Entertainment and joke-register vocabulary
+
+The miner must preserve the language used by entertainment itself. Body-focused characters are not only visual designs; they can be built around recurring jokes, euphemisms, boasts, reactions, double meanings, absurd logistics, and self-aware commentary. English aliases may include `boobs`, `boobies`, `breasts`, `tits`, `rack`, `pair`, `cans`, `melons`, `honkers`, `knockers`, `bazongas`, `jugs`, `curves`, and `big chest`. Each term should retain register (`neutral`, `playful`, `vulgar`, `old-fashioned`, `insulting`, or `self-referential`) and speaker ownership.
+
+Japanese entertainment vocabulary needs its own search and translation layer. Useful aliases include `おっぱい (oppai)` for casual/comedic “boobs,” `胸 (mune)` for chest/breast references, `巨乳 (kyonyuu)` for large breasts, `爆乳 (bakunyuu)` for exaggerated or “explosive” breasts, `ボインボイン (boin-boin)` for a bouncy/large-breast sound-symbolic register, and `お尻 (oshiri)` for buttocks. Search results should preserve the Japanese spelling, romaji, translation, register, and whether the term is spoken by the character, another character, a narrator, a caption, or a fan/community label. These terms have different tones and are not interchangeable.
+
+The extraction pass should classify the joke function, not just the anatomy word:
+
+- third-party remark: someone comments on the character's body;
+- self-commentary: the character notices, boasts about, apologizes for, or privately acknowledges her own feature;
+- euphemistic substitution: a safer word replaces a direct body term;
+- visual exaggeration: scale, motion, support structures, clothing failure, or impossible physics becomes the punchline;
+- reaction beat: another character's stare, pause, shock, envy, embarrassment, or deadpan response;
+- recurring series gag: the body feature returns as a recognizable character/world motif.
+
+For example, the project may mine a line such as “nice cans” or an internal thought such as “I do have a nice pair” as dialogue plus self-awareness, not as a generic body tag. It may also mine an Aphrodite-style visual gag in which attendants or golems physically support exaggerated breasts as a world-rule joke. The exact source, translation, speaker, and scene context must remain attached to the event. A joke register can influence Rainee's expressive vocabulary later, but it does not automatically define her morality, sexuality, or private psychology.
+
+The full dedicated specification is [`Mining_Video_Behavior_Enhancement_Research.html`](../Eclipse-Fiction-System/01_Mining_App/phase3_planning/Mining_Video_Behavior_Enhancement_Research.html). Its numeric values are schema examples unless a particular clip has been measured. Body-region events should retain source timecode, visibility/occlusion status, confidence, triggering motion, vocabulary alias, and context. The Visual Editor later decides whether a signal becomes a character trait, physical-comedy device, costume or silhouette rule, or permitted action channel.
+
+The practical goal is a novelized behavioral record of the source without pretending that prose replaces the original. A later author or relationship node must always be able to travel back to the file and timecode.
+
+## Source Collections and Preserved Media
+
+All session assets now live inside `assets/` so this evaluation remains self-contained. Originals are retained as direct evidence. Generated images and concept drawings are stored separately because they are useful references but not direct proof of source behavior.
+
+### Direct BBL / football evidence
+
+- `assets/source_media/bbl_social/football_warmups_source.mp4`
+- `assets/source_media/bbl_social/criollannatv_1785346561_3952094393858066799_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1785375608_3952339339223726520_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1785417558_3952691278775894698_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1782609283_3929130023905851684_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1782845008_3931110819922415892_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1782872002_3931336900500618007_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1783288063_3934827716924841378_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1783302635_3934949235945566746_24910531752.mp4`
+- `assets/source_media/bbl_social/criollannatv_1783613135_3937554414461199911_24910531752.mp4`
+- `assets/source_stills/bbl_social/criollannatv_1785365437_3952254037574434956_24910531752.jpg`
+- `assets/source_stills/bbl_social/criollannatv_1783296057_3934894925295515215_24910531752.jpg`
+- `assets/source_stills/bbl_social/criollannatv_1783296057_3934894937039513699_24910531752.jpg`
+- `assets/session_screenshots/football_post_metadata.png`
+
+The football-post screenshot preserves visible post context: a numbered training-day series, a statement that a family member was filming, football practice setting, caption text, tags, location label, and original-audio attribution. Post context is evidence about the publishing frame; it is not proof that every caption statement occurred exactly as described on screen.
+
+### Direct Montreal cutaway evidence
+
+- `assets/source_media/scene_sources/montreal_strip_club_family_guy_source.mp4`
+- `assets/session_screenshots/montreal_source_frame.png`
+- `assets/session_screenshots/montreal_source_vlcsnap-2026-08-15-20h52m45s343.png`
+- `montreal_eval_frames/` - timestamped extraction pass at ten-second intervals
+
+The supplied Family Guy video is approximately 82.5 seconds and contains distinct narrative sections: opening/reaction material, transition/setup, club interior, club social space, and return/aftermath. It must be segmented before mining. A club scene is not one flat "strip-club" trait.
+
+### Derived visual and concept material
+
+The following are preserved for visual-authoring reference only. They are not direct source evidence and must carry `derived_from` links when used downstream.
+
+- `assets/derived_visuals/rainee_rangiku_interpretation.png`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_KgT4mLK.jpeg`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_xC9mfyK.jpeg`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_jghtmRo.jpeg`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_b1cOgQV.jpeg`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_PIwUZP2.png`
+- `assets/derived_visuals/montreal_reinterpretations/VeniceAI_rqxMzPT.png`
+- `assets/concept_sketches/rainee_hyper_exaggeration_pose.png`
+- `assets/concept_sketches/rainee_fight_study.png`
+- `assets/concept_sketches/rainee_casual_study.png`
+- `assets/concept_sketches/rainee_functional_shelf_study.png`
+
+The generated Montreal reinterpretations retain broad signals such as curtains, railings, stairs, stage lighting, performance poses, money as a social prop, and a recurring central presentation. They also demonstrate image-generation limits: identity, anatomy, pose, cast continuity, and multi-character spatial continuity can drift. That is useful visual-authoring feedback, not a failure of the evidence library.
+
+## Case Study A: Football-Practice Micro-Behavior
+
+The football clip is a valid mining challenge because its meaningful data is small, visual, repeated, and not stated in dialogue. The miner should be capable of catching a look, a brief expression, a posture adjustment, hand placement, a hip shift, a turn, a walk, camera framing, and the timing between them.
+
+### Directly supportable observations
+
+- A football-practice setting is visible.
+- The subject is filmed in a social and camera-aware context.
+- Nearby people and the camera are part of the spatial situation.
+- The source includes a turn, posture adjustment, hip movement, and a deliberate walk toward the field.
+- Clothing, composition, and repeated framing make silhouette and public presentation relevant evidence channels.
+- A brief added, cartoon-like wobble/squeak cue is audible during the movement sequence. It is an editorial audio event synchronized with the visual action, not field ambience. The clearest candidate moments are approximately `00:00:01.6` and `00:00:02.7`; exact sound-library provenance is unknown.
+
+### Audiovisual sync pass: what to look for
+
+For every video pass, the miner should compare visible action against audio at the same timecode. Capture whether a sound is diegetic (part of the recorded scene), added in editing, musical, spoken, or uncertain; record its onset, duration, repeat pattern, confidence, and narrative function. In this clip, the safe label is `exaggerated_comedic_wobble` with the function `camera-aware physical-comedy accent` and medium confidence. This is evidence about presentation and editing grammar, not evidence of private psychology.
+
+### Candidate interpretations, not facts about private character
+
+- comfort with being visually observed
+- playful or deliberate public presentation
+- use of posture and movement as social communication
+- a public visual brand expressed through recurring framing, styling, and movement
+
+The original question about a possible nose-scrunch is exactly the sort of detail the system should attempt to capture. It should be recorded only after a close, timestamped review confirms it. The existing half-second frame pass supports the broader posture, movement, and walking sequence more clearly than that smallest facial event.
+
+### Example capture entry
+
+```json
+{
+  "id": "mining:bbl:football:0001",
+  "type": "capture_entry",
+  "origin_app": "mining_app",
+  "provenance": {
+    "source": "assets/source_media/bbl_social/football_warmups_source.mp4",
+    "source_class": "social_media_video",
+    "timecode": "00:00:00-00:00:10",
+    "related_post": "assets/session_screenshots/football_post_metadata.png"
+  },
+  "fragment": {
+    "medium": "video",
+    "subject": "bbl_dataset_subject",
+    "context": "football practice"
+  },
+  "observation": [
+    "turns toward the nearby social space",
+    "brief facial reaction",
+    "hands move near lower back or hips",
+    "shifts hips before moving",
+    "walks onto the field",
+    "added wobble/squeak cue aligns with the movement sequence"
+  ],
+  "audio_events": [
+    {
+      "label": "exaggerated_comedic_wobble",
+      "timecodes": ["00:00:01.6", "00:00:02.7"],
+      "source_status": "likely added editorial effect",
+      "function_hypothesis": "camera-aware physical-comedy accent",
+      "confidence": 0.62
+    }
+  ],
+  "motifs": [
+    "camera_awareness",
+    "self_presentation",
+    "deliberate_walk",
+    "hip_shift",
+    "public_branding"
+  ],
+  "inference": [
+    {
+      "label": "deliberate public presentation",
+      "confidence": 0.68,
+      "basis": "visible posture, movement, camera framing, and social context"
+    }
+  ],
+  "series_link": "bbl_football_practice_video_set"
+}
+```
+
+The source subject's physical form is part of the public visual brand in this dataset. Mining can therefore record body form, clothing, movement, framing, and the social use of self-presentation together. It must not convert those details into a stereotype or a moral judgement.
+
+## Case Study B: BBL-Dominant Rainee Dataset
+
+Rainee is a new author-created character, not an equal 50/50 blend. The BBL corpus is intentionally dominant in visible body form, silhouette, public presentation, camera-facing behavior, movement motifs, clothing emphasis, and visual branding. Rangiku Matsumoto functions as an anime-character substrate and Bleach-world bridge: canon relationships, narrative context, dialogue possibilities, combat setting, and existing character material.
+
+The important correction is that source-volume imbalance is not automatically a defect. Hundreds of BBL clips outweighing four to eight hours of Rangiku material is acceptable when BBL dominance is intended. The later Visual Editor determines which source is eligible in a given context. Combat evidence can be activated for a supernatural fight; public-presentation or physical-comedy evidence can be activated in a comedic beat. Mining preserves both without trying to resolve the scene.
+
+```json
+{
+  "node": "rainee",
+  "source_roles": {
+    "bbl_dataset": [
+      "body_form",
+      "body_presentation",
+      "camera_awareness",
+      "movement_style",
+      "public_persona",
+      "visual_branding"
+    ],
+    "rangiku_matsumoto": [
+      "anime_substrate",
+      "bleach_world_bridge",
+      "canon_relationships",
+      "narrative_context"
+    ]
+  },
+  "mining_boundary": "records source evidence and its provenance only",
+  "authoring_boundary": "resolves relationships, context, dominance, filters, and overrides later"
+}
+```
+
+This is intended to close a psychosemantic gap: body design, body-aware movement, social presentation, and narrative role should be available as connected evidence rather than a cosmetic body edit pasted onto an unrelated personality.
+
+## Case Study C: Montreal Club as Character and World
+
+The Montreal strip-club material is special because it can live in more than one place in the authored graph without becoming duplicated or contradictory.
+
+- Connected to Rainee, it can be a behavioral and transformation source.
+- Connected to a scene, it can be a World Node: location, atmosphere, collective social logic, staging, audience behavior, and comedy framing.
+- Connected to an ensemble, it can be a shared-data source with performer, patron, bartender, and observer deltas.
+- Connected to a transformation, it can support the joke that Rainee becomes the club's collective or hive mind.
+
+This is a role-versus-identity distinction. The club is one authored source with multiple graph roles. It is not forced into a rigid character-or-world category.
+
+```text
+Montreal Club source
+  -> Rainee character page: behavior and transformation reference
+  -> World graph: location, social system, visual atmosphere
+  -> Ensemble graph: shared scene data plus member deltas
+  -> Comedy relationship: temporary hive-mind or cutaway state
+```
+
+The scene should be mined into component evidence before any of those roles are authored: setup/transition, spatial layout, performers, patrons, social attention, staging, music and sound cues, money exchange, camera grammar, joke setup, joke release, and return to the surrounding narrative.
+
+## Visual Authoring Relationship: Recorded Here, Not Solved Here
+
+The Visual Editor is inspired by Houdini, Unreal, and Cinema 4D style node editing: containers can contain nodes, reusable groups can expose selected outputs, and the same source can be connected in multiple arrangements. Hierarchy provides navigation. The node graph provides composition.
+
+That means a Character Node can contain a World-like source, a World Node can contain character-like agents, and a relationship can expose only selected channels. The data does not have to be permanently sorted into a single box before it can be useful.
+
+The following ideas are recorded as future Visual Editor concerns, not Mining App work:
+
+- context activation and scene-specific eligibility
+- channel-level dominance rather than global averaging
+- selective transfer of visual, behavioral, dialogue, or world channels
+- group/ensemble and hive-mind composition
+- nested roles and re-used sources
+- author overrides, ON/OFF states, and inspectable collision outputs
+- a possible nullification function that removes source-specific identity while retaining an abstract scene structure for later reassociation
+
+For example, the proposed Bulma/Goku thought experiment would preserve a shonen fight's general structure while suppressing Goku-specific identity and making a Bulma-derived stack eligible to inhabit the abstracted action. That is a relationship/transformation operation to specify later. The miner's responsibility is to preserve the relevant fight, dialogue, movement, setting, and female-combat evidence cleanly enough that the operation is possible.
+
+Emergent collision is also intentional. Personality can emerge from the conditions of the graph rather than from a simple blend slider. The job of the authoring system is to make the contributing conditions visible and editable, not to remove every surprise.
+
+## Mining at Collection Scale
+
+Do not combine four hours of footage or hundreds of social posts into one opaque prompt. Preserve originals and use an index.
+
+```text
+collection
+  -> source item
+    -> episode, post, or file
+      -> scene or post segment
+        -> shot or clip window
+          -> capture entry
+```
+
+Recommended process:
+
+1. Create a manifest with source id, path, hash, duration, modality, and source class.
+2. Preserve post context separately from raw video: caption, visible post information, title, tags, series marker, and location label.
+3. Segment video, speech, and shot changes before semantic interpretation.
+4. Extract observations before inferences: subject identity, clothing, pose, movement, camera, text, dialogue, sound, and setting.
+5. Run specialized passes for behavior, dialogue/reaction pairs, visual motifs, sound, and repeated pattern retrieval.
+6. Link recurring motifs across sources without deleting source boundaries.
+7. Record negative evidence with its search scope.
+8. Present patterns for author acceptance, revision, or rejection.
+
+Thirty-minute processing batches are fine for cost and throughput. They are not the identity of the evidence. Every result must point back to the original file and time window.
+
+## Why Data and Human Review Both Matter
+
+The project begins from a practical artistic problem: people have limited attention, limited source exposure, social assumptions, status filters, and emotional reactions that can make useful material invisible. An evidence system can force a wider search and preserve details a casual observer never consciously catalogued.
+
+That is not a claim that an LLM is automatically objective. Models have defaults and biases too. The useful distinction is operational: source selection, extraction prompts, evidence labels, confidence, provenance, transfer eligibility, and author decisions can be inspected and altered. A model should expand the creator's search space, not replace creative judgement or turn uncertain inferences into facts.
+
+Likewise, a human author is not automatically more faithful than a curated evidence library. Source-faithful writing depends on attention to observable history, dialogue, reactions, visual patterns, and relationships. Curated evidence gives the author something concrete to accept, reject, or deliberately transform.
+
+## Relevant Research and Design Implications
+
+These sources support the technical parts of the architecture. They do not prove that a model can correctly infer private personality from media.
+
+- [ImageBind: One Embedding Space To Bind Them All (CVPR 2023)](https://openaccess.thecvf.com/content/CVPR2023/html/Girdhar_ImageBind_One_Embedding_Space_To_Bind_Them_All_CVPR_2023_paper.html) demonstrates a shared representation across image, text, audio, depth, thermal, and IMU data. Relevance: a future retrieval layer can use cross-modal similarity to find related evidence, but shared embeddings must not replace provenance or authored meaning.
+- [Multimodal Transformer for Unaligned Multimodal Language Sequences (ACL 2019)](https://aclanthology.org/P19-1656/) addresses mixed text, facial, and acoustic streams that do not line up perfectly in time. Relevance: preserve modality-specific timecodes and allow cross-modal links; do not force audio, video, caption, and transcript into one falsely exact clock.
+- [VideoCLIP: Contrastive Pre-training for Zero-shot Video-Text Understanding (EMNLP 2021)](https://aclanthology.org/2021.emnlp-main.544/) aligns temporally overlapping video and text for retrieval, action localization, and segmentation. Relevance: video/text retrieval can help locate candidate behavior, but the project still needs source fragments, confidence, and direct-versus-derived labels.
+- [W3C PROV-DM: The PROV Data Model](https://www.w3.org/TR/prov-dm/) distinguishes entities, activities, agents, derivations, and collections. Relevance: the Mining App's source file, extraction pass, human editor, model/API, derived image, and author-approved rule can be represented as a traceable provenance chain rather than flattened into one JSON blob.
+
+## Documentation Audit and Corrections
+
+- This file is the canonical evidence-first case study; the HTML file is its visual companion.
+- All files referenced in this session are copied into `assets/` or already retained as generated frame sets in this project.
+- Direct source media, generated reinterpretations, and concept sketches are now clearly separated.
+- No exact duplicate files were found in the existing football and Montreal frame-extraction directories.
+- The main Mining scope now needs to describe the Visual Editor as a multi-node relationship and composition graph, not merely a two-dataset blend.
+- The exact `source_type` distinction remains important: `direct`, `structural`, `archetypal`, and `analogical` evidence must not silently become direct canon evidence for a target character.
+
+## Final Evaluation
+
+This is an unusually strong mining test because it combines short live-action behavior, a larger social-media corpus, sparse canon footage, post metadata, still images, animation, a comedy scene, generated reinterpretations, and concept art.
+
+The successful Mining App outcome is not "the system knows the real person" and not "the system has already written Rainee." It is a rich, traceable evidence library that records real source behavior, visual context, repeated motifs, distinctions between direct and derived material, and all the fragments needed for later node composition.
+
+Rainee, the Montreal hive-mind joke, relationship dominance, nullification, and final narrative behavior become possible because the evidence survives first.
