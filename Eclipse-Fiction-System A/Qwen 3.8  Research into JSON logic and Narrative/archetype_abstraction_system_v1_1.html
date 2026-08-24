@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archetype Abstraction System | Narrative Behavior Graph Specification</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f8;
+  --panel:#ffffff;
+  --ink:#17212b;
+  --muted:#5d6975;
+  --line:#d9e0e6;
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --soft:#eef4ff;
+  --soft2:#f5f0ff;
+  --code:#111827;
+  --warn:#fff7df;
+  --green:#15803d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.65;
+}
+.container{max-width:1200px;margin:auto;padding:28px}
+.hero{
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  color:#fff;
+  border-radius:18px;
+  padding:42px 44px;
+  box-shadow:0 12px 30px rgba(15,23,42,.18);
+  margin-bottom:28px;
+}
+.hero h1{margin:0 0 10px;font-size:2.25rem;line-height:1.15}
+.hero p{margin:0;color:#dbeafe;max-width:980px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.badge{
+  padding:5px 10px;border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;background:rgba(255,255,255,.08);font-size:.84rem
+}
+section{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:28px;margin-bottom:22px;box-shadow:0 4px 12px rgba(15,23,42,.04)
+}
+h2{margin-top:0;font-size:1.55rem}
+h3{font-size:1.12rem;margin-top:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{
+  border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff
+}
+.card h3{margin-top:0}
+.callout{
+  border-left:5px solid var(--accent);background:var(--soft);
+  padding:16px 18px;border-radius:8px;margin:16px 0
+}
+.callout.warn{border-left-color:#ca8a04;background:var(--warn)}
+.callout.green{border-left-color:var(--green);background:#ecfdf3}
+code{
+  background:#eef2f7;padding:2px 5px;border-radius:5px;
+  font-family:"SFMono-Regular",Consolas,monospace;font-size:.92em
+}
+pre{
+  background:var(--code);color:#e5e7eb;padding:18px;border-radius:10px;
+  overflow:auto;font-size:.9rem;line-height:1.5
+}
+.mermaid{
+  background:#fbfcfe;border:1px solid var(--line);padding:20px;border-radius:12px;
+  overflow:auto;margin:18px 0
+}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top;text-align:left}
+th{background:#f7f9fb}
+.small{font-size:.9rem;color:var(--muted)}
+.kicker{font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:#bfdbfe}
+.footer{color:var(--muted);font-size:.88rem;padding:12px 4px 30px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:800px){.two{grid-template-columns:1fr}.hero{padding:28px}}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="hero">
+  <div class="kicker">Theoretical JSON Programming Scheme</div>
+  <h1>Archetype Abstraction System<br>for Computational Narrative Modeling</h1>
+  <p>
+    A unified model for ingesting character-focused transcripts, abstracting behavior into
+    generic interchange JSON, converting observations into reusable behavioral nodes, and
+    linking character, persona, trigger, and relationship nodes into new composite characters.
+  </p>
+  <div class="badges">
+    <span class="badge">Transcript → Node</span>
+    <span class="badge">Generic JSON Interchange</span>
+    <span class="badge">Behavior Graph</span>
+    <span class="badge">Relationship Graph</span>
+    <span class="badge">Persona State Machine</span>
+    <span class="badge">Multi-Scale Source Ingestion</span>
+  </div>
+</header>
+
+<section>
+<h2>1. What This System Actually Is</h2>
+<p>
+The system is best understood as a <strong>character-behavior learning and composition framework</strong>,
+not simply a script anonymizer.
+</p>
+<p>
+A transcript is treated as learning material centered on one target character. The transcript captures
+how that character behaves across scenes and contexts. The system then abstracts those observations into
+a reusable representation. That representation can become a node, and nodes can later be connected to
+other nodes to construct new character behavior.
+</p>
+
+<div class="callout">
+<strong>Core principle:</strong>
+The transcript is the learning container; the generic JSON is the interchange language;
+the behavioral node is the reusable unit; the relationship graph is the composition mechanism.
+</div>
+
+<div class="mermaid">
+flowchart LR
+    A[Source Material] --> B[Character-Focused Transcript]
+    B --> C[Behavioral Extraction]
+    C --> D[Generic Interchange JSON]
+    D --> E[Behavioral Nodes]
+    E --> F[Character Graph]
+    F --> G[New Character / Narrative Behavior]
+</div>
+</section>
+
+<section>
+<h2>2. Two-Ledger Foundation</h2>
+
+<div class="two">
+<div class="card">
+<h3>Ledger A — Original Transcript</h3>
+<ul>
+<li>Episode / source title</li>
+<li>Exact date and metadata</li>
+<li>Raw dialogue</li>
+<li>Stage directions and physical actions</li>
+<li>Character names</li>
+<li>Relationships and context</li>
+<li>Historical and pop-culture references</li>
+<li>Scene / episode / arc identifiers</li>
+<li>Optional timestamps and source locations</li>
+</ul>
+<p class="small">This is the source of truth and should remain recoverable.</p>
+</div>
+
+<div class="card">
+<h3>Ledger B — Generalized Archetype JSON</h3>
+<ul>
+<li>Mirrors structural and behavioral information</li>
+<li>Replaces specific identities with placeholders</li>
+<li>Abstracts relationship roles</li>
+<li>Separates behavior from identity</li>
+<li>Parameterizes references when useful</li>
+<li>Preserves scene logic and behavioral sequence</li>
+<li>Acts as the universal interchange layer</li>
+</ul>
+<p class="small">This is the reusable middle layer between source-specific data and node composition.</p>
+</div>
+</div>
+
+<div class="mermaid">
+flowchart LR
+    A[Ledger A<br/>Original Source] --> B[Abstraction Engine]
+    B --> C[Ledger B<br/>Generalized JSON]
+    C --> D[Node Extraction]
+    A -. provenance / traceability .-> D
+</div>
+</section>
+
+<section>
+<h2>3. Character-Focused Transcript Model</h2>
+<p>
+A transcript can cover an entire episode or a tiny interaction, but the processing unit has a defined
+<strong>Target Character</strong>. Other entities are treated as context unless they independently become
+targets in their own transcripts.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    A[Episode / Scene / Clip] --> B{Target Character}
+    B --> C[Character Dialogue]
+    B --> D[Character Actions]
+    B --> E[Character Reactions]
+    B --> F[Character Decisions]
+    B --> G[Character Relationships]
+    B --> H[Environmental Triggers]
+    C & D & E & F & G & H --> I[Behavioral Observation Set]
+</div>
+
+<div class="callout green">
+<strong>Important:</strong> the same source episode may therefore generate multiple learning transcripts,
+one for each character whose behavior is being studied.
+</div>
+
+<pre>{
+  "transcript_id": "SERIES_S03_E04_TARGET_RICK",
+  "source": {
+    "series": "[SERIES]",
+    "season": 3,
+    "episode": 4
+  },
+  "target_character": {
+    "character_id": "RICK",
+    "name": "Rick"
+  },
+  "context_entities": [
+    "[Morty]",
+    "[Summer]",
+    "[Beth]",
+    "[Location]",
+    "[Object]"
+  ]
+}</pre>
+</section>
+
+<section>
+<h2>4. Source Scale Must Be Arbitrary</h2>
+<p>
+The architecture must work whether the source is a very short interaction or a long multi-season body
+of material. The abstraction layer should therefore be independent of source duration.
+</p>
+
+<table>
+<tr><th>Scale</th><th>Possible Unit</th><th>What It Can Produce</th></tr>
+<tr><td>Micro</td><td>Single interaction</td><td>One behavioral event or reaction node</td></tr>
+<tr><td>Short</td><td>Scene / clip</td><td>Behavior chain, relationship interaction</td></tr>
+<tr><td>Medium</td><td>Episode</td><td>Multiple behavioral events for the target character</td></tr>
+<tr><td>Long</td><td>Episode arc</td><td>Recurring patterns and relationship evolution</td></tr>
+<tr><td>Very long</td><td>Season / multi-season corpus</td><td>Large behavioral graph and continuity model</td></tr>
+</table>
+
+<div class="mermaid">
+flowchart TD
+    A[Universe] --> B[Series]
+    B --> C[Season]
+    C --> D[Episode]
+    D --> E[Scene]
+    E --> F[Sequence]
+    F --> G[Interaction]
+    G --> H[Behavioral Event]
+    H --> I[Node]
+</div>
+
+<div class="callout warn">
+<strong>Abstraction rule:</strong> abstraction should be additive, not destructive.
+Raw material and intermediate representations remain linked so a node can be traced back to its source.
+</div>
+</section>
+
+<section>
+<h2>5. Archetypes, Character Instances, and Behavioral Data</h2>
+
+<div class="grid">
+<div class="card">
+<h3>Archetype</h3>
+<p>A reusable behavioral template or classification.</p>
+<pre>{
+  "archetype_id": "0001",
+  "name": "American Dumb Blonde",
+  "class_value": "Character",
+  "type": "Young Adult / Adult"
+}</pre>
+</div>
+
+<div class="card">
+<h3>Character Instance</h3>
+<p>A concrete identity that uses an archetype.</p>
+<pre>{
+  "instance_id": "0999",
+  "name": "[Character Name]",
+  "archetype_id": "0001"
+}</pre>
+</div>
+
+<div class="card">
+<h3>Behavioral Node</h3>
+<p>A reusable pattern extracted from observed behavior.</p>
+<pre>{
+  "node_id": "004281",
+  "type": "behavior",
+  "trigger": "[Trigger]",
+  "response": "[Response]"
+}</pre>
+</div>
+</div>
+
+<div class="callout">
+<strong>Critical separation:</strong> <code>archetype_id</code> identifies a reusable behavioral class;
+<code>instance_id</code> identifies an actual character instance; <code>node_id</code> identifies a reusable behavior.
+They are not interchangeable.
+</div>
+</section>
+
+<section>
+<h2>6. Generic Interchange JSON</h2>
+<p>
+The generic interchange layer exists because source material, franchises, characters, and transcript lengths
+can vary wildly. The middle layer provides a common format that can be consumed by the node system regardless
+of where the original observation came from.
+</p>
+
+<pre>{
+  "schema_version": "1.0",
+
+  "source": {
+    "series": "[SERIES]",
+    "season": "[SEASON]",
+    "episode": "[EPISODE]",
+    "scene": "[SCENE]"
+  },
+
+  "target": {
+    "instance_id": "[TARGET_INSTANCE]",
+    "archetype_id": "[ARCHETYPE_ID]"
+  },
+
+  "context": {
+    "entities": ["[ENTITY_A]", "[ENTITY_B]"],
+    "location": "[LOCATION]",
+    "environment": "[ENVIRONMENT]"
+  },
+
+  "behavior": {
+    "trigger": "[TRIGGER]",
+    "action": "[ACTION]",
+    "reaction": "[REACTION]",
+    "escalation": "[ESCALATION]",
+    "resolution": "[RESOLUTION]"
+  },
+
+  "relationships": [
+    {
+      "type": "[RELATIONSHIP_TYPE]",
+      "target": "[TARGET_ENTITY]"
+    }
+  ],
+
+  "references": [
+    {
+      "category": "[REFERENCE_CATEGORY]",
+      "value": "[REFERENCE_VALUE]"
+    }
+  ]
+}</pre>
+</section>
+
+<section>
+<h2>7. Behavioral Nodes</h2>
+<p>
+A behavioral node stores a reusable pattern rather than a complete character. It can be connected to
+other behavioral nodes to construct larger sequences.
+</p>
+
+<div class="mermaid">
+flowchart LR
+    A[Trigger] --> B[Initial Response]
+    B --> C[Escalation]
+    C --> D[Counter-response]
+    D --> E[Resolution]
+</div>
+
+<div class="card">
+<h3>Example Behavioral Pattern</h3>
+<pre>{
+  "node_id": "BEHAV_004281",
+  "type": "behavior",
+  "trigger": "challenged by a less-experienced character",
+  "initial_response": "mockery",
+  "secondary_response": "sarcasm",
+  "escalation_response": "irritation",
+  "avoidance_strategy": "redirect toward technical subject"
+}</pre>
+</div>
+</section>
+
+<section>
+<h2>8. Relationship Nodes</h2>
+<p>
+Relationship nodes are a distinct graph primitive. They do more than describe static relationships.
+They define how two or more datasets interact, influence one another, activate one another, or alter the
+current state of a composite character.
+</p>
+
+<div class="mermaid">
+flowchart LR
+    A[Entity A] --> R{Relationship Node}
+    R --> B[Entity B]
+</div>
+
+<p>Valid relationship types can include:</p>
+<table>
+<tr><th>Relationship</th><th>Purpose</th></tr>
+<tr><td>Dating / Lovers</td><td>Connects two characters through a romantic relationship</td></tr>
+<tr><td>Friendship</td><td>Connects recurring social relationships</td></tr>
+<tr><td>Family</td><td>Connects family roles</td></tr>
+<tr><td>Dominates</td><td>Defines behavioral control or priority</td></tr>
+<tr><td>Passive Host</td><td>Defines a host dataset whose behavior can be overridden</td></tr>
+<tr><td>Activates</td><td>Allows one entity or condition to activate another persona</td></tr>
+<tr><td>Triggered By</td><td>Associates environmental or behavioral triggers with a node</td></tr>
+<tr><td>Conflicts With</td><td>Represents opposing behavioral or narrative states</td></tr>
+</table>
+</section>
+
+<section>
+<h2>9. Composite Character Architecture</h2>
+<p>
+A composite character can be assembled from independently learned datasets. The host character remains
+distinct from each persona, and each persona can have its own transcript history and behavioral nodes.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    M[Morty<br/>Base Dataset]
+
+    SM[Summer Morticia<br/>Persona Dataset]
+    BM[Beth Morticia<br/>Persona Dataset]
+    DM[Dorky Morty<br/>Persona Dataset]
+    BIM[Bimbo Morty<br/>Persona Dataset]
+    GM[Glamor Morty<br/>Persona Dataset]
+    MO[Morticia<br/>Independent Female Dataset]
+
+    M -->|Passive Host / Dominated By| SM
+    M -->|Passive Host / Dominated By| BM
+    M -->|Passive Host / Dominated By| DM
+    M -->|Passive Host / Dominated By| BIM
+    M -->|Passive Host / Dominated By| GM
+
+    SM --> CTRL[Persona Activation Controller]
+    BM --> CTRL
+    DM --> CTRL
+    BIM --> CTRL
+    GM --> CTRL
+
+    CTRL --> MO
+</div>
+
+<div class="callout">
+<strong>Important:</strong> Morticia is not merely a renamed Morty. The system keeps the original Morty dataset,
+the persona datasets, and Morticia's own independent female dataset as separate entities connected through graph rules.
+</div>
+</section>
+
+<section>
+<h2>10. Morticia Persona Library</h2>
+
+<table>
+<tr><th>Persona Dataset</th><th>Conceptual Source Pattern</th><th>Role in the Composite Character</th></tr>
+<tr><td>Summer Morticia</td><td>Female Morty from a universe where she is Summer's twin</td><td>Summer-associated persona</td></tr>
+<tr><td>Beth Morticia</td><td>Morty grew up with Beth-like characteristics; Summer is the sister</td><td>Beth-associated persona</td></tr>
+<tr><td>Dorky Morty</td><td>Cute, nerdy / awkward female Morty</td><td>Dorky persona</td></tr>
+<tr><td>Bimbo Morty</td><td>Basic white-girl / cheerleader-style persona with highly exaggerated airheaded behavior</td><td>Triggered social-performance persona</td></tr>
+<tr><td>Glamor Morty</td><td>Celestial pinup-style persona</td><td>High-glamour persona</td></tr>
+<tr><td>Morticia</td><td>Independent female character identity and learned behavior</td><td>Primary current female identity</td></tr>
+</table>
+
+<div class="callout warn">
+These are modeled here as independent behavioral datasets because each has its own potential transcript history.
+They should not be reduced to simple numeric personality traits.
+</div>
+</section>
+
+<section>
+<h2>11. Persona Activation and Mutual Exclusivity</h2>
+<p>
+The persona layer behaves like a state machine. Multiple personas may exist in the graph, but only one persona is active
+for a given composite character state unless the system explicitly defines a future multi-persona mode.
+</p>
+
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Morticia
+    Morticia --> Summer_Morticia : shopping / credit-card trigger
+    Morticia --> Bimbo_Morty : airheaded / cheerleader resonance
+    Morticia --> Beth_Morticia : Beth-associated trigger
+    Morticia --> Dorky_Morty : dorky / cute-nerd trigger
+    Morticia --> Glamor_Morty : glamour / celestial trigger
+
+    Summer_Morticia --> Morticia : trigger ends
+    Bimbo_Morty --> Morticia : trigger ends
+    Beth_Morticia --> Morticia : trigger ends
+    Dorky_Morty --> Morticia : trigger ends
+    Glamor_Morty --> Morticia : trigger ends
+</div>
+
+<pre>{
+  "activation_policy": {
+    "max_active_personas": 1,
+    "selection_mode": "triggered",
+    "fallback_persona": "MORTICIA"
+  }
+}</pre>
+</section>
+
+<section>
+<h2>12. Environmental Trigger Nodes</h2>
+<p>
+Environmental conditions and other characters can act as inputs to the persona controller.
+This creates a direct path from narrative context to character state.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    A[Shopping] --> S[Summer Morticia Activation]
+    B[Credit Card] --> S
+    C[Summer's Airheaded Friend] --> Q[Bimbo Morty Activation]
+    D[Cheerleading Behavior] --> Q
+    E[Beth-associated Context] --> BT[Beth Morticia Activation]
+    F[Dorky / Nerd Context] --> DT[Dorky Morty Activation]
+    G[Glamour / Pinup Context] --> GT[Glamor Morty Activation]
+
+    S --> CTRL[Persona Controller]
+    Q --> CTRL
+    BT --> CTRL
+    DT --> CTRL
+    GT --> CTRL
+
+    CTRL --> M[Current Morticia State]
+</div>
+
+<h3>Generic Trigger Schema</h3>
+<pre>{
+  "trigger_id": "TRIGGER_001",
+  "type": "environmental",
+  "conditions": [
+    "shopping_behavior",
+    "credit_card_present"
+  ],
+  "activation": {
+    "persona_id": "SUMMER_MORTICIA"
+  },
+  "priority": 0.82
+}</pre>
+</section>
+
+<section>
+<h2>13. Character-to-Character Relationship Graph</h2>
+<p>
+The graph can also describe larger relationships between complete character nodes. For example, Morticia can be connected
+to Jessica through a separate relationship node without changing either character's underlying dataset.
+</p>
+
+<div class="mermaid">
+flowchart LR
+    MO[Morticia<br/>Character Node]
+    R{{Dating / Lovers<br/>Relationship Node}}
+    J[Jessica<br/>Character Node]
+
+    MO --> R
+    R --> J
+</div>
+
+<pre>{
+  "relationship_id": "REL_00421",
+  "source": "MORTICIA",
+  "target": "JESSICA",
+  "type": "dating",
+  "status": "lovers"
+}</pre>
+</section>
+
+<section>
+<h2>14. Relationship Graph + Persona Graph</h2>
+<p>
+The full model allows both character relationships and internal persona relationships to coexist.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    M[Morty<br/>Base Character]
+    SM[Summer Morticia]
+    BM[Beth Morticia]
+    DM[Dorky Morty]
+    BIM[Bimbo Morty]
+    GM[Glamor Morty]
+    MO[Morticia<br/>Independent Dataset]
+    J[Jessica]
+    R{{Dating / Lovers}}
+    C[Persona Controller]
+
+    M -->|Passive Host| SM
+    M -->|Passive Host| BM
+    M -->|Passive Host| DM
+    M -->|Passive Host| BIM
+    M -->|Passive Host| GM
+
+    SM --> C
+    BM --> C
+    DM --> C
+    BIM --> C
+    GM --> C
+
+    C --> MO
+
+    MO --> R
+    R --> J
+</div>
+</section>
+
+<section>
+<h2>15. Transcript-to-Graph Construction</h2>
+<p>
+Each independent transcript contributes data to the graph. The graph does not require all source material to be processed at once.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    A[Morty Transcript] --> AM[Morty Behavioral Nodes]
+    B[Summer Morticia Transcript] --> BM[Summer Morticia Nodes]
+    C[Beth Morticia Transcript] --> BN[Beth Morticia Nodes]
+    D[Dorky Morty Transcript] --> DN[Dorky Morty Nodes]
+    E[Bimbo Morty Transcript] --> BIN[Bimbo Morty Nodes]
+    F[Glamor Morty Transcript] --> GN[Glamor Morty Nodes]
+    G[Morticia Transcript] --> MON[Morticia Nodes]
+    H[Jessica Transcript] --> JN[Jessica Nodes]
+
+    AM --> CG[Composite Character Graph]
+    BM --> CG
+    BN --> CG
+    DN --> CG
+    BIN --> CG
+    GN --> CG
+    MON --> CG
+    JN --> CG
+</div>
+
+<div class="callout green">
+This is the key scalability mechanism: new transcripts can be added to the graph without requiring the entire
+character to be rebuilt from scratch.
+</div>
+</section>
+
+<section>
+<h2>16. Character Importance Can Emerge From the Dataset</h2>
+<p>
+A character does not need to be declared "main" forever at ingestion time. A secondary character can accumulate
+enough transcripts, nodes, and relationships to become a major behavioral entity in the graph.
+</p>
+
+<div class="mermaid">
+flowchart LR
+    A[Secondary Character] --> B[More Transcripts]
+    B --> C[More Behavioral Nodes]
+    C --> D[More Relationship Nodes]
+    D --> E[Higher Graph Importance]
+    E --> F[Recurring / Major Character Model]
+</div>
+
+<p>
+This supports a corpus in which the most important characters emerge from the amount and diversity of behavioral
+evidence rather than from an externally fixed cast hierarchy.
+</p>
+</section>
+
+<section>
+<h2>17. Provenance and Traceability</h2>
+<p>
+Every node should ideally retain a path back to the observations that produced it. This allows a researcher or
+system to inspect where a behavioral abstraction came from.
+</p>
+
+<div class="mermaid">
+flowchart TD
+    N[Behavior Node] --> E[Behavioral Event]
+    E --> S[Scene]
+    S --> EP[Episode]
+    EP --> T[Transcript]
+    T --> SRC[Original Source]
+</div>
+
+<pre>{
+  "node_id": "BEHAV_004281",
+  "provenance": {
+    "source_transcript": "RM_S03_E04_TARGET_RICK",
+    "scene_id": "SCENE_014",
+    "event_id": "EVENT_0088",
+    "timestamp": "00:17:41"
+  }
+}</pre>
+</section>
+
+<section>
+<h2>18. The Unified Processing Pipeline</h2>
+
+<div class="mermaid">
+flowchart TD
+    A[Source Material<br/>short → multi-season] --> B[Source Ledger]
+    B --> C[Character-Focused Transcript]
+    C --> D[Entity / Context Extraction]
+    D --> E[Behavioral Event Extraction]
+    E --> F[Archetype Classification]
+    F --> G[Relationship Extraction]
+    G --> H[Reference Abstraction]
+    H --> I[Generic Interchange JSON]
+    I --> J[Behavioral Node Generation]
+    I --> K[Relationship Node Generation]
+    J --> L[Character Graph]
+    K --> L
+    L --> M[Persona State Controller]
+    M --> N[Current Character State]
+    N --> O[Narrative Engine]
+    O --> P[Generated Narrative]
+</div>
+</section>
+
+<section>
+<h2>19. Data Object Hierarchy</h2>
+
+<div class="mermaid">
+flowchart TD
+    U[Universe] --> S[Series]
+    S --> SE[Season]
+    SE --> EP[Episode]
+    EP --> SC[Scene]
+    SC --> T[Target-Character Transcript]
+    T --> E[Behavioral Events]
+    E --> BN[Behavioral Nodes]
+    T --> RN[Relationship Nodes]
+
+    BN --> CN[Character Node]
+    RN --> CN
+    CN --> CG[Character Graph]
+
+    CG --> PC[Persona Controller]
+    PC --> CS[Current State]
+</div>
+</section>
+
+<section>
+<h2>20. Recommended Core Object Types</h2>
+
+<table>
+<tr><th>Object</th><th>Purpose</th><th>Persistent?</th></tr>
+<tr><td>Source Record</td><td>Original source and metadata</td><td>Yes</td></tr>
+<tr><td>Transcript</td><td>Character-focused learning unit</td><td>Yes</td></tr>
+<tr><td>Archetype</td><td>Reusable behavioral class</td><td>Yes</td></tr>
+<tr><td>Character Instance</td><td>Concrete narrative identity</td><td>Usually</td></tr>
+<tr><td>Behavioral Event</td><td>Observed target-character behavior</td><td>Yes</td></tr>
+<tr><td>Behavioral Node</td><td>Reusable behavior abstraction</td><td>Yes</td></tr>
+<tr><td>Relationship Node</td><td>Defines interaction / influence / activation</td><td>Yes</td></tr>
+<tr><td>Persona Node</td><td>Independent alternate behavioral dataset</td><td>Yes</td></tr>
+<tr><td>Trigger Node</td><td>Condition that can alter character state</td><td>Yes</td></tr>
+<tr><td>State</td><td>Currently active configuration</td><td>Dynamic</td></tr>
+</table>
+</section>
+
+<section>
+<h2>21. Core Design Rules</h2>
+
+<div class="grid">
+<div class="card"><h3>Rule 1</h3><p><strong>Preserve the source.</strong> Never destroy the raw transcript merely to create an abstraction.</p></div>
+<div class="card"><h3>Rule 2</h3><p><strong>One target character per learning transcript.</strong> Context characters remain context unless separately processed.</p></div>
+<div class="card"><h3>Rule 3</h3><p><strong>Separate identity from behavior.</strong> Names are not the same thing as behavioral patterns.</p></div>
+<div class="card"><h3>Rule 4</h3><p><strong>Use generic interchange JSON.</strong> Nodes from different sources must be able to communicate through a common schema.</p></div>
+<div class="card"><h3>Rule 5</h3><p><strong>Keep personas independent.</strong> A persona is a dataset, not merely a personality adjective.</p></div>
+<div class="card"><h3>Rule 6</h3><p><strong>Use relationship nodes.</strong> Relationships are graph objects, not just fields on a character.</p></div>
+<div class="card"><h3>Rule 7</h3><p><strong>Control activation separately.</strong> The graph can contain many personas while only one is active at a time.</p></div>
+<div class="card"><h3>Rule 8</h3><p><strong>Maintain provenance.</strong> Every abstraction should remain traceable to source observations when possible.</p></div>
+</div>
+</section>
+
+<section>
+<h2>22. The Big Picture</h2>
+
+<div class="callout">
+<strong>The system is not trying to store characters as single blobs.</strong>
+It is building a graph of reusable behavioral evidence and relationships from which character behavior can be composed.
+</div>
+
+<div class="mermaid">
+flowchart LR
+    A[Transcripts] --> B[Behavioral Evidence]
+    B --> C[Generic JSON]
+    C --> D[Behavior Nodes]
+    C --> E[Relationship Nodes]
+
+    D --> F[Character A]
+    D --> G[Character B]
+    E --> F
+    E --> G
+
+    F --> H[Composite Character]
+    G --> H
+
+    H --> I[State / Persona Controller]
+    I --> J[New Narrative Behavior]
+</div>
+
+<p>
+The resulting architecture supports a progression from <strong>observation</strong> to
+<strong>abstraction</strong>, from abstraction to <strong>nodes</strong>, and from nodes to
+<strong>composition</strong>.
+</p>
+
+<pre>
+SOURCE
+  ↓
+TRANSCRIPT
+  ↓
+BEHAVIORAL OBSERVATION
+  ↓
+GENERIC INTERCHANGE JSON
+  ↓
+┌───────────────────────────────┐
+│        NODE GRAPH             │
+│                               │
+│  Behavioral Nodes             │
+│  Character Nodes              │
+│  Persona Nodes                │
+│  Relationship Nodes           │
+│  Trigger Nodes                │
+└───────────────┬───────────────┘
+                ↓
+        STATE / ACTIVATION
+                ↓
+      COMPOSITE CHARACTER
+                ↓
+         NARRATIVE ENGINE
+</pre>
+</section>
+
+<section>
+<h2>23. Open Research Questions</h2>
+<ul>
+<li>How much behavioral evidence is required before an extracted pattern becomes a reusable node?</li>
+<li>Should identical or near-identical nodes be merged automatically?</li>
+<li>Should relationship nodes have weights, priorities, or confidence values?</li>
+<li>How should competing persona triggers be resolved?</li>
+<li>Can several triggers combine to increase activation probability?</li>
+<li>Should a character be allowed to have more than one active persona in exceptional cases?</li>
+<li>How should long-term character development modify an existing node graph?</li>
+<li>How should contradictions between transcripts be represented rather than erased?</li>
+<li>How should node provenance and confidence survive multiple rounds of recombination?</li>
+<li>What minimum generic schema is required for nodes learned from very different franchises to interoperate?</li>
+</ul>
+</section>
+
+<div class="footer">
+  Archetype Abstraction System v1.1 — theoretical research specification.
+  This document consolidates the architecture discussed in the session into one visual HTML model.
+</div>
+
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  theme:"default",
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:"basis"},
+  securityLevel:"loose"
+});
+</script>
+</body>
+</html>

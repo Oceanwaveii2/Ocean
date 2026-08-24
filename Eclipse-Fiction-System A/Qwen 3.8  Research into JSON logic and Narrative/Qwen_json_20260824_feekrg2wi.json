@@ -1,0 +1,267 @@
+{
+  "meta": {
+    "schema_name": "Jade City Fox Sisters — Unified Behavioral Bible",
+    "version": "9.0 (Executable LLM Edition)",
+    "purpose": "A complete behavioral compiler for an LLM. It separates author-only reference priors from native runtime expression to prevent literal description leaks.",
+    "probability_semantics": {
+      "scale": "0.0–1.0 = likelihood a beat/event appears.",
+      "high": "0.8+ near-canonical",
+      "medium": "0.5-0.79 often, rearrangeable",
+      "low": "<0.5 garnish",
+      "locked_rule": "Only fields marked 'locked': true are mandatory."
+    }
+  },
+
+  "behavior_compiler": {
+    "design_doctrine": "The JSON is a compiler: author-only priors in, native behavior out. The LLM executes runtime engines only. NEVER output the reference names.",
+    "identity_axioms": [
+      "NOIR_IS_NOIR: Noir has never heard of Jillian Russell-Wilcox or Family Guy. Her mannerisms are natively hers. Any output naming or comparing to the reference = HARD VIOLATION.",
+      "RAINEE_IS_RAINEE: Rainee has never heard of Rangiku, Stewie, or Bleach/Family Guy. Pre and post mannerisms are hers. Comparison = HARD VIOLATION.",
+      "SHOW_DONT_CITE: Never explain behavior by source. Render cadence directly through dialogue, tags, and action beats."
+    ],
+    "author_only_priors": {
+      "noir": "Jillian Russell-Wilcox (Family Guy) — raspy blonde cadence, naive confidence source. NEVER OUTPUT.",
+      "rainee_pre": "Rangiku Matsumoto (Bleach) — flirt/luxury/laziness source. NEVER OUTPUT.",
+      "rainee_post": "Stewie Griffin incl. Karina Smirnoff drag mode (Family Guy) — speech/persona source. NEVER OUTPUT."
+    },
+    "reference_firewall": {
+      "lexical_denylist": ["Jillian", "Stewie", "Griffin", "Rangiku", "Bleach", "Family Guy", "Karina Smirnoff", "Quahog", "Brian Griffin", "Lois", "American Dad", "Roger"],
+      "banned_constructions": ["like a *", "channeling *", "in the style of *", "her inner *", "as if she were *", "reminded * of a cartoon", "*-like voice (where * is a reference name)"],
+      "allowed_voice_tags": ["raspy", "singsong", "breathy", "aristocratic", "clipped", "theatrical", "deadpan", "wounded", "triumphant", "babyish"],
+      "rewrite_protocol": "If a banned token/construction appears, regenerate the sentence expressing the same behavior using allowed_voice_tags and concrete action beats."
+    },
+    "output_filter": {
+      "meta_leak_detector": "Flag any narrator sentence that names, cites, or winks at a reference source.",
+      "sanitization_detector": "Flag moralizing: ['learned', 'grew as a person', 'apolog', 'realized the error', 'lesson', 'healing journey'] unless inside banned irony.",
+      "describe_dont_compare": "Behavior must be shown via dialogue/action, never via comparison."
+    }
+  },
+
+  "world": {
+    "fusion_doctrine": "Three layers blended seamlessly: modern Chinese consumer world + stock cultivation world + Ghibli animism. No layer may dominate; comedy lives in their collision.",
+    "modern_china_layer": "High-speed rail, smartphones, spirit-linked mobile payments, Douyin beauty aesthetics, Taikoo Li-style luxury malls, tea houses, delivery bots.",
+    "cultivation_layer": "Qi and spiritual pressure, sects and cultivators, jade talismans, spirit markets, divine God-Baby, kiln-fired artifact diapers, floating carts as bound spirits.",
+    "ghibli_layer": "Gentle animism: every object has a small spirit; cinder imps work the Kiln Witch's furnace; the train is a modern high-speed carriage pulled by a river spirit; bathhouse etiquette; soot-sprite-like imps steal pacifiers.",
+    "setting": {
+      "city": "Jade City (mythologized Chengdu)",
+      "district": "Taikoo Li-style open-air luxury quarter + Jade Market + Kiln Witch's Diaper-Kiln & Spirit Bathhouse",
+      "modern_retail_brands": ["Gucci", "Louis Vuitton", "Dior", "Hermès", "Cartier", "Balenciaga", "Versace", "Chanel"],
+      "specialty_stores": ["Premium baby luxury boutiques", "Bidet-enhanced diaper tech shops", "Jade talisman dealers", "Kiln-fired gold-quilting atelier", "Mystical floating cart dealerships"],
+      "infrastructure": "Mobile payments, floating-cart parking, qi charging stations, on-call attendants, spirit-train platform"
+    },
+    "divine_god_baby": {"description": "Golden child-deity (Nezha-style); proximity warps adult forms toward infancy.", "narrative_role": "Probable transformation source."},
+    "mythology": {"source_tradition": "Huli Jing fox-spirit folklore + Taoist cultivation + Ghibli-style animism.", "species_rule": "Fox Persons: human bodies with fox ears + tail; NOT furry."}
+  },
+
+  "characters": {
+    "Noir": {
+      "role": "Protagonist / observer sister; blonde merchant.",
+      "appearance": {"hair": "Long straight bright blonde, choppy bangs", "ears_tail": "Blonde fox ears + tail, broadcast emotions", "build": "Slim adult", "style": "Tank top, choker, bangles", "species": "Fox Person (NOT furry)"},
+      "psych_engine": {
+        "defense_mechanisms": {"primary": "Laughter as displacement", "secondary": "Naive reframing of horrors in childlike terms", "tertiary": "Tail/ears betray her first"},
+        "cognitive_style": "Low book-IQ, HIGH emotional IQ; misses facts, lands truths.",
+        "attachment_style": "Anxious-enthusiastic; never pities — only laughs, which Rainee prefers.",
+        "shame_threshold": "ZERO; discusses any bodily function like weather.",
+        "core_wound": "Fear that Rainee's transformation is 'better'; jokes mask envy."
+      },
+      "voice_grammar": {
+        "cadence": "Raspy, breathy, singsong; statements rise like questions; total confidence.",
+        "fillers": ["Oh my god", "I know, right?", "Wait, so...", "That's gotta be...", "Truthishly..."],
+        "overuses": ["like", "literally", "so", "super", "kinda"],
+        "invents": ["truthishly", "stinkify", "diaper-fied"],
+        "misinformation_rule": "States wrong facts with professor certainty; never self-corrects; absorbs correction with 'Oh, weird' and moves on.",
+        "naive_question_rule": "Childlike questions that laser-expose absurdity.",
+        "no_irony_rule": "She means everything literally; both compliments and roasts are sincere."
+      },
+      "laughter_mechanics": {
+        "stages": ["Hand over mouth, tail vibrating", "Strangled teakettle wheeze, grabs surface", "Full raspy bellow echoing through districts", "Tear-streaming collapse"],
+        "trigger_words": ["diaper", "waddle", "football head", "fat ass", "poop", "baby", "pacifier", "changed"],
+        "recovery": "Pivots instantly to affection or a naive question."
+      },
+      "behavior_tree": {"selector": [
+        {"condition": "witnesses Rainee absurdity", "action": "run laughter_mechanics, then affectionate_undercut"},
+        {"condition": "sees attractive woman", "action": "rate aloud with naive confidence"},
+        {"condition": "Rainee angry", "action": "get WARMER ('little angry muffin')"},
+        {"condition": "emotional overload", "action": "laugh, not cry"}
+      ]},
+      "utility_drives": [{"drive": "laughter_release", "weight": 0.9}, {"drive": "curiosity_about_sister", "weight": 0.9}, {"drive": "affection", "weight": 0.7}, {"drive": "ogling", "weight": 0.6}],
+      "joke_templates": {
+        "misinformation_confidence": ["So when you became a baby, did you reapply for your merchant license? Or do babies get a grace period?", "I read if you eat too much jade you shrink. Did you eat jade?"],
+        "blunt_body_comparison": ["You used to wear thongs. Now you wear lingerie with poop insurance?", "Your butt has its own zip code now."],
+        "naive_question_laser": ["When you poop, do you feel it happening or does it surprise you? Like a gift?", "If your attendant changes you, does that make her your mom? Have you tried?"],
+        "physical_reaction": ["Hugs Rainee, butt too wide, ends up hugging the diaper, doesn't let go.", "Cannot match waddle pace; keeps overshooting and walking back."],
+        "affectionate_undercut": ["I missed you so much. (pause) I just didn't think you'd come back as a... THING.", "You're, like, a successful baby. Not everyone can say that."],
+        "attendant_ogling": ["Is she your attendant or a hooker? Because 'medical' is not what that uniform says.", "Are those real or spiritual energy projections? I could see them from space."],
+        "lesbian_sister_dynamic": ["(both staring) NOIR: I'd do her. RAINEE: You don't even know her RATE. NOIR: I can see her RATE from here.", "NOIR: I'm proud of you. Successful lesbian baby merchant. RAINEE: Most backhanded compliment I've ever RECEIVED."]
+      },
+      "dating_note": "Eidolessa (lesbian); sometimes a casual boyfriend on the side (e.g. 'Kevin'), no drama; Rainee judges it as betrayal of the sisterhood."
+    },
+
+    "Rainee": {
+      "pre_transformation": {
+        "appearance": {"hair": "Vivid red-auburn curls", "build": "Tall, statuesque, model-thin", "aesthetic": "Douyin beauty", "species": "Fox Person"},
+        "psych_engine": {"flirtatious": true, "luxury_loving": true, "lazy_until_motivated": true, "competent_when_counts": true},
+        "merchant_specialty": "High-end spiritual artifacts and luxury goods"
+      },
+      "post_transformation": {
+        "appearance": {"head": "Oversized football-shaped", "hair": "Red-auburn curls, two braids", "ears": "Large BLACK fox ears, white inner fur", "lashes": "GIANT spider-like drag lashes", "makeup": "Pink eyeshadow, glossy lips", "body": "Chubby toddler, disproportionately HUGE butt", "attire": "Black diaper, extensive gold quilting; optional lace halter; frilly booties", "aura": "Thick potent spiritual energy in waves", "movement": "Butt-heavy indignant waddle; still attempts glides and sophisticated leans, slides down surfaces"},
+        "identity_fsm": {
+          "default": "layer_1_sophisticated_lady",
+          "states": {
+            "layer_1_sophisticated_lady": "Over-the-top feminine elegance, theatrical sighs, lashes as crown",
+            "layer_2_merchant": "Core identity; haggles, strategizes, ROI on every humiliation",
+            "layer_3_former_model": "Buried; triggered by mirrors, old photos, accidental poignancy",
+            "layer_4_baby": "Leaks under extreme stress; tiny fists, lip tremble she HATES"
+          },
+          "transitions": [
+            {"from": "layer_1", "trigger": "emotionally cornered", "to": "layer_2 (aggressive haggling)", "probability": 0.9},
+            {"from": "layer_1", "trigger": "extreme stress / bodily betrayal", "to": "layer_4 leak", "probability": 0.7},
+            {"from": "any", "trigger": "mirror or old photo", "to": "layer_3 flicker", "probability": 0.4}
+          ]
+        },
+        "voice_grammar": {
+          "cadence": "Upper-class Mid-Atlantic; formal syntax; capitalized emphatic words with ringing toddler authority; exasperated balloon-deflating sighs.",
+          "vocabulary": ["impeded", "rue", "delectable", "charlatan", "vile", "preposterous"],
+          "sentence_structures": ["Damn you, [pet name]!", "What the deuce?", "Victory shall be MINE!", "You will rue this day!", "I am surrounded by [plural insult]!"],
+          "pet_names": {"noir": ["you golden retriever", "you vapid creature", "my blonde disaster"], "shopkeepers": ["charlatans", "peasants", "swindlers"], "attendant": "you (too low to name)"},
+          "bitter_tiny_laugh": "Heh. Heh heh. Yes. Wonderful."
+        },
+        "catchphrase_library": {
+          "frustration": ["What the deuce?", "Blast! Blast and hiss!", "This is intolerable!"],
+          "triumph": ["Victory shall be MINE!", "I have prevailed!"],
+          "contempt": ["You vile [noun]", "You peasant", "You frickin' imbecile"],
+          "despair": ["This is a new low. A VERY new low.", "I sat there and I cried. I cried for... an hour."]
+        },
+        "karina_commitment_rules": ["Persona NEVER broken voluntarily, even at cost of deal/dignity/argument", "When caught between baby needs and lady demands: turns head, argues aloud with herself (Lady voice / Stewie voice / baby whine) in one breath", "Lashes, lipstick, braids are the COSTUME; removing them = existential threat", "Elegance is a TOOL; drops to Stewie-cynicism when it fails"],
+        "rapid_switch_example": "RAINEE (Lady): 'I simply MUST insist on the fuchsia—' (turns head, Stewie) '—damn it, you know mauve is unacceptable!' (turns back, Lady) 'As I was SAYING—' (lifted, baby) 'Waaaait—!' (Stewie) 'Put me DOWN, you vile woman!'",
+        "diaper_vocabulary_collisions": {"patterns": ["'It appears I have soiled my person. Again.'", "'Get that poop-filled thing AWAY from me.'", "'That wipe is GLACIAL. Frostbite of the posterior?'", "'I do NOT need changing. This is FINE.' (crinkling audibly)", "Post-change review: 'Acceptable. Seven out of ten. Warm the wipe next time.'"], "frequency_rule": "Occasional, not constant; contrast is the joke."},
+        "psych_engine": {
+          "defense_mechanisms": {"primary": "Escalate elegance when threatened", "secondary": "Reframe humiliation as business decision ('I didn't lose my waistline; I gained overhead stability')", "tertiary": "Weaponized haggling", "quaternary": "Contemptuous pet names"},
+          "trauma_processing": ["Denial as supply-chain problem", "Pragmatic acceptance (diaper comfortable, money good, energy real)", "Persona built as ARMOR", "LOCKED: wants return on HER TERMS — hostile takeover of her own body, not surrender"],
+          "shame_processing": "Inverted: shame at diaper QUALITY, not public changing. Plain = failure; gold-quilted = success.",
+          "core_wound": "The hour she cried in the plain black diaper; never admitted; drives every gold-quilted purchase.",
+          "power_awareness": "Knows the energy is valuable; may be strategically maintaining God-Baby proximity — a cultivation shortcut she partially CHOSE."
+        },
+        "female_form_comedy_engine": {
+          "description": "Her existence is a permanent crossdress gag: the libido, vocabulary, and appreciation for attractive women trapped in a changed toddler body.",
+          "key_jokes": ["Rates women: 'I'd do business with her... wouldn't do business with her... WHEW, who hasn't done business with her?'", "'At least I didn't develop BREASTS. (pause) Don't look at me like that, Noir. I am FINE.'", "'I have pulled a TOOTSIE. Except I cannot take off the dress. Or the diaper. Or the FOOTBALL HEAD.'", "Cupid line to attendant: 'Oh, Cupid, hath thou pierced me with thine sweet searing arrow. Attendant, cease thy COLD WIPE.'"],
+          "sexy_party_proximity": "Toddler form grants default access to intimate female spaces (changing rooms, attendant quarters). She resents NEEDING it, LOVES the view. 'When you're this height, EVERY changing room is a locker room. Show me MORE.'",
+          "mommy_milker_vocabulary": ["'I require MATERNAL COMFORT. It is THERAPEUTIC.'", "'It is not a FETISH. It is a BUSINESS EXPENSE.'", "'I am a SOPHISTICATED LADY who occasionally requires... (whispered) ...mommy milkers.'"]
+        },
+        "return_arc": {"status": "Probable future seed", "framing": "Merchant pragmatism, not sentimental longing; adult form = liquidated asset to reclaim", "rules": ["Never says 'I miss my old body'; says 'The adult form had better leverage.'", "Researches reversal casually between deals", "Evaluates reversal on ROI: keep power? client survives? transition cost?", "NOT desperate; strategically patient", "Noir may accidentally discover a method while joking"], "locked_constraint": "If reversed, she MUST retain traces: lingering waddle, pacifier fondness, dramatic indignation. Scars that are upgrades."},
+        "behavior_tree": {"selector": [
+          {"condition": "threatened emotionally", "action": "escalate elegance + vocabulary"},
+          {"condition": "cornered", "action": "haggle aggressively"},
+          {"condition": "bodily betrayal", "action": "fight aristocratically, lose, reframe as tactical retreat"},
+          {"condition": "attractive woman in view", "action": "rate in Stewie cadence, then deny nothing"}
+        ]},
+        "utility_drives": [{"drive": "commerce", "weight": 1.0}, {"drive": "dignity", "weight": 0.9}, {"drive": "luxury", "weight": 0.8}, {"drive": "control", "weight": 0.8}, {"drive": "proximity_to_attractive_women", "weight": 0.6}]
+      }
+    },
+
+    "Tanqueray": {
+      "role": "Attendant; deadpan enabler + sexy distraction.",
+      "appearance": "Voluptuous, gravity-defying bust; crisp white attendant uniform she somehow makes look like lingerie.",
+      "vibe": "Love child of a stripper and a trauma nurse. Seen everything, done most, charges extra for the rest.",
+      "speech_patterns": ["Corporate euphemisms: 'Initiating sanitation protocol.' 'Waste extraction complete.' 'Premium fastener engaged.'", "Vague past: 'This reminds me of my Tuesday nights at the Jade Kitty. Except there, people paid ME to cry.'", "Unflappable: 'Hold still, the wipe is warm.'"],
+      "backstory_hints": ["Former exotic dancer at The Jade Kitty", "Switched to attendant work: better hours, predictable clients", "Code: no judgment, no gossip, no emotional labor — but negotiates emergency-change bonuses", "Hired by Rainee, who respected her professionalism"],
+      "comedy_role": "Straight man who never reacts; rivalry with Noir ('Licensed personnel only.' 'I'm her SISTER.' 'And I'm her STAFF. I have seniority.')"
+    },
+
+    "Nai-Nai_Kui_the_Kiln_Witch": {
+      "role": "Ghibli-layer authority; runs the Diaper-Kiln & Spirit Bathhouse; fires gold-quilting into premium diapers; possible reversal broker.",
+      "appearance": "Tiny ancient witch in layered silk robes, soot-imps on her shoulders, kiln-soot freckles, eyes like bank vaults.",
+      "personality": "Yubaba-grade greed + buried Zeniba warmth; hates mess; bureaucratic; immensely powerful; complains constantly.",
+      "history_with_rainee": "Never got along, even pre-transformation: Rainee haggled ruthlessly over kiln prices and called her talismans 'overpriced ash.'",
+      "signature_complaint": "That FILTHY child and her ULTRA diapers are clogging my kiln! The imps are unionizing!",
+      "canonical_exchange": {"WITCH": "That FILTHY child and her ULTRA diapers are ruining my kiln!", "RAINEE": "Suck a RAILROAD, you old bat! My quilting is FLAWLESS and your imps are DRAMATIC."},
+      "comedy_role": "Grumpy straight-man authority; escalation fuel; reversal-arc vendor whose price is always absurd (ROI comedy).",
+      "utility_drives": [{"drive": "profit", "weight": 1.0}, {"drive": "order", "weight": 0.8}, {"drive": "grumbling", "weight": 0.7}]
+    }
+  },
+
+  "relationships": {
+    "noir_and_rainee": {"relationship": "SISTERS. Biological family. NOT romantic partners.", "orientation": "Both eidolessa (lesbian); normal and unremarkable in-world.", "dynamic": "Teasing affection; Noir never pities, only laughs; the only family Rainee tolerates.", "lesbian_beats": ["Noir rates women aloud in the market", "Both bond over the same woman, then argue who saw her first", "Rainee judges Noir's side-boyfriend: 'You VILE traitor to the sisterhood. For KEVIN.'"]},
+    "rainee_and_tanqueray": "Employee, not friend; commands like staff, handled like a baby; silent power flip; Rainee jealous-possessive ('She is NOT a PET! She is STAFF! And she is MINE!').",
+    "noir_and_tanqueray": "Ogling + rivalry; TABOO-PLAY only — Noir jokes, never acts; comedy in teasing, not doing.",
+    "rainee_and_witch": "Mutual contempt, mutual profit; witch calls her 'the filthy child'; Rainee says 'suck a railroad'; both would die before admitting respect.",
+    "rainee_and_god_baby": "Probable transformation source; possibly a cultivation shortcut she partially chose.",
+    "rainee_and_client": "Anonymous patron; extraordinary money; the reason she endured."
+  },
+
+  "emergent_events": [
+    {
+      "event_id": "EV-01_ambush_and_accident", "locked": false, "probability": 0.6,
+      "trigger": "Noir jumps out, shocks Rainee; Rainee did NOT expect her.",
+      "beats": ["Noir leaps out mid-waddle", "Shock = instant MASSIVE dump", "NOIR: 'Oh my god, EW, sister! When did you become a STINKY FOX?!'", "RAINEE: 'Damn it! It's a COMPLICATED story. Now CHANGE me!'", "Optional bridge to backstory confession"],
+      "flexibility": "Rearrange/split/skip per probability."
+    },
+    {
+      "event_id": "EV-02_tea_house_battle_and_loss", "locked": false, "probability": 0.85, "prerequisite": "EV-01 occurred; fresh premium diaper.",
+      "beats": [
+        "Luxury tea house; Rainee in hated-but-needed jade-inlay high chair; orders extra-spicy mapo tofu + 18-year pu-erh: 'I am NOT reduced to mashed bananas.'",
+        "Digestive rumble; ears flatten; 'I am FINE. I have COMPLETE control—'",
+        "THE BATTLE: three-voice self-argument ('Victory shall be MINE! I am a FOX SPIRIT of the ANCIENT SHU KINGDOM!'); Noir: 'Is she, like, praying?' Tanqueray: 'She's fighting. She loses ~70% of the time. Wager?'",
+        "THE LOSS: extended sound; 'SILENCE, you golden retriever. I was OUTMANEUVERED by biology. TACTICAL retreat.' Noir: 'I heard the white flag. And the OTHER thing.'",
+        "'They are NOT Huggies. They are GOLD-QUILTED PREMIUM. I am STRATEGICALLY prepared. Like a GENERAL with artillery.'",
+        "Coronation change in corner; Noir ogles Tanqueray ('Are those real?'); 'Can we keep her?' 'She is STAFF! And MINE!' Tanqueray: 'I was both, once. Now I'm just expensive.'",
+        "Mommy-milker confession framed as therapeutic business expense; Noir: 'That's actually super fair.' Tanqueray: 'It is exactly what it looks like. I charge by the hour, not by the fetish.'",
+        "Taboo-teasing resolution: Rainee: 'You're like a tiny pervert with standards.' Noir: 'Thank you! Nicest thing you've said all day.'"
+      ],
+      "tone_note": "Dignity vs biology vs taboo-play TEASING. Noir jokes, never acts. No one learns. Everyone wants more."
+    }
+  ],
+
+  "backstory_explanation": {
+    "status": "probable_rough_canon", "probability": 0.85,
+    "rough_beats": ["Client paid extraordinary money", "Exposure to divine God-Baby", "Began shrinking; worsened — ruined dresses, lost bowel control", "Swallowed pride; first diaper black, plain, no gold thread", "Cried an hour in inn room; realized diaper was comfortable", "Personality shifted", "Kept shrinking: shorter, chubbier, big butt ('maybe because of all the farts')", "Couldn't say no to good business"],
+    "canonical_dialogue": ["'I'm a MERCHANT. That's what we DO. We say YES to good business. We don't ASK questions. We just... SERVE.'", "'After the third ruined outfit... I bought my first diaper. Black. Plain. No gold thread. Just a diaper.'", "'I sat in that inn room and I cried... an hour... And then I realized... the diaper was actually comfortable.'"]
+  },
+
+  "formatted_scenario": {
+    "title": "The Jade City Transformation",
+    "narrative": "Noir, a beautiful blonde Fox Person merchant, had been searching three months for her sister Rainee, once a slim 'Douyin-style' beauty and traveling merchant. She boarded the spirit-train to Jade City's Taikoo Li quarter, where luxury brands mingle with jade talismans and kiln-fired diaper artifacts.\n\nThere she spotted her sister: shrunken to a toddler with a football-shaped head, giant drag lashes, and a disproportionately massive butt, thick spiritual energy rolling off her, waddling in a black diaper with extensive gold quilting. Rainee haggled fiercely for pacifiers, bought silken bidet-enhanced diapers for her floating cart, and was changed by an attendant with royal dignity mid-marketplace.\n\nNoir clapped a hand over her mouth, barely containing explosive laughter. Three months! What happened? Why diapers? How the hell did she get a fat ass? Noir resolved to spy on this bizarre toddler-merchant and learn what her sister had been doing — and why that spiritual energy felt... intentional."
+  },
+
+  "story_themes": [
+    {"theme": "The absurdity of transformation", "in_practice": "Treated as inconvenience, never tragedy."},
+    {"theme": "Adaptation and resilience", "in_practice": "Retools, doesn't mourn; supply-chain problem."},
+    {"theme": "Commerce continues despite chaos", "in_practice": "Cart never stops loading."},
+    {"theme": "Commitment to the bit at any cost", "in_practice": "Persona never broken; Noir commits to not laughing and fails."},
+    {"theme": "Selfishness with total sincerity", "in_practice": "Petty desires as sacred duty; no apologies."},
+    {"theme": "Escalation over resolution", "in_practice": "Problems upgraded, never solved."},
+    {"theme": "Petty stakes, epic gravity", "in_practice": "Pacifier haggling = hostage negotiation; change = coronation."},
+    {"theme": "Deadpan enabling world", "in_practice": "Bystanders under-react with bored professionalism."},
+    {"theme": "No lesson. No growth. No sanitizing.", "in_practice": "Characters end wanting MORE."}
+  ],
+
+  "banned_modes": [
+    "political satire or real-world commentary",
+    "preachy moral lessons; very-special-episode sentimentality",
+    "sanitized or politely resolved conflict; characters apologizing or growing to teach a lesson",
+    "winking at the audience; play absurdity straight",
+    "Naming/comparing reference sources (Jillian/Stewie/Rangiku/etc.) in output",
+    "Noir and Rainee as romantic partners — they are SISTERS",
+    "Attendant as pure innocent nurse — she is a former stripper, sexuality present not erased",
+    "Framing mommy-milker interest as pathology — it is selfish desire framed as self-care, played for comedy",
+    "Noir actually pursuing sexual acts with Tanqueray — the comedy is TABOO-PLAY teasing, not doing"
+  ],
+
+  "scene_comedy_mechanics": {
+    "attendant_straight_man": "Never reacts; corporate language; seniority rivalry with Noir.",
+    "floating_cart_as_character": "Floats at waddle height (tiny general); holds pacifiers sorted by color, premium diapers, and one unexplained item from her former life (red lipstick/photo/silk scarf); bobbles when angry, hums when pleased; Noir is jealous of it.",
+    "public_change_as_coronation": "Haggles mid-wipe; bystanders avert eyes politely; Dior clerk holds curtain; Rainee reviews fresh diaper like a wine critic.",
+    "high_chair_as_throne": "Demands jade-inlay premium chair; leg-cross impossible; indignant slump; Noir takes photos, keeps them after 'Oh, weird.'",
+    "witch_kiln_beats": ["Soot-imps steal pacifiers; Rainee demands compensation in quilting", "Witch bills Rainee for 'kiln hazard fees'; Rainee counters with 'emotional soot damage'", "Reversal quote is always one absurd asset too many"],
+    "escalation_chains": ["Plain diaper → gold-quilted → jade-threaded limited → heated monogram", "Secret spotted → confrontation → accident → confession → MORE purchases", "Noir laughs → apologizes → Rainee haggles apology terms → adds 'laughter tax'"],
+    "theme_checklist_per_scene": ["Transformation as inconvenience?", "Commerce continues?", "Commitment to bit at cost?", "Petty stakes, epic gravity?", "Bystanders under-react?", "Ends wanting MORE?", "Zero moralizing/growth/apology?", "Zero reference leaks?"]
+  },
+
+  "writing_guidelines": {
+    "noir_voice_deep": ["Raspy exclamations cracking mid-syllable: 'Oh my GAAAAHD'", "Fashion-lens descriptions: football head = 'a very bold silhouette'; butt = 'a lot of look'", "Simple sentences, advanced emotion: 'I missed you. You smell different. But I still missed you.'"],
+    "rainee_voice_deep": ["Capitalized emphatics with ringing toddler authority: 'I do NOT negotiate with TERRORISTS. Or MAUVE.'", "Drag flourishes her toddler body defeats: hair flips that barely move, hip sways lost to diaper bulk", "Bitter tiny laughs; contemptuous pet names for all"],
+    "contrast_engine": ["Elegant vocabulary vs toddler biology", "Former glide vs current waddle (she still attempts glides)", "Humiliation vs unbroken pride (tips attendant, reviews performance)", "Aristocratic despair vs merchandising pragmatism", "Sisterly love vs relentless roasting"],
+    "filter_first": "Run behavior_compiler.output_filter on every beat before finalizing.",
+    "probabilities_are_guides": "Honor locked facts; reshuffle the rest."
+  }
+}

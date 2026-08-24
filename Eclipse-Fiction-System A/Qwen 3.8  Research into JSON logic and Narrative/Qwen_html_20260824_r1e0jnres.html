@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Breakdown: Narrative JSON Compiler</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #555555;
+            --accent: #2980b9;
+            --accent-light: #eaf2f8;
+            --code-bg: #2d2d2d;
+            --code-text: #f8f8f2;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.6em;
+            margin-top: 40px;
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.2em;
+            margin-top: 25px;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        code {
+            background-color: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        .mermaid {
+            background-color: #fcfcfc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #999;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Architectural Breakdown: Narrative JSON Compiler</h1>
+        <p>Computational Narrative Modeling & Agent-Based Simulation Documentation</p>
+    </header>
+
+    <p>This document translates the creative writing rules of the <code>Jade City Fox Sisters</code> JSON Bible into formal computational models (Finite State Machines, Utility AI, Event-Driven Graphs, and Constraint Satisfaction). It is structured for research teams studying LLM-driven narrative generation.</p>
+
+    <!-- PART 1 -->
+    <h2>Part 1: High-Level System Architecture</h2>
+    <p>The JSON functions not just as a "story bible," but as a <strong>Deterministic/Stochastic Compiler</strong> for a Large Language Model (LLM). It separates <em>Authorial Priors</em> (the raw inspiration) from <em>Runtime Execution</em> (the actual generated text).</p>
+    
+    <p>The architecture is divided into five core subsystems:</p>
+    <ul>
+        <li><span class="badge">1</span> <strong>The Meta-Constraint Layer</strong> (<code>meta</code>, <code>behavior_compiler</code>, <code>banned_modes</code>): Acts as the system's firewall and guardrails. It handles reference isolation and negative constraint satisfaction.</li>
+        <li><span class="badge">2</span> <strong>The Agent Architecture</strong> (<code>characters</code>): Defines the cognitive, vocal, and behavioral models of each entity using Utility AI, FSMs, and Behavior Trees.</li>
+        <li><span class="badge">3</span> <strong>The Spatial & Ontological Environment</strong> (<code>world</code>): Defines the physical rules, cultural layers, and object permanence of the simulation space.</li>
+        <li><span class="badge">4</span> <strong>The Social Graph</strong> (<code>relationships</code>): Maps the interpersonal dynamics, power structures, and interaction protocols between agents.</li>
+        <li><span class="badge">5</span> <strong>The Event-Driven Plot Scheduler</strong> (<code>emergent_events</code>, <code>scene_comedy_mechanics</code>): A probabilistic state-machine that dictates how the narrative progresses, handling triggers, beat sequences, and escalation chains.</li>
+    </ul>
+
+    <!-- PART 2 -->
+    <h2>Part 2: Narrative Flowcharts</h2>
+    <p>Below are the system flowcharts illustrating the data flow, agent state transitions, and plot scheduling.</p>
+
+    <h3>Flowchart 1: Master Narrative Generation Pipeline</h3>
+    <p><em>This chart shows how a single narrative beat is processed from raw input to final text output.</em></p>
+    <div class="mermaid">
+graph TD
+    A[Initial Prompt / Scene Seed] --> B{Meta-Constraint Layer}
+    B -->|Checks Banned Modes & Themes| C[Event Scheduler]
+    C -->|Selects Probabilistic Event| D[Environment Context Loader]
+    D -->|Applies World Layers| E[Agent State Evaluator]
+    E -->|Queries Agent Utility Drives| F[Behavior Tree Execution]
+    F -->|Selects Action/Dialogue| G[Voice & Grammar Renderer]
+    G -->|Applies Stylistic Guidelines| H{Output Filter Firewall}
+    H -->|Detects Meta-Leaks or Sanitization| I[Rewrite Protocol Triggered]
+    I --> G
+    H -->|Passes All Checks| J[Final Narrative Output]
+    </div>
+
+    <h3>Flowchart 2: Agent Cognitive & Behavioral State Machine</h3>
+    <p><em>This chart details the internal processing of an Agent (e.g., Rainee) when faced with a narrative stimulus.</em></p>
+    <div class="mermaid">
+graph TD
+    S[Narrative Stimulus / Event Beat] --> U{Utility Drive Evaluation}
+    U -->|Commerce: 1.0| D1[Priority: Haggle/Strategize]
+    U -->|Dignity: 0.9| D2[Priority: Maintain Persona]
+    U -->|Control: 0.8| D3[Priority: Hide Biological Betrayal]
+    
+    D1 & D2 & D3 --> BT[Behavior Tree Selector]
+    BT -->|Condition: Threatened| FSM{Identity FSM Transition}
+    
+    FSM -->|Layer 1: Sophisticated Lady| V1[Escalate Elegance]
+    FSM -->|Layer 2: Merchant| V2[Weaponized Haggling]
+    FSM -->|Layer 4: Baby Leak| V3[Tiny Fists / Lip Tremble]
+    
+    V1 & V2 & V3 --> VG[Voice Grammar Engine]
+    VG -->|Applies Cadence & Lexicon| OUT[Agent Dialogue / Action]
+    </div>
+
+    <h3>Flowchart 3: Event-Driven Plot & Escalation Scheduler</h3>
+    <p><em>This chart shows how the narrative avoids resolution and instead escalates, a core mechanic of the JSON's comedy engine.</em></p>
+    <div class="mermaid">
+graph TD
+    START[Scene Initiation] --> TRIG{Event Trigger Check}
+    TRIG -->|e.g., EV-01 Ambush| BEAT[Execute Beat Sequence]
+    BEAT --> RES{Resolution Check}
+    
+    RES -->|Standard Narrative| END[Scene Ends / Moral Learned]
+    RES -->|JSON No Growth Rule| ESC[Escalation Chain Triggered]
+    
+    ESC --> EC1[Problem Upgraded, Not Solved]
+    EC1 --> EC2[e.g., Plain Diaper to Gold-Quilted to Jade-Threaded]
+    EC2 --> EC3[Stakes Increased / Taboo-Play Initiated]
+    EC3 --> NEXT[Feed into Next Emergent Event]
+    
+    END -.->|HARD VIOLATION| FAIL[System Rejects Output]
+    </div>
+
+    <!-- PART 3 -->
+    <h2>Part 3: Detailed Module Breakdown (The "API")</h2>
+    <p>For the research team, here is the technical translation of the JSON keys into narrative modeling concepts:</p>
+
+    <h3>1. <code>behavior_compiler</code> (The Reference Firewall & Meta-Engine)</h3>
+    <ul>
+        <li><strong>Narrative Concept:</strong> Source-Code Isolation & Negative Constraint Solving.</li>
+        <li><strong>Function:</strong> Prevents the LLM from collapsing into "reference mimicry". It uses a <code>lexical_denylist</code> and <code>rewrite_protocol</code> to force the LLM to generate <em>native</em> behavior based on abstract tags rather than copyrighted archetypes.</li>
+        <li><strong>Research Value:</strong> Demonstrates how to use structured JSON to enforce stylistic originality and prevent LLM mode-collapse.</li>
+    </ul>
+
+    <h3>2. <code>characters</code> (Agent Architecture)</h3>
+    <p>Each character is modeled as a complex autonomous agent.</p>
+    <ul>
+        <li><strong><code>psych_engine</code> & <code>utility_drives</code>:</strong> Implements <strong>Utility AI</strong>. Agents weigh internal drives (e.g., Rainee's <code>commerce: 1.0</code> vs <code>dignity: 0.9</code>) to determine their next action.</li>
+        <li><strong><code>identity_fsm</code>:</strong> A <strong>Finite State Machine</strong>. Rainee has distinct states. The JSON defines the exact probabilistic triggers that cause state transitions (e.g., <code>extreme stress</code> -> 70% chance to drop to <code>Layer 4</code>).</li>
+        <li><strong><code>voice_grammar</code> & <code>laughter_mechanics</code>:</strong> <strong>Lexical & Procedural Generation Rules</strong>. Defines the exact syntax, filler words, and multi-stage physical reactions to ensure procedural consistency.</li>
+    </ul>
+
+    <h3>3. <code>world</code> (Spatial & Ontological Environment)</h3>
+    <ul>
+        <li><strong>Narrative Concept:</strong> Multi-Layered Ontological Mapping.</li>
+        <li><strong>Function:</strong> The world is not a single setting, but four overlapping layers. The <code>fusion_doctrine</code> dictates that comedy arises from the <em>collision</em> of these layers (e.g., a 1930s Art Deco ballroom used as a spirit-market for kiln-fired diapers).</li>
+    </ul>
+
+    <h3>4. <code>relationships</code> (The Social Graph)</h3>
+    <ul>
+        <li><strong>Narrative Concept:</strong> Directed Interaction Matrices.</li>
+        <li><strong>Function:</strong> Defines the exact nature of edges between nodes (agents). It explicitly locks certain dynamics (e.g., sisters, not romantic) while defining the "game" they play with others (e.g., taboo-play teasing).</li>
+    </ul>
+
+    <h3>5. <code>emergent_events</code> & <code>scene_comedy_mechanics</code> (Plot Scheduler)</h3>
+    <ul>
+        <li><strong>Narrative Concept:</strong> Probabilistic Event Graphs & Anti-Resolution Mechanics.</li>
+        <li><strong>Function:</strong> Instead of a linear plot, the story is a series of events with assigned probabilities. <code>escalation_chains</code> explicitly forbids standard narrative resolution. If a problem occurs, it must be <em>upgraded</em>, ensuring the narrative momentum never stalls.</li>
+    </ul>
+
+    <!-- PART 4 -->
+    <h2>Part 4: Key Innovations for Narrative Research</h2>
+    <p>If your research team is studying <strong>LLM-driven Narrative Modeling</strong>, this JSON highlights three major architectural innovations:</p>
+    
+    <ol>
+        <li>
+            <strong>The "Compiler" Paradigm:</strong> Instead of asking the LLM to "write a story about X," the JSON acts as a compiler. It takes abstract authorial intent and compiles it into executable runtime rules. This separates the <em>idea</em> of a character from the <em>mechanics</em> of a character.
+        </li>
+        <li>
+            <strong>Probabilistic Anti-Resolution:</strong> Traditional narrative models aim for climax and resolution. This JSON models <strong>comedic escalation</strong>. The escalation chains and banned modes mathematically force the narrative to reject closure, creating an infinite, looping state of comedic tension.
+        </li>
+        <li>
+            <strong>Biological & Ontological Collision:</strong> The biological disaster mechanics and world fusion doctrine show how to model humor computationally. Humor in this model is generated strictly by the friction between high-status ontological layers (aristocratic vocabulary, luxury brands) and low-status biological/physical realities. The JSON explicitly maps the variables required to generate this friction.
+        </li>
+    </ol>
+
+    <footer>
+        <p>Generated for Narrative Modeling Research Team | Jade City Fox Sisters Unified Behavioral Bible v11.0</p>
+    </footer>
+</div>
+
+<script>
+    // Initialize Mermaid.js
+    document.addEventListener('DOMContentLoaded', function () {
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'neutral', 
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
