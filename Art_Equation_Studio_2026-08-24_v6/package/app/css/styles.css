@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap');
     :root { color-scheme:dark; --bg:#101113; --panel:#15171a; --panel-2:#1a1d21; --field:#101216; --line:#34383f; --text:#eeeae3; --muted:#92979e; --faint:#828892; --gold:#c49a67; --blue:#6e8cff; --teal:#3d9ca8; --red:#bd625d; }
     * { scrollbar-color: var(--line) var(--panel-2); scrollbar-width: thin; }
     ::-webkit-scrollbar { width:12px; height:12px; }
@@ -128,7 +128,6 @@
     .reader-top select { width:auto; padding:7px; }
     .zoom-control { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:10px; }
     .zoom-control input { width:100px; padding:0; accent-color:var(--gold); }
-    .zoom-control select { padding:4px 6px; font-size:11px; border-radius:4px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer; }
     .reader-note { margin:12px 0; color:var(--muted); font:12px/1.45 'Source Serif 4', Georgia, serif; }
     .reader-annotation { max-width:860px; margin:0 auto 16px; padding:12px; border:1px solid var(--line); background:var(--panel); }
     .reader-annotation textarea { min-height:58px; font-size:14px; }
@@ -481,3 +480,4 @@
     @media (max-width:1020px) { .workspace { grid-template-columns:220px minmax(0,1fr); } .inspector { display:none; } }
     @media (max-width:700px) { .app { grid-template-rows:auto 1fr; } .topbar { min-height:64px; padding:10px 14px; flex-wrap:wrap; gap:10px; } .brand { min-width:0; font-size:21px; } .brand small { display:none; } .tabs { order:3; width:100%; height:35px; overflow:auto; } .tabs button { flex:1; padding:0 8px; white-space:nowrap; } .top-actions { margin-left:auto; } .top-actions .hide-mobile { display:none; } .workspace { grid-template-columns:1fr; min-height:auto; } .sidebar { display:none; } .view { padding:22px 15px 60px; } .form-row, .project-meta { grid-template-columns:1fr; } }
     @media print { body { background:#fff; color:#111; } .topbar,.sidebar,.inspector,.recipe-toolbar,.project-controls,.modal-backdrop { display:none !important; } .workspace { display:block; } .main { background:#fff; } .view { display:none !important; max-width:none; padding:0; } #project-view { display:block !important; } .section { break-inside:avoid; background:#fff; border-color:#bbb; } input,textarea { border:0; padding:0; color:#111; background:transparent; } textarea { min-height:0; height:auto; overflow:hidden; } .page-kicker,.stage { color:#246c72; } .section-heading { color:#806132; } .prompt,.page-sub { color:#444; } }
+  </style>
