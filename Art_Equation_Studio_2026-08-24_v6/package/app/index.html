@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" id="theme-color-meta" content="#101113">
+  <title>Art Equation Studio</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">Art Equation<small>VISUAL ENGINEERING WORKSPACE</small></div>
+      <nav class="tabs" aria-label="Main navigation">
+        <button class="active" data-view="project-view">Project</button>
+        <button data-view="recipes-view">Visual Recipes</button>
+        <button data-view="references-view">Reference Library</button>
+        <button data-view="prompt-view">Prompt Generator</button>
+      </nav>
+      <div class="top-actions">
+        <button class="btn hide-mobile" id="open-settings" title="Theme, board display, grid snapping, and keyboard shortcuts">⚙ Settings</button>
+        <div class="top-data-menu-wrap hide-mobile">
+          <button class="btn" id="top-data-menu-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="top-data-menu">Data ▾</button>
+          <div class="top-data-menu" id="top-data-menu" role="menu" aria-label="Data actions">
+            <button type="button" id="choose-folder" role="menuitem">Choose Save Folder</button>
+            <button type="button" id="import-json" role="menuitem">Import Data</button>
+            <button type="button" id="export-project" role="menuitem">Export Project</button>
+            <button type="button" id="export-json" role="menuitem">Export Data</button>
+            <button type="button" id="print-project" role="menuitem">Print / PDF</button>
+          </div>
+        </div>
+        <button class="btn" id="open-calendar">Project Calendar</button>
+        <button class="btn primary" id="save-project">Save Project</button>
+      </div>
+    </header>
+    <div class="workspace">
+      <aside class="sidebar">
+        <div class="side-block">
+          <p class="side-title">Active Project</p>
+          <h2 class="project-name" id="side-project-title">Untitled Project</h2>
+          <p class="project-date" id="side-project-date">Not saved yet</p>
+        </div>
+        <div class="side-block project-controls">
+          <button class="btn" style="width:100%;margin-bottom:8px" id="new-project">+ New Project</button>
+          <button class="btn" style="width:100%;margin-bottom:8px" id="duplicate-project">Duplicate Current</button>
+          <button class="btn" style="width:100%;margin-bottom:8px" id="archive-project">Archive Project</button>
+          <button class="btn danger" style="width:100%" id="delete-project">Delete Project</button>
+        </div>
+        <div class="side-block">
+          <p class="side-title">Saved Projects</p>
+          <input id="project-search" type="search" placeholder="Search title, summary, or tags…" style="margin-bottom:8px" aria-label="Search saved projects">
+          <select id="project-sort" style="margin-bottom:11px" aria-label="Sort saved projects">
+            <option value="recent">Sort: Recently saved</option>
+            <option value="title">Sort: Title (A–Z)</option>
+            <option value="date">Sort: Project date</option>
+          </select>
+          <label style="display:flex;align-items:center;gap:7px;margin-bottom:11px;font-size:12px;color:var(--muted);cursor:pointer"><input id="project-show-archived" type="checkbox" style="width:auto;padding:0" aria-label="Show archived projects">Show archived</label>
+          <div id="project-list"></div>
+        </div>
+        <div class="side-block recipe-nav">
+          <p class="side-title">Recipe Categories</p>
+          <button class="active" data-category="all">All recipes</button>
+          <button data-category="Prompting">Prompting &amp; Models</button>
+          <button data-category="Simplification">Simplification</button>
+          <button data-category="Construction">Construction &amp; 3D</button>
+          <button data-category="Finishing">Finishing</button>
+        </div>
+      </aside>
+      <main class="main">
+        <section class="view active" id="project-view">
+          <div class="page-kicker">Project questionnaire · active document</div>
+          <h1 id="project-heading">Untitled Project</h1>
+          <p class="page-sub">Decide the scope, production path, and real labor before the image becomes expensive to fix.</p>
+          <div class="section">
+            <div class="section-heading">Project Identity <span class="tag">Start here</span></div>
+            <div class="form-row">
+              <div><label for="title">Project Title</label><input id="title" data-field="title" placeholder="e.g. Rainee Transforms — Strip Club Redesign"></div>
+              <div><label for="date">Project Date</label><input id="date" data-field="date" type="date"></div>
+            </div>
+            <div style="margin-top:12px"><label for="project-summary">What are we making?</label><textarea id="project-summary" data-field="summary" placeholder="A short description of the project, scene, set, or visual goal."></textarea></div>
+            <div style="margin-top:12px"><label for="project-tags">Tags</label><input id="project-tags" data-field="tags" placeholder="e.g. client work, personal, environment, character turnaround"></div>
+            <div class="project-meta"><div class="meta-card"><label for="count">Images / Shots</label><span><input id="count" data-field="count" placeholder="e.g. 6"></span></div><div class="meta-card"><label for="time">Time Estimate</label><span><input id="time" data-field="time" placeholder="e.g. 2 days"></span></div><div class="meta-card"><label for="difficulty">Difficulty</label><span><select id="difficulty" data-field="difficulty"><option>Undecided</option><option>Low</option><option>Medium</option><option>High</option><option>Experimental</option></select></span></div></div>
+          </div>
+          <div class="stage">01 · Process identification &amp; deliverables</div>
+          <div class="section">
+            <div class="section-heading">Deliverables <span class="tag">What comes out?</span></div>
+            <p class="prompt">List the actual outputs. Shot lists, redraws, turn sheets, final images, 3D blockouts, prompts, or something else.</p>
+            <label for="project-deliverables" class="sr-only">Deliverables</label>
+            <textarea id="project-deliverables" data-field="deliverables" placeholder="What must be delivered when this project is complete?"></textarea>
+          </div>
+          <div class="section">
+            <div class="section-heading">Purpose &amp; Audience <span class="tag">Why this?</span></div>
+            <div class="form-row"><div><label for="project-purpose">Purpose</label><textarea id="project-purpose" data-field="purpose" placeholder="Reference-only, final render, sellable asset, character development, story work..."></textarea></div><div><label for="project-audience">Audience / taste target</label><textarea id="project-audience" data-field="audience" placeholder="Who is this for? What visual language should it speak?"></textarea></div></div>
+          </div>
+          <div class="stage">02 · Scope &amp; problem solving</div>
+          <div class="section">
+            <div class="section-heading">Potential Challenges <span class="tag">Name the hard part</span></div>
+            <p class="prompt">What is likely to break: turn-sheet consistency, correct backgrounds, fashion continuity, spatial logic, a particular pose, or cost?</p>
+            <label for="project-challenges" class="sr-only">Potential Challenges</label>
+            <textarea id="project-challenges" data-field="challenges" placeholder="The known problems to solve before production begins."></textarea>
+          </div>
+          <div class="section">
+            <div class="section-heading">Planned Solution <span class="tag">Choose a method</span></div>
+            <p class="prompt">Which manual, AI, or 3D steps solve each risk named above? Keep this specific, not aspirational.</p>
+            <label for="project-solution" class="sr-only">Planned Solution</label>
+            <textarea id="project-solution" data-field="solution" placeholder="Which manual, AI, or 3D steps solve each risk? Keep this specific."></textarea>
+          </div>
+          <div class="section">
+            <div class="section-heading">Tools, Labor &amp; Cost <span class="tag">Reality check</span></div>
+            <p class="prompt">Tools, subscriptions, model limits, available labor, estimated cost, and what is not worth doing.</p>
+            <label for="project-tools" class="sr-only">Tools, Labor &amp; Cost</label>
+            <textarea id="project-tools" data-field="tools" placeholder="Tools, subscriptions, model limits, available labor, estimated cost, and what is not worth doing."></textarea>
+          </div>
+          <div class="stage">03 · Narrative &amp; visual data</div>
+          <div class="section">
+            <div class="section-heading">Narrative Data Sources <span class="tag">Story material</span></div>
+            <p class="prompt">What existing stories, characters, or ideas feed this project?</p>
+            <label for="project-narrative" class="sr-only">Narrative Data Sources</label>
+            <textarea id="project-narrative" data-field="narrative" placeholder="What existing stories, characters, or ideas feed this project?"></textarea>
+          </div>
+          <div class="section">
+            <div class="section-heading">Visual Reference Strategy <span class="tag">Construction data</span></div>
+            <p class="prompt">Manga, film, photography, design, poses, environments, fashion — and what each reference teaches.</p>
+            <label for="project-references" class="sr-only">Visual Reference Strategy</label>
+            <textarea id="project-references" data-field="references" placeholder="Manga, film, photography, design, poses, environments, fashion, and what each reference teaches."></textarea>
+          </div>
+          <div class="stage">04 · Production path</div>
+          <div class="section"><div class="section-heading">Stage 1 — Spatial Data / Sketch <span class="tag">Blockout</span></div><p class="prompt">Reference collection, photobash, simple 3D blockout, gesture sketch, and the spatial decisions.</p><label for="project-stage1" class="sr-only">Stage 1 — Spatial Data / Sketch</label><textarea id="project-stage1" data-field="stage1" placeholder="Reference collection, photobash, simple 3D blockout, gesture sketch, and the spatial decisions."></textarea></div>
+          <div class="section"><div class="section-heading">Stage 2 — Conversion &amp; Construction <span class="tag">Make it workable</span></div><p class="prompt">Sketch conversion, Illustrator drawing, recrafting, vectorization, character or environment correction.</p><label for="project-stage2" class="sr-only">Stage 2 — Conversion &amp; Construction</label><textarea id="project-stage2" data-field="stage2" placeholder="Sketch conversion, Illustrator drawing, recrafting, vectorization, character or environment correction."></textarea></div>
+          <div class="section"><div class="section-heading">Stage 3 — Finish &amp; Verification <span class="tag">Final call</span></div><p class="prompt">Render decision, style/lighting unification, final corrections, consistency checks, and delivery.</p><label for="project-stage3" class="sr-only">Stage 3 — Finish &amp; Verification</label><textarea id="project-stage3" data-field="stage3" placeholder="Render decision, style/lighting unification, final corrections, consistency checks, and delivery."></textarea></div>
+          <div class="section">
+            <div class="section-heading">Selected Recipes <span class="tag">Reusable methods</span></div>
+            <div id="selected-recipes" class="hint">No recipes attached yet. Open Visual Recipes to add one.</div>
+          </div>
+          <div class="section">
+            <div class="section-heading">Linked Visual References <span class="tag">Saved crops</span></div>
+            <div class="crop-list" id="project-crops"><span class="hint">No saved visual references are attached to this project yet.</span></div>
+          </div>
+          <div class="status" id="status"></div>
+        </section>
+        <section class="view" id="boards-view">
+          <div class="boards-shell">
+            <div class="board-workspace">
+              <div class="board-tool-rail" id="board-tool-rail" role="toolbar" aria-label="Board tools" aria-orientation="vertical">
+                <button class="btn tb-icon-btn" id="rail-add-board-note" title="Add Note" aria-label="Add Note"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/><path d="M8 11h8M8 15h5"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-add-shape-rect" data-shape-tool="rect" title="Rectangle tool — drag on the board to draw. Shift draws a square. Escape returns to select." aria-label="Rectangle tool"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-add-shape-oval" data-shape-tool="oval" title="Oval tool — drag on the board to draw. Shift draws a circle. Escape returns to select." aria-label="Oval tool"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="6.5"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-add-shape-line" data-shape-tool="line" title="Line tool — drag on the board to draw. Shift snaps to 45° angles. Escape returns to select." aria-label="Line tool"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-add-shape-arrow" data-shape-tool="arrow" title="Arrow tool — drag on the board to draw. Shift snaps to 45° angles. Escape returns to select." aria-label="Arrow tool"><svg viewBox="0 0 24 24"><path d="M5 19L17 7M11 7h6v6"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-add-board-link" title="Add Board Link — insert a card that links to another board in this project" aria-label="Add Board Link"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="6" rx="1"/><rect x="13" y="13" width="8" height="6" rx="1"/><path d="M9 11v2a2 2 0 0 0 2 2h2"/></svg></button>
+                <div class="rail-sep"></div>
+                <button class="btn tb-icon-btn" id="rail-toggle-connect" title="Connect mode: click a card, then click a second card to draw an arrow. Click again or press Escape to stop." aria-label="Connect mode"><svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M6.5 17.5L17.5 6.5"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-toggle-fisheye" title="Fisheye magnifier — magnify cards near the cursor instead of zooming the whole board. Per session, not saved with the board." aria-label="Fisheye magnifier"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.35-4.35"/></svg></button>
+                <div class="rail-sep"></div>
+                <button class="btn tb-icon-btn" id="rail-board-undo" title="Undo last board change (Ctrl/Cmd+Z)" aria-label="Undo" disabled><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+                <button class="btn tb-icon-btn" id="rail-board-redo" title="Redo (Ctrl/Cmd+Shift+Z)" aria-label="Redo" disabled><svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+              </div>
+              <div class="board-main">
+              <div class="board-toolbar">
+                <button class="btn" id="back-to-project">← Project</button><input class="board-title" id="board-title" aria-label="Board name" value="Board">
+                <button class="btn" id="rename-board">Rename</button>
+                <button class="btn" id="choose-board-cover">Choose Cover</button>
+                <button class="btn" id="board-color" title="Tint this board's canvas background — Milanote-style color tagging">Color</button>
+                <button class="btn" id="duplicate-board">Duplicate</button>
+                <button class="btn danger" id="delete-board">Delete</button>
+                <button class="btn" id="toggle-board-pip" title="Open a view-only floating copy of this board in an always-on-top window (view-only — edit in this tab)">Float Board</button>
+              </div>
+              <div class="board-toolbar">
+                <div class="tb-group">
+                  <button class="btn" id="add-board-images">Add Images</button>
+                  <button class="btn" id="add-board-videos">Add Video</button>
+                  <button class="btn" id="add-board-documents">Add Document</button>
+                </div>
+                <div class="tb-group">
+                  <select id="new-board-group" aria-label="Add group or frame" title="Add a group/frame — named preset sizes match FigJam-style frames">
+                    <option value="">+ Group / Frame…</option>
+                    <optgroup label="Free"><option value="free">Free size</option></optgroup>
+                    <optgroup label="Presentation"><option value="16:9">16:9 · 960×540</option><option value="4:3">4:3 · 960×720</option><option value="1:1">1:1 · 800×800</option></optgroup>
+                    <optgroup label="Print"><option value="a4p">A4 Portrait · 794×1123</option><option value="a4l">A4 Landscape · 1123×794</option><option value="letter">Letter · 816×1056</option></optgroup>
+                    <optgroup label="Devices"><option value="desktop">Desktop · 1920×1080</option><option value="tablet">Tablet · 834×1194</option><option value="mobile">Mobile · 390×844</option></optgroup>
+                  </select>
+                  <button class="btn" id="compact-pack-board" title="Auto-arrange ungrouped cards into a tidy grid">Compact Pack</button>
+                </div>
+                <div class="tb-group">
+                  <button class="btn" id="board-undo" title="Undo last board change, or last board action like create/rename/duplicate/delete (Ctrl/Cmd+Z)" disabled>Undo</button>
+                  <button class="btn" id="board-redo" title="Redo (Ctrl/Cmd+Shift+Z)" disabled>Redo</button>
+                </div>
+                <div class="tb-group" id="tb-transform-group" hidden>
+                  <button class="btn tb-icon-btn" id="board-img-grayscale" title="Toggle grayscale for selected image/video cards" aria-label="Toggle grayscale"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg></button>
+                  <button class="btn tb-icon-btn" id="board-img-fliph" title="Flip selected image/video cards horizontally" aria-label="Flip horizontal"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 7l-3 5 3 5M17 7l3 5-3 5"/></svg></button>
+                  <button class="btn tb-icon-btn" id="board-img-flipv" title="Flip selected image/video cards vertically" aria-label="Flip vertical"><svg viewBox="0 0 24 24"><path d="M3 12h18M7 7l5-3 5 3M7 17l5 3 5-3"/></svg></button>
+                  <button class="btn tb-icon-btn" id="board-img-rotate" title="Rotate selected image/video cards 90°" aria-label="Rotate 90 degrees"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 3v5h-5"/></svg></button>
+                  <label class="zoom-control">Opacity <input id="board-img-opacity" type="range" min="10" max="100" value="100" title="Opacity for selected image/video cards"></label>
+                  <label class="zoom-control">Blend Mode 
+                    <select id="board-img-blend" title="Blend mode for selected image/video cards">
+                      <option value="normal">Normal</option>
+                      <option value="multiply">Multiply</option>
+                      <option value="screen">Screen</option>
+                      <option value="overlay">Overlay</option>
+                      <option value="darken">Darken</option>
+                      <option value="lighten">Lighten</option>
+                      <option value="color-dodge">Color Dodge</option>
+                      <option value="color-burn">Color Burn</option>
+                      <option value="hard-light">Hard Light</option>
+                      <option value="soft-light">Soft Light</option>
+                      <option value="difference">Difference</option>
+                      <option value="exclusion">Exclusion</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="tb-group">
+                  <select id="board-group-select" aria-label="Active image group"></select>
+                  <label class="zoom-control">Zoom <input id="board-zoom" type="range" min="35" max="200" value="100"><span id="board-zoom-value">100%</span></label><button class="btn" id="fit-board">Fit Board</button>
+                </div>
+              </div>
+              <div class="board-breadcrumb" id="board-breadcrumb">Home / Project / Board</div>
+              <div class="board-canvas-wrap" id="board-canvas-wrap"><button type="button" class="board-focus-toggle" id="toggle-board-focus" title="Toggle distraction-free mode" aria-label="Toggle distraction-free mode">⛶</button>
+                <div class="note-format-toolbar" id="note-format-toolbar" role="toolbar" aria-label="Note formatting controls" hidden>
+                  <span class="format-label">Font</span>
+                  <select id="note-font-select" class="note-font-input" title="Font family — pick a font, or choose Other… to type a custom name" aria-label="Font family"></select>
+                  <input id="note-font-custom" class="note-font-input" placeholder="Custom font name…" title="Type any font name (system font or one loaded from Google Fonts)" aria-label="Custom font name" hidden>
+                  <input id="note-size" type="number" class="note-size-input" min="6" max="200" step="1" value="15" title="Font size in px — type any number" aria-label="Font size in pixels">
+                  <button class="btn format-btn" id="note-load-webfont" title="Load a font by name from Google Fonts and apply it">+ Web Font</button>
+                  <button class="btn format-btn" data-note-command="bold" title="Bold" aria-label="Bold">B</button><button class="btn format-btn" data-note-command="italic" title="Italic" aria-label="Italic"><i>I</i></button><button class="btn format-btn" data-note-command="underline" title="Underline" aria-label="Underline"><u>U</u></button><button class="btn format-btn" data-note-command="strikeThrough" title="Strikethrough" aria-label="Strikethrough">S̶</button>
+                  <span class="format-label">Color</span><input id="note-color" type="color" value="#f3ede3" title="Text color" aria-label="Text color"><input id="note-highlight" type="color" value="#d0a064" title="Highlight color" aria-label="Highlight color">
+                  <button class="btn format-btn" data-note-command="justifyLeft" title="Align left" aria-label="Align left">≡</button><button class="btn format-btn" data-note-command="justifyCenter" title="Align center" aria-label="Align center">≡</button><button class="btn format-btn" data-note-command="justifyRight" title="Align right" aria-label="Align right">≡</button>
+                  <button class="btn format-btn" data-note-command="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">•</button><button class="btn format-btn" data-note-command="insertOrderedList" title="Numbered list" aria-label="Numbered list">1.</button><button class="btn format-btn" data-note-command="outdent" title="Outdent" aria-label="Outdent">←</button><button class="btn format-btn" data-note-command="indent" title="Indent" aria-label="Indent">→</button>
+                  <span class="format-label">Card</span>
+                  <button type="button" class="note-swatch" data-note-bg="" title="Default card color" aria-label="Default card color" style="background:#242126"></button>
+                  <button type="button" class="note-swatch" data-note-bg="#4a3b2a" title="Amber card color" aria-label="Amber card color" style="background:#4a3b2a"></button>
+                  <button type="button" class="note-swatch" data-note-bg="#4a2a33" title="Rose card color" aria-label="Rose card color" style="background:#4a2a33"></button>
+                  <button type="button" class="note-swatch" data-note-bg="#2d3b2a" title="Sage card color" aria-label="Sage card color" style="background:#2d3b2a"></button>
+                  <button type="button" class="note-swatch" data-note-bg="#2a333b" title="Slate card color" aria-label="Slate card color" style="background:#2a333b"></button>
+                  <button type="button" class="note-swatch" data-note-bg="#3b2a44" title="Plum card color" aria-label="Plum card color" style="background:#3b2a44"></button>
+                </div>
+                <div class="note-format-toolbar" id="shape-format-toolbar" role="toolbar" aria-label="Shape formatting controls" hidden>
+                  <span class="format-label">Shape</span>
+                  <select id="shape-type-select" title="Shape type" aria-label="Shape type"><option value="rect">Rectangle</option><option value="oval">Oval</option><option value="line">Line</option><option value="arrow">Arrow</option></select>
+                  <span class="format-label">Fill</span><input id="shape-fill" type="color" value="#3d9ca8" title="Fill color" aria-label="Fill color"><button class="btn format-btn" id="shape-fill-none" title="No fill (outline only)" aria-label="No fill">∅</button>
+                  <span class="format-label">Stroke</span><input id="shape-stroke" type="color" value="#3d9ca8" title="Stroke color" aria-label="Stroke color"><input id="shape-stroke-width" type="number" class="note-size-input" min="1" max="12" step="1" value="2" title="Stroke width in px" aria-label="Stroke width in pixels">
+                </div>
+                <div class="board-canvas" id="board-canvas"></div><div class="board-minimap" id="board-minimap" title="Board overview — click or drag to jump around" role="button" aria-label="Board overview map. Click or drag to navigate the board." tabindex="0" hidden></div></div>
+              <div class="board-context-menu" id="board-context-menu" role="menu" aria-label="Card actions">
+                <button type="button" id="ctx-group" role="menuitem" class="card-only">Group Selected</button>
+                <button type="button" id="ctx-ungroup" role="menuitem" class="card-only">Ungroup</button>
+                <button type="button" id="ctx-bring-front" role="menuitem" class="card-only">Bring to Front</button>
+                <button type="button" id="ctx-send-back" role="menuitem" class="card-only">Send to Back</button>
+                <button type="button" id="ctx-duplicate" role="menuitem" class="card-only">Duplicate</button>
+                <hr class="card-only">
+                <button type="button" role="menuitem" class="card-only" data-align="left">Align Left</button>
+                <button type="button" role="menuitem" class="card-only" data-align="center">Align Center</button>
+                <button type="button" role="menuitem" class="card-only" data-align="right">Align Right</button>
+                <button type="button" role="menuitem" class="card-only" data-align="top">Align Top</button>
+                <button type="button" role="menuitem" class="card-only" data-align="middle">Align Middle</button>
+                <button type="button" role="menuitem" class="card-only" data-align="bottom">Align Bottom</button>
+                <hr class="card-only">
+                <button type="button" id="ctx-connect" role="menuitem" class="card-only">Connect…</button>
+                <button type="button" id="ctx-flatten" role="menuitem" class="card-only">Flatten to Image</button>
+                <button type="button" id="ctx-erase" role="menuitem" class="card-only">Erase Object…</button>
+                <button type="button" id="ctx-cutout" role="menuitem" class="card-only">Cut Out Subject…</button>
+                <button type="button" id="ctx-warp" role="menuitem" class="card-only">Warp Image…</button>
+                <hr class="card-only">
+                <button type="button" id="ctx-connector-curve" role="menuitem" class="connector-only">Toggle Curve</button>
+                <button type="button" id="ctx-connector-label" role="menuitem" class="connector-only">Edit Label…</button>
+                <button type="button" id="ctx-connector-delete" role="menuitem" class="danger connector-only">Delete Arrow</button>
+                <!-- Group context menu items -->
+                <button type="button" id="ctx-group-rename" role="menuitem" class="group-only">Rename Group…</button>
+                <button type="button" id="ctx-group-cover" role="menuitem" class="group-only">Choose Cover…</button>
+                <button type="button" id="ctx-group-color" role="menuitem" class="group-only">Color Tag…</button>
+                <button type="button" id="ctx-group-delete" role="menuitem" class="danger group-only">Delete Group (Keep Cards)</button>
+                <hr class="group-only">
+                <button type="button" id="ctx-group-items" role="menuitem" class="group-only">Group/Ungroup Items</button>
+                <hr>
+                <button type="button" id="ctx-copy" role="menuitem">Copy</button>
+                <button type="button" id="ctx-paste" role="menuitem">Paste</button>
+                <hr>
+                <button type="button" id="ctx-flip-h" role="menuitem" class="card-only">Flip Horizontal</button>
+                <button type="button" id="ctx-flip-v" role="menuitem" class="card-only">Flip Vertical</button>
+                <button type="button" id="ctx-rotate" role="menuitem" class="card-only">Rotate 90°</button>
+                <button type="button" id="ctx-grayscale" role="menuitem" class="card-only">Toggle Grayscale</button>
+                <hr class="card-only">
+                <button type="button" id="ctx-remove" role="menuitem" class="danger card-only">Remove</button>
+              </div>
+              <div class="board-help">Drag on empty space to marquee-select cards. Shift-click or Shift-drag adds to the selection. Drop a card fully inside a group to attach it. Hold Space and drag, or use middle/right mouse, to pan. Mouse-wheel zoom follows your cursor.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="view" id="recipes-view">
+          <div class="page-kicker">Reusable knowledge base</div>
+          <h1>Visual Recipes</h1>
+          <p class="page-sub">Recipes are separate from a project. They are repeatable production solutions that can be attached when a project needs them.</p>
+          <div class="recipe-toolbar"><input id="recipe-search" placeholder="Search recipes" aria-label="Search recipes"><button class="btn primary" id="new-recipe">+ New Recipe</button></div>
+          <div class="recipe-grid" id="recipe-grid"></div>
+          <div class="section recipe-detail" id="recipe-detail" hidden></div>
+        </section>
+        <section class="view" id="references-view">
+          <div class="page-kicker">Future supporting module</div>
+          <h1>Reference Library</h1>
+          <p class="page-sub">This is where the local vertical manga/comic reader, saved pages, crops, tags, and project-linked visual references will live.</p>
+          <div id="library-home">
+            <div class="ref-empty"><h2>Local reference reader</h2><p>Choose a folder containing extracted page images. Each folder that contains images becomes a readable chapter with a cover. Your files stay on your computer.</p></div>
+            <div class="library-toolbar"><button class="btn primary" id="choose-manga-folder">Choose Manga Folder</button><button class="btn" id="choose-cbr-files">Open CBR Files</button><button class="btn" id="choose-cbz-files">Open CBZ Files</button><input id="cbr-file-input" type="file" accept=".cbr,application/vnd.rar,application/x-rar-compressed" multiple hidden><input id="cbz-file-input" type="file" accept=".cbz,.zip,application/zip,application/x-zip-compressed" multiple hidden><input id="library-search" class="library-search" type="text" placeholder="Search chapters…" aria-label="Search chapters by title"><span class="library-status" id="library-status">No local folder selected.</span><span class="library-loading" id="library-loading" hidden>Loading archive…</span></div>
+            <div class="bookmark-panel" id="bookmark-panel" hidden><h2>Saved page bookmarks</h2><div class="bookmark-list" id="bookmark-list"></div></div>
+            <div class="crop-panel" id="crop-panel" hidden><h2>Saved visual references</h2><div class="crop-list" id="crop-list"></div></div>
+            <div class="chapter-grid" id="chapter-grid"></div>
+          </div>
+          <div id="reader-view" hidden>
+            <div class="reader-shell"><div class="reader-top"><button class="btn" id="close-reader">← Library</button><div class="reader-title" id="reader-title">Chapter</div><button class="btn" id="previous-page">← Prev</button><button class="btn" id="next-page">Next →</button><select id="reader-mode" aria-label="Reading mode"><option value="vertical">Vertical stream</option><option value="single">Single page</option><option value="spread">Two pages</option></select><label class="zoom-control">Zoom <input id="reader-zoom" type="range" min="50" max="175" value="100"><span id="zoom-value">100%</span></label><button class="btn" id="bookmark-page">Bookmark Page</button><button class="btn" id="save-crop">Save Crop</button><button class="btn primary" id="download-page">Download for Photoshop</button></div><p class="reader-note" id="reader-note">Click a page to make it the selected page.</p><div class="reader-annotation"><label for="page-note">Visual reference note for selected page</label><textarea id="page-note" placeholder="Why is this page useful? Composition, pose, expression, transition, costume, background…"></textarea></div><div class="reader-pages vertical" id="reader-pages"></div></div>
+          </div>
+        </section>
+        <section class="view" id="prompt-view">
+          <div class="page-kicker">Bonus module · local templates only</div>
+          <h1>Prompt Generator</h1>
+          <p class="page-sub">Builds a model-tailored prompt from a reference image and a few structured notes, following the same steps as the Model-Specific Prompt Pass recipe. This is local template logic only — no image is uploaded anywhere and no AI model is called.</p>
+          <div class="section">
+            <label>Reference image (optional)</label>
+            <div class="recipe-thumb-picker"><img id="prompt-image-preview" alt="" style="display:none"><input type="file" id="prompt-image-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden><button type="button" class="btn" id="prompt-image-choose">Choose Image</button><button type="button" class="btn" id="prompt-image-from-board">Choose from Board/Crops</button><button type="button" class="btn danger" id="prompt-image-remove" hidden>Remove</button></div>
+          </div>
+          <div class="form-row">
+            <div><label for="prompt-model">Target model</label><select id="prompt-model"><option>GPT Image</option><option>Qwen Image</option><option>Nanobanana</option><option>Seedream Pro</option><option>Gemini</option></select></div>
+            <div><label for="prompt-job">Job</label><select id="prompt-job"><option value="generate">Generate</option><option value="edit">Edit</option><option value="restyle">Restyle</option><option value="unify">Unify</option></select></div>
+          </div>
+          <div class="section"><label for="prompt-subject">Subject</label><textarea id="prompt-subject" placeholder="Who or what is in frame?"></textarea></div>
+          <div class="section"><label for="prompt-composition">Composition &amp; camera</label><textarea id="prompt-composition" placeholder="Framing, angle, lens, focal length, depth of field."></textarea></div>
+          <div class="section"><label for="prompt-materials">Materials &amp; style</label><textarea id="prompt-materials" placeholder="Surfaces, textures, rendering style, lighting mood."></textarea></div>
+          <div class="section"><label for="prompt-consistency">What must stay consistent</label><textarea id="prompt-consistency" placeholder="Character design, palette, proportions, established elements that must not drift."></textarea></div>
+          <div class="section"><label for="prompt-constraints">Constraints</label><textarea id="prompt-constraints" placeholder="Anything the model should avoid or must not change."></textarea></div>
+          <div class="modal-actions" style="justify-content:flex-start"><button class="btn primary" id="generate-prompt">Generate Prompt</button><button class="btn" id="copy-prompt" hidden>Copy</button><button class="btn" id="save-prompt-variation" hidden>Save as Recipe Variation</button></div>
+          <div class="section" id="prompt-output-wrap" hidden><label for="prompt-output">Generated prompt</label><textarea id="prompt-output" readonly></textarea><p class="hint">Template output only — no API was called. Edit freely, then save wording you like as a Visual Recipe variation.</p></div>
+        </section>
+      </main>
+      <aside class="inspector">
+        <div class="side-block"><p class="side-title">Project Inspector</p><h3 id="inspector-title">Untitled Project</h3><p id="inspector-summary">Project details appear here as you work.</p></div>
+        <div class="side-block"><p class="side-title">Project Status</p><div class="stat"><span>Questionnaire fields</span><span id="field-progress">0 / 15</span></div><div class="stat"><span>Attached recipes</span><span id="recipe-progress">0</span></div><div class="stat"><span>Today’s tasks</span><span id="today-tasks">None</span></div><div class="stat"><span>Last saved</span><span id="last-saved">Never</span></div></div>
+        <div class="side-block"><p class="side-title">Working rule</p><p>Use AI where it gives leverage; use manual drawing, Illustrator, and 3D where control or spatial consistency matters.</p></div>
+        <div class="side-block"><div class="board-strip-header"><p class="side-title">Board Switcher / Film Strip</p><button class="btn primary" id="new-board">+ Board</button></div><div class="inspector-board-strip" id="board-list"></div></div>
+      </aside>
+    </div>
+  </div>
+  <div id="split-divider" aria-label="Resize split workspace"></div>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+  <input id="board-image-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/avif" multiple hidden>
+  <input id="board-video-input" type="file" accept="video/mp4,video/webm,video/quicktime" multiple hidden>
+  <input id="board-document-input" type="file" multiple hidden>
+  <input id="board-cover-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/avif" hidden>
+  <input id="texture-slot-input" type="file" accept="image/*" hidden>
+  <div class="modal-backdrop" id="recipe-modal"><div class="modal"><h2 id="recipe-modal-title">New Visual Recipe</h2><p>Recipes remain separate from project questionnaires and can be attached when needed.</p><div class="form-row"><div><label for="new-recipe-title">Recipe Title</label><input id="new-recipe-title" placeholder="e.g. AI Lighting Unification"></div><div><label for="new-recipe-category">Category</label><select id="new-recipe-category"><option>Prompting</option><option>Simplification</option><option>Construction</option><option>Finishing</option></select></div></div><div style="margin-top:12px"><label for="new-recipe-problem">Problem solved</label><textarea id="new-recipe-problem" placeholder="What repeated problem does this recipe solve?"></textarea></div><div style="margin-top:12px"><label for="new-recipe-workflow">Workflow</label><textarea id="new-recipe-workflow" placeholder="Write one action per line."></textarea></div><div style="margin-top:12px"><label for="new-recipe-models">Recommended tools / models</label><input id="new-recipe-models" placeholder="e.g. Illustrator · Qwen Image · Seedream Pro"></div><div style="margin-top:12px"><label>Thumbnail (optional)</label><div class="recipe-thumb-picker"><img id="recipe-thumb-preview" alt="" style="display:none"><input type="file" id="recipe-thumb-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden><button type="button" class="btn" id="recipe-thumb-choose">Choose Image</button><button type="button" class="btn danger" id="recipe-thumb-remove" hidden>Remove</button></div></div><div class="modal-actions"><button class="btn" data-close-modal>Cancel</button><button class="btn primary" id="create-recipe">Save Recipe</button></div></div></div>
+  <div class="modal-backdrop" id="delete-modal"><div class="modal"><h2>Delete this project?</h2><p>This removes <b id="delete-project-name">this project</b> from the browser's saved project list. Exported files are not affected.</p><div class="modal-actions"><button class="btn" data-close-delete>Cancel</button><button class="btn danger" id="confirm-delete">Delete Project</button></div></div></div>
+  <dialog class="modal-dialog" id="confirm-dialog"><h2 id="confirm-dialog-title">Are you sure?</h2><p id="confirm-dialog-message"></p><div class="modal-actions"><button type="button" class="btn" id="confirm-dialog-cancel">Cancel</button><button type="button" class="btn danger" id="confirm-dialog-ok">Confirm</button></div></dialog>
+  <dialog class="modal-dialog" id="prompt-dialog"><form id="prompt-dialog-form"><h2 id="prompt-dialog-title">Rename</h2><p id="prompt-dialog-message"></p><input type="text" id="prompt-dialog-input" aria-labelledby="prompt-dialog-title"><div class="modal-actions"><button type="button" class="btn" id="prompt-dialog-cancel">Cancel</button><button type="submit" class="btn primary" id="prompt-dialog-ok">Save</button></div></form></dialog>
+  <dialog class="modal-dialog" id="board-link-dialog"><form id="board-link-dialog-form"><h2>Link to board</h2><p>Choose which board this card should open when clicked.</p><select id="board-link-select" aria-label="Target board"></select><div class="modal-actions"><button type="button" class="btn" id="board-link-dialog-cancel">Cancel</button><button type="submit" class="btn primary">Insert</button></div></form></dialog>
+  <dialog class="modal-dialog settings-dialog" id="settings-dialog" aria-label="Settings">
+    <h2>Settings</h2>
+    <div class="settings-body">
+      <nav class="settings-nav" aria-label="Settings categories">
+        <button type="button" class="active" data-settings-pane="appearance">Appearance</button>
+        <button type="button" data-settings-pane="grid">Grid &amp; Snapping</button>
+        <button type="button" data-settings-pane="shortcuts">Keyboard Shortcuts</button>
+      </nav>
+      <div class="settings-pane active" data-settings-pane-body="appearance">
+        <div class="setting-row"><input type="checkbox" id="set-light-mode"><label class="setting-text" for="set-light-mode"><b>Light mode</b><small>Switch the whole workspace between dark and light themes. Saved for next time.</small></label></div>
+        <div class="setting-row"><input type="checkbox" id="set-minimal"><label class="setting-text" for="set-minimal"><b>Minimal card chrome</b><small>Per board. Hide card footers, resize grips, and connector dots until you hover or select a card — PureRef-style dense tiling.</small></label></div>
+        <div class="setting-row"><input type="checkbox" id="set-fisheye"><label class="setting-text" for="set-fisheye"><b>Fisheye magnifier</b><small>Per session. Magnify cards near the cursor instead of zooming the whole board. Turns off when you pan or drag.</small></label></div>
+      </div>
+      <div class="settings-pane" data-settings-pane-body="grid">
+        <div class="setting-row"><input type="checkbox" id="set-snap"><label class="setting-text" for="set-snap"><b>Snap to grid</b><small>Per board. Card positions and sizes round to a 22&nbsp;px grid while you drag or resize.</small></label></div>
+      </div>
+      <div class="settings-pane" data-settings-pane-body="shortcuts">
+        <div class="shortcut-list">
+          <div><span>Pan the board</span><kbd>Space + drag · middle/right mouse drag</kbd></div>
+          <div><span>Zoom (follows cursor)</span><kbd>Mouse wheel</kbd></div>
+          <div><span>Marquee-select</span><kbd>Drag empty canvas · Shift adds to selection</kbd></div>
+          <div><span>Nudge selection</span><kbd>Arrow keys · Shift = 10&nbsp;px steps</kbd></div>
+          <div><span>Duplicate selection</span><kbd>Ctrl/Cmd + D</kbd></div>
+          <div><span>Copy / paste cards</span><kbd>Ctrl/Cmd + C · Ctrl/Cmd + V</kbd></div>
+          <div><span>Undo / redo</span><kbd>Ctrl/Cmd + Z · Ctrl/Cmd + Shift + Z</kbd></div>
+          <div><span>Delete cards or arrows</span><kbd>Delete / Backspace</kbd></div>
+          <div><span>Exit Connect / menus / focus mode</span><kbd>Escape</kbd></div>
+          <div><span>Rename a note</span><kbd>Double-click its title</kbd></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions"><button type="button" class="btn" id="settings-close">Close</button></div>
+  </dialog>
+  <div class="board-color-menu" id="board-color-menu" role="dialog" aria-label="Color picker">
+    <div class="board-color-grid" id="board-color-grid"></div>
+    <div class="board-color-menu-footer"><label class="board-color-custom"><input type="color" id="board-color-custom" value="#c49a67">Custom…</label><button type="button" class="board-color-none" id="board-color-none">No color</button></div>
+  </div>
+  <div class="modal-backdrop note-focus-overlay" id="note-focus-modal"><div class="modal note-focus-modal"><div class="note-focus-modal-header"><span class="note-focus-hint">Focus view — double-click the title to rename · changes save automatically</span><button type="button" class="btn" id="note-focus-close" aria-label="Close focus view">Close ✕</button></div><div class="note-focus-title-slot" id="note-focus-title-slot"></div><div class="note-focus-body-slot" id="note-focus-body-slot"></div></div></div>
+  <div class="modal-backdrop" id="crop-modal"><div class="modal"><h2>Save visual reference crop</h2><p>Drag a rectangle over the page. This is a manual reference capture, not automatic panel detection.</p><div class="crop-stage"><canvas id="crop-canvas"></canvas></div><p class="crop-help">Drag to select an area. You can redraw the rectangle before saving.</p><div class="form-row" style="margin-top:14px"><div><label for="crop-title">Reference name</label><input id="crop-title" placeholder="e.g. Dynamic upward camera angle"></div><div><label for="crop-project">Attach to project</label><select id="crop-project"></select></div></div><div style="margin-top:12px"><label for="crop-tags">Tags</label><input id="crop-tags" placeholder="e.g. perspective, gesture, clothing folds"></div><div class="modal-actions"><button class="btn" data-close-crop>Cancel</button><button class="btn primary" id="create-crop">Save Crop + Download PNG</button></div></div></div>
+  <div class="modal-backdrop" id="erase-modal"><div class="modal"><h2>Erase object from image</h2><p>Drag a rectangle over the object you want to remove. The fill is synthesized from the rest of the image — a rough box around the object works better than a very tight one.</p><div class="crop-stage"><canvas id="erase-canvas"></canvas></div><p class="crop-help">Drag to mark the area to erase. You can redraw the rectangle before running it.</p><div class="modal-actions"><button class="btn" data-close-erase>Cancel</button><button class="btn primary" id="run-erase">Erase</button></div></div></div>
+  <div class="modal-backdrop" id="cutout-modal"><div class="modal"><h2>Cut out subject</h2><p>Drag a loose box around the subject — leave a bit of background showing inside the box on every side so the tool has something to tell foreground from background. The result is added as a new transparent-background card.</p><div class="crop-stage"><canvas id="cutout-canvas"></canvas></div><p class="crop-help">Drag to mark the subject. You can redraw the rectangle before running it.</p><div class="modal-actions"><button class="btn" data-close-cutout>Cancel</button><button class="btn primary" id="run-cutout">Cut Out</button></div></div></div>
+  <div class="modal-backdrop" id="warp-modal"><div class="modal"><h2>Warp image</h2><p>Click the image to drop a handle, then drag any handle to bend the image around it — like putty. Drop a few handles for finer control. The result is added as a new card.</p><div class="crop-stage"><canvas id="warp-canvas"></canvas></div><p class="crop-help">Click empty space to add a handle. Drag a handle to deform. Reset restores the original shape without losing your handles.</p><div class="modal-actions"><button class="btn" id="warp-reset">Reset</button><button class="btn" id="warp-clear">Clear Handles</button><button class="btn" data-close-warp>Cancel</button><button class="btn primary" id="run-warp">Apply Warp</button></div></div></div>
+  <dialog id="prompt-image-picker-dialog"><h2>Choose a reference image</h2><p class="crop-help">From your boards and saved crops across every project — this project's items appear first — click one to use it.</p><div class="crop-list" id="prompt-image-picker-list"></div><div class="modal-actions"><button class="btn" id="prompt-image-picker-cancel">Cancel</button></div></dialog>
+  <script defer src="https://unpkg.com/unrarit@0.0.5/dist/unrarit.umd.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/ag-psd@31.0.2/dist/bundle.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
